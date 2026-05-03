@@ -6,4 +6,4 @@ Mathematica/Compression V01.nb, smart optimization using linked lists for times 
 
 Besides personally checked smart effectiveness for more then decade mainly on compression tasks, it is still not widely used in public, and therefore have problems with verification. Project includes simple eventual set of functions for statistical tasks that demands verified methods for processing. 
 
-More detailed description of procedures and functions here in Wiki.
+More detailed description of procedures and functions here in [Wiki](../../wiki).
