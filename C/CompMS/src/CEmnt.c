@@ -74,13 +74,14 @@ EmntSize(void)
     // calc number, existent
     if(n > 0) do
     {
-        c += ((Ei = Et->v) == Si) ? 1 : 0;
+        c += ((Ei = Et->v)->S == Si)? 1 : 0;
 	}   while ((Et = Et->n) != Ex); 
     c = Si->Bn - c; n += c; Bn = n; Lv = Ev;
     // increase number
     if(c > 0) for (k = 0; k < c; k++)
     {
-		ListAdd(); Ex = Lx; Ei = Ex->v; Ei->S = Si;
+		ListAdd();     Ex = Lx; 
+        Ei = Ex->v; Ei->S = Si;
     }
     // decrease number
     if(c < 0) for (k = 0; k < n; k++)

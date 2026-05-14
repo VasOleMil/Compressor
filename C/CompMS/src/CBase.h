@@ -30,13 +30,13 @@ extern long             Sc;//Numer simultanious events, dT = 0.0
 extern double           De;//range (-De;+De) treated as dT = 0.0
 extern double           Ds;//range (-Ds;+Ds) treated as rv - RV = 0.0
 //--------------------------------------------------------------------
-extern long 		    UT;// 1, unit memory allocation. transaction
-extern long 		    UD;// 2, dedicated destructor,   UT   finish
+extern long 		    UT;// 1, unit memory allocation and UD   start
+extern long 		    UD;// 2, dedicated destructor,      UD  finish
 extern long 		    UF;// 0, memory allocation for regular free
-extern double           RN;//sqrt(Rn)
-extern long             Ce;//Number of e-e interactions 
-extern long             Cb;//Number of b-e interactions
-extern long             Cx;//Interactions type
+extern double           RN;// sqrt(Rn)
+extern long             Ce;// Number of e-e interactions 
+extern long             Cb;// Number of b-e interactions
+extern long             Cx;// Interactions type
 //--------------------------------------------------------------------
 extern void*        Malloc(size_t LN,long CN,long UD);//malloc wrapper
 //--------------------------------------------------------------------

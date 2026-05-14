@@ -83,10 +83,10 @@ static void
 DataItemNew(void)
 {
     Lx = (CLItem*) Malloc(sizeof(CLItem), UT, UD);
-	Lx->p = Lx;    //Create Self looped item,
-	Lx->n = Lx;    //prereqiered for list. 
-    Lx->v = NULL;  //With no data attached
-}//ListNew item provider for Data, sets looped Lx
+	Lx->p = Lx;    // create looped item,
+	Lx->n = Lx;    // prereqiered for list, 
+    Lx->v = NULL;  // with no data attached
+}//ListNew item provider for Data.                      Set: looped Lx
 //--------------------------------------------------------------------
 static void
 DataItemDel(void)
@@ -97,11 +97,13 @@ DataItemDel(void)
 void
 CompInit()
 {
-	Mv = Ev = Sv = Tv = NULL; UT = 1; UD = 2; UF = 0; Ma = 0;
+    Mv = Ev = Sv = Tv = NULL; UT=1; UD=2; UF=Ma=0;
     Mv = (CSList*) Malloc(sizeof(CSList), UT, UD);
 	//Set data contaners counters and providers
     Mv->Fn = 0; Mv->ListItemDel = DataItemDel;
     Mv->Vn = 0; Mv->ListItemNew = DataItemNew;
+    //Init element and time containers
+    SortInit(); EmntInit(); TimeInit();
 
 }
 //--------------------------------------------------------------------
