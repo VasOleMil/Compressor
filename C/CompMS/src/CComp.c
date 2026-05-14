@@ -2,39 +2,46 @@
 #include"CComp.h"
 //--------------------------------------------------------------------
 CSList *Mv;//Malloc list items container 
-long    Ma;//Dedicated destructor transaction length, used in Malloc
 void   *MA;//Memory allocator register, used in Malloc, CompFree
+//--------------------------------------------------------------------
+void   *Mx;//Memory allocator register, used locally in DataItemDel
+long    Ma;//Dedicated destructor transaction length, used in Malloc
 //--------------------------------------------------------------------
 void*
 Malloc(size_t LN, long CN, long UX)
 {
-    //No memory allocation,   safe case
+    //No memory allocation:        safe case
     if (CN <= 0 || LN <= 0) return NULL; 
 	//Try to allocate memory
-    if ((MA = malloc(LN * CN)) == NULL)
+    if ((MA = malloc(LN * CN))  == NULL)
     {
-        //Pass controll to termination thread
+        //Set controll of termination thread
         CompFree();
     }
     else if (UX == UT)
     {
-        //Dedicated  destructor, start
-        Lv = Mv; ListAdd(); Lx->v = MA; Ma++;
+        //Dedicated  destructor:       Start
+        Lv = Mv; ListAdd();       //register 
+        Lx->v = MA;   Ma++;       //   as UF
         //return pointer to allocated memory
         return MA;
     }
     else if (UX == UD)
     {
-		//Dedicated  destructor, finish
-        while (Ma > 0) { Ma--; ListREM(); free(Lx); }
+		//Dedicated  destructor:      Finish
+        while (Ma > 0) 
+        { 
+            Lv = Mv; ListDel();//save CLItem
+            Lx->v = NULL; Ma--;//  as not UF
+        }
         //return pointer to allocated memory
 		return MA;   //Not optimal, but safe.
     }
 	else // UX == UF, regular free
     {
-        //register allocated memory
+        //register  allocated  memory as  UF
 		Lv = Mv; ListAdd(); Lx->v = MA; 
-        //test dedicated transaction iterruption 
+        //test dedicated allocation iterrupt 
         if (Ma > 0) CompFree(); 
         //return pointer to allocated memory
         return MA;
@@ -84,7 +91,7 @@ DataItemNew(void)
 static void
 DataItemDel(void)
 {
-    free(Lx->v); free(Lx);
+    if(Mx = Lx->v) free(Mx); free(Lx);
 }//ListRem item provider for Data
 //--------------------------------------------------------------------
 void

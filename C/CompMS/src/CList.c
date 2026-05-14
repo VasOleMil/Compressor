@@ -285,23 +285,6 @@ ListDEL(void)
 }//Moves Value to Free:              Vc = Vc->p, Fc->p = Lx
 //--------------------------------------------------------------------
 void
-ListREM(void)
-{
-    //-----------------------------------------------------
-    Lx = Lv->Vc; Lv->Vn--;
-
-    Li = Lx->p;  //Lx is caller defined   /*  +--->---+  */          
-    Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
-    Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
-    Li->n = Lj;  //connect next over Lx   /*  |       |  */          
-    //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
-    //Lx->n = Lx;//Looping in new items is also implemented     
-
-    Lv->Vc = Li;
-    //-----------------------------------------------------   
-}//Detach from Value,  unsafe:                   Vc = Vc->p
-//--------------------------------------------------------------------
-void
 ListClr(void)
 {	
     if (Lv->Vn == 0) return;     //safety

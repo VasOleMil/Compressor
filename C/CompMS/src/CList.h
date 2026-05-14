@@ -42,8 +42,6 @@ extern void ListADD(void);//Move Free to Value, unsafe:         Vn, Lx
 //--------------------------------------------------------------------
 extern void ListDEL(void);//Move Value to Free, unsafe:             Vn
 //--------------------------------------------------------------------
-extern void ListREM(void);//Detach from Value,  unsafe:             Vn
-//--------------------------------------------------------------------
 extern void ListSize(void); //Releases Free container resources
 //--------------------------------------------------------------------
 extern void ListFree(void); //Releases List container resources
