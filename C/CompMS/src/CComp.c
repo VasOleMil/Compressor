@@ -1,0 +1,132 @@
+#include"CBase.h"
+#include"CComp.h"
+//--------------------------------------------------------------------
+CSList *Mv;//Malloc list items container 
+long    Ma;//Dedicated destructor transaction length, used in Malloc
+void   *MA;//Memory allocator register, used in Malloc, CompFree
+//--------------------------------------------------------------------
+void*
+Malloc(size_t LN, long CN, long UX)
+{
+    //No memory allocation,   safe case
+    if (CN <= 0 || LN <= 0) return NULL; 
+	//Try to allocate memory
+    if ((MA = malloc(LN * CN)) == NULL)
+    {
+        //Pass controll to termination thread
+        CompFree();
+    }
+    else if (UX == UT)
+    {
+        //Dedicated  destructor, start
+        Lv = Mv; ListAdd(); Lx->v = MA; Ma++;
+        //return pointer to allocated memory
+        return MA;
+    }
+    else if (UX == UD)
+    {
+		//Dedicated  destructor, finish
+        while (Ma > 0) { Ma--; ListREM(); free(Lx); }
+        //return pointer to allocated memory
+		return MA;   //Not optimal, but safe.
+    }
+	else // UX == UF, regular free
+    {
+        //register allocated memory
+		Lv = Mv; ListAdd(); Lx->v = MA; 
+        //test dedicated transaction iterruption 
+        if (Ma > 0) CompFree(); 
+        //return pointer to allocated memory
+        return MA;
+    }
+}//malloc wrapper, exits if allocation fails.                 sets: MA
+//--------------------------------------------------------------------
+void
+CompFree()
+{
+    //======dedicated destructors section========
+    EmntFree();
+    SortFree();
+    TimeFree();
+    
+    //======free registered allocated memory=====
+    if (Mv != NULL) 
+    { 
+        Lv = Mv; ListFree(); 
+        free(Mv); Mv = NULL; 
+    }
+    
+	//======Exit if memory allocation fails======
+    if (MA == NULL)
+    {
+        //report error, no system memory allocated.
+
+        exit(1);
+    }
+
+    if (Ma > 0)
+    {
+        //report dedicated transaction interruption.
+
+        exit(1);
+    }
+}
+//--------------------------------------------------------------------
+static void
+DataItemNew(void)
+{
+    Lx = (CLItem*) Malloc(sizeof(CLItem), UT, UD);
+	Lx->p = Lx;    //Create Self looped item,
+	Lx->n = Lx;    //prereqiered for list. 
+    Lx->v = NULL;  //With no data attached
+}//ListNew item provider for Data, sets looped Lx
+//--------------------------------------------------------------------
+static void
+DataItemDel(void)
+{
+    free(Lx->v); free(Lx);
+}//ListRem item provider for Data
+//--------------------------------------------------------------------
+void
+CompInit()
+{
+	Mv = Ev = Sv = Tv = NULL; UT = 1; UD = 2; UF = 0; Ma = 0;
+    Mv = (CSList*) Malloc(sizeof(CSList), UT, UD);
+	//Set data contaners counters and providers
+    Mv->Fn = 0; Mv->ListItemDel = DataItemDel;
+    Mv->Vn = 0; Mv->ListItemNew = DataItemNew;
+
+}
+//--------------------------------------------------------------------
+
+
+
+//--------------------------------------------------------------------
+double
+Vgamma(long Dim)
+{
+    double Pk, Pi; long i, k, d, Rh;
+
+    k = 1; d = 2; Pk = 1.0; Pi = 3.141592653589793;
+
+    if (Dim % 2 == 0)
+    {
+        for (i = 1, Rh = (Dim - 0) / 2; i <= Rh; i++)
+        {
+            Pk *= Pi; k *= i;
+        }
+
+        return Pk / k;
+    }
+    else
+    {
+        for (i = 1, Rh = (Dim - 1) / 2; i <= Rh; i++)
+        {
+            Pk *= Pi;  d *= 2; k *= 2 * i + 1;
+        }
+
+        return Pk * d / k;
+    }
+}
+//--------------------------------------------------------------------
+    
