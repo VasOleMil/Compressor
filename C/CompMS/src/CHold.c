@@ -98,9 +98,9 @@ TimeDelCol(void)
 void
 TimeDelStp()
 {
-    Ei = ei; TimeDelCol();
-    if (ej == NULL) return;
-    Ei = ej; TimeDelCol();
+    { Ei = ei; TimeDelCol(); }
+    if (ej != NULL)  
+    { Ei = ej; TimeDelCol(); }  
 }//Delete ei, ej tti in Tv
 //--------------------------------------------------------------------
 static void
@@ -119,16 +119,25 @@ static void
 TimeSaveBE()
 {
 	ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
-    Ti->Ei = Ei; memcpy(Ti->Xi, Ei->X, LN);
-	Ti->Ej = Ej; //Ej = NULL
+    Ti->Ei = Ei; 
+	Ti->Ej = Ej; 
+    if (Gv)
+    { 
+        memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt; 
+    }
 }//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv = Tv: initilized in TimeCalcEx
 //--------------------------------------------------------------------
 static void
 TimeSaveEE()
 {
     ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
-    Ti->Ei = Ei; memcpy(Ti->Xi, Ei->X, LN);
-    Ti->Ej = Ej; memcpy(Ti->Xj, Ej->X, LN);
+    Ti->Ei = Ei;
+    Ti->Ej = Ej;
+    if (Gv)
+    {
+        memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt;
+        memcpy(Ti->Xj, Ej->X, LN);
+    }
 }//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv = Tv: initilized in TimeCalcEx
 //--------------------------------------------------------------------
 static void 
@@ -148,9 +157,9 @@ TimeCalcEx()
 void
 TimeCalcTT()
 {
-    Ex = ei->v; TimeCalcEx();
-    if (ej == NULL) return;
-    Ex = ej->v; TimeCalcEx();
+    { Ex = ei->v; TimeCalcEx(); }
+    if (ej != NULL)
+    { Ex = ej->v; TimeCalcEx(); }
 }//Calculate  ei,ej elements tti
 //--------------------------------------------------------------------
 

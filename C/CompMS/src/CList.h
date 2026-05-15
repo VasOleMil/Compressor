@@ -11,6 +11,7 @@ typedef struct CDItem
     struct CDItem *p; //Previous item
     struct CDItem *n; //Next item
     void          *v; //Object link
+
 }   CDItem; //Data type list item
 //--------------------------------------------------------------------
 typedef struct CFItem
@@ -18,6 +19,7 @@ typedef struct CFItem
     struct CFItem *p;           //Previous item
     struct CFItem *n;           //Next item
     void         (*w)(void);    //function link
+
 }   CFItem; //Func type list item
 //--------------------------------------------------------------------
 typedef struct CDList
@@ -30,6 +32,7 @@ typedef struct CDList
 
     void           (*ListItemNew)(void); //Invoked in ListNew(N^P)F()
     void           (*ListItemDel)(void); //Invoked in ListDel(N^P)F()
+
 }   CDList; //Data type list container
 //--------------------------------------------------------------------
 typedef struct CFList
@@ -42,6 +45,7 @@ typedef struct CFList
 
     void           (*ListItemNew)(void); //Invoked in ListNew(N^P)F()
     void           (*ListItemDel)(void); //Invoked in ListDel(N^P)F()
+
 }   CFList; //Func type list container
 //--------------------------------------------------------------------
 CDList *Lv; //Data container

@@ -115,27 +115,16 @@ SortDel(long Id)
 }//Moves selected Sort item to Free container          Set: Sv->Vc, Sx
 //--------------------------------------------------------------------
 void 
-SortGrow_GR(void)
-{
-    Sx = St = Sv->Vc;
-    do
-    {      
-        Si = St->v; 
-        Si->Rt = (Si->Rc) * GR; //change size
-    }
-    while((St = St->n) != Sx);
-}//Sizes Sv->Vc Sorts, not mass     
-//--------------------------------------------------------------------
-void 
-SortGrow_GM(void)
+SortGrow(void)
 {
     Sx = St = Sv->Vc;      
     do
     {      
         Si = St->v; 
         Si->Rt = (Si->Rc) * GR; //change size
+        if(Gm)
         Si->Mt = (Si->Mc) * GM; //change mass
     }
     while((St = St->n) != Sx);
-}//Sizes Sv->Vc Sorts, and mass     
+}//Sizes Sv->Vc Sorts and mass     
 //--------------------------------------------------------------------

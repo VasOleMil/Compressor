@@ -39,9 +39,7 @@ extern void SortGet(long id);//Search in Sv->Vc, sets: Sx
 //--------------------------------------------------------------------
 extern void SortDel(long id);//Moves selected item to Free container 
 //--------------------------------------------------------------------
-extern void SortGrow_GR(void);//Sizes Sv->Vc Sorts Rt, not mass 
-//--------------------------------------------------------------------
-extern void SortGrow_GM(void);//Sizes Sv->Vc Sorts Rt, and mass 
+extern void SortGrow(void);//Sizes Sv->Vc Sorts Rt and mass 
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

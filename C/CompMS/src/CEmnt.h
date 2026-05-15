@@ -15,6 +15,7 @@ typedef struct CEmnt
     double *V;  //Speeds current
     CSort  *S;  //Sort
 	CDItem *v;  //List item link
+
 } 	CEmnt;
 //--------------------------------------------------------------------
 extern CDList  *Ev;//Elements list container
@@ -33,7 +34,7 @@ extern void EmntSize(void);//Si sort, align number to Si->Bn
 //--------------------------------------------------------------------
 inline void EmntMove(void);//Moves all elements
 //--------------------------------------------------------------------
-extern void EmntColl(void); //ei, ej  interaction
+extern void EmntColl(void);//ei, ej  interaction
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

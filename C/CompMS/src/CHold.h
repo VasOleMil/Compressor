@@ -31,13 +31,12 @@ extern void TimeFree(void);//Releases resources  Tv
 //--------------------------------------------------------------------
 extern void	TimeGetStp(void);//Gets current time step,		  sets: Tm
 //--------------------------------------------------------------------
-extern void TimeDecStp(void);//Decreases tti in Tv, using Tm
+extern void TimeDecStp(void);//Decreases tti in Tv, using dT
 //--------------------------------------------------------------------
 extern void TimeDelStp(void);//Delete ei, ej tti in Tv
 //--------------------------------------------------------------------
 extern void TimeCalcTT(void);//Calculate ei, ej elements tti
 //--------------------------------------------------------------------
-
 
 #ifdef __cplusplus
 }
