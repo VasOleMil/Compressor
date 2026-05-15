@@ -2,4 +2,4 @@ Source files, currently - sketch for prototypes. Contains simple internal memory
 
 Sorts, Elements, Times, Data - processing with linked list. 
 
-To reduce memory usage, program can be reshaped withiout pointer to list item in elment structure, in favor of use pointers to element list items it time storage structure. Modifieng will add calculation complexity on poiner processing. 
+To reduce memory usage, program can be reshaped withiout pointer to list item in elment structure, in favor of use pointers to element list items it time storage structure. Modification will add calculation complexity on poiner processing. 
