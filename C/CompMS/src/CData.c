@@ -38,8 +38,8 @@ Malloc(size_t LN, long CN, long UX)
 		//Dedicated  destructor:      Finish
         while (Da > 0) 
         { 
-            Lv = Dv; ListDel();//save CDItem
-            Lx->v = NULL; Da--;//  as not UF
+            Lx->v = NULL; Da--; //store item
+            Lv = Dv; ListDel(); // as not UF
         }
         //return pointer to allocated memory
 		return DA;   //Not optimal, but safe.

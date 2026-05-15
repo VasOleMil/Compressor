@@ -26,6 +26,7 @@ EmntItemNew(void)
     Lx->n = Lx;    
     Lx->v = Ei;
     //Emnt initial setiings
+	Ei->v = Lx;
     Ei->S = NULL; 
     Ei->X = (double*)Malloc(sizeof(double), Rn, UT);
     Ei->V = (double*)Malloc(sizeof(double), Rn, UD);
@@ -94,7 +95,7 @@ EmntSize(void)
     }
 }//align number to Si->Bn, Ev->Vn == Bn on success
 //--------------------------------------------------------------------
-void 
+void
 EmntMove(void)
 {
     Ex = Ev->Vc; Et = Ex; 
@@ -110,7 +111,7 @@ EmntMove(void)
 	}   while ((Et = Et->n) != Ex);  
 }//Moves all elements
 //--------------------------------------------------------------------
-void 
+static void
 EmntCollBS(void)
 { 
     Si = Ei->S; Xi = Ei->X; Vi = Ei->V;
@@ -130,7 +131,7 @@ EmntCollBS(void)
     for(k = 0; k < Rn; k++) Vi[k] -= rv * Xi[k];         
 }//Ei sizing bound-element interaction
 //--------------------------------------------------------------------
-void 
+static void
 EmntCollBE(void)
 { 
     Si = Ei->S; Xi = Ei->X; Vi = Ei->V;
@@ -147,7 +148,7 @@ EmntCollBE(void)
     for(k = 0; k < Rn; k++) Vi[k] -= rv * Xi[k];         
 }//Ei elastic bound-element interaction
 //--------------------------------------------------------------------
-void 
+static void
 EmntCollBF(void)
 {
     Xi = Ei->X; Vi = Ei->V;
@@ -163,7 +164,7 @@ EmntCollBF(void)
     for(k = 0; k < Rn; k++) Vi[k] = rv * Xi[k]; 
 }//Ei bound-element interaction, force speed alignment to center
 //--------------------------------------------------------------------
-void 
+static void
 EmntCollES(void)
 {
     Xi = Ei->X; Vi = Ei->V; Xj = Ej->X; Vj = Ej->V;
@@ -190,7 +191,7 @@ EmntCollES(void)
     } 
 }//Ei, Ej sizing element-element interaction
 //--------------------------------------------------------------------
-void 
+static void
 EmntCollEE(void)
 {
     Xi = Ei->X; Vi = Ei->V; Xj = Ej->X; Vj = Ej->V; 
@@ -215,7 +216,7 @@ EmntCollEE(void)
     } 
 }//Ei, Ej elastic element-element interaction
 //--------------------------------------------------------------------
-void 
+static void 
 EmntCollEF(void)
 {
     Si = Ei->S; Mi = Si->Mt; Sj = Ej->S; Mj = Sj->Mt;    
@@ -228,5 +229,13 @@ EmntCollEF(void)
         Vj[k] -= Mi * vk;
     } 
 }//Ei, Ej fast element-element interaction, unconditional
+//--------------------------------------------------------------------
+void
+EmntColl(void)
+{
+    Ei = ei;
+    if (ej == NULL) EmntCollBS(); else { Ej = ej; EmntCollES(); }
+   
+}//ei, ej  interaction
 //--------------------------------------------------------------------
     

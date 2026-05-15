@@ -11,12 +11,12 @@ extern "C" {
 //--------------------------------------------------------------------
 typedef struct CHold
 {
-	CEmnt	*i;
-	CEmnt	*j;
-	double  dt;
+	CEmnt  *Ei;
+	CEmnt  *Ej;
+	double  dt; //Time to interaction, tti
 	double  dT; //saved dT for collision handling
-	double* Xi; //saved Xi for collision handling
-	double* Xj; //saved Xj for collision handling
+	double *Xi; //saved Xi for collision handling
+	double *Xj; //saved Xj for collision handling
 } 	CHold;
 //--------------------------------------------------------------------
 extern CDList   *Tv;//Sorts   list  container 
@@ -27,9 +27,15 @@ extern CHold    *Ti;//object service register
 //--------------------------------------------------------------------
 extern void TimeInit(void);//Inits start values in Time container: Tv
 //--------------------------------------------------------------------
-extern void TimeFree(void);//Releases Free resources  Sv
+extern void TimeFree(void);//Releases resources  Tv
 //--------------------------------------------------------------------
-//extern void TimeAdd(void);
+extern void	TimeGetStp(void);//Gets current time step,		  sets: Tm
+//--------------------------------------------------------------------
+extern void TimeDecStp(void);//Decreases tti in Tv, using Tm
+//--------------------------------------------------------------------
+extern void TimeDelStp(void);//Delete ei, ej tti in Tv
+//--------------------------------------------------------------------
+extern void TimeCalcTT(void);//Calculate ei, ej elements tti
 //--------------------------------------------------------------------
 
 

@@ -23,7 +23,7 @@ extern double           GM;//GM = GR^Rn
 
 extern double           kT;//Element doubled energy per dimension
      
-extern double           dT;//Current eventual time step
+extern double           dT;//Current eventual time step, minimal tti
 extern double           Te;//Eventual time
 
 extern long             Sn;//Max simultanious seria
@@ -32,6 +32,7 @@ extern double           De;//range (-De;+De) treated as dT = 0.0
 extern double           Ds;//range (-Ds;+Ds) treated as rv - RV = 0.0
 
 extern double           RN;// sqrt(Rn)
+extern long             LN;// Rn * sizeof(double),coordinates & speeds
 extern long             Cx;// Interactions type
 extern long             Ce;// Number of e-e interactions 
 extern long             Cb;// Number of b-e interactions
