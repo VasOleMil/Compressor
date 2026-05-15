@@ -89,7 +89,7 @@ DataFree()
 static void
 DataItemNew(void)
 {
-    Lx = (CDItem*) Dalloc(sizeof(CDItem), UT, UD);
+    Lx = (CDItem*) Malloc(sizeof(CDItem), UT, UD);
 	Lx->p = Lx;    // create looped item,
 	Lx->n = Lx;    // prereqiered for list, 
     Lx->v = NULL;  // with no data attached
