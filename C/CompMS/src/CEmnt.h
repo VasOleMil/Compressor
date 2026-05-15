@@ -16,10 +16,10 @@ typedef struct CEmnt
     CSort  *S;  //Sort 
 } 	CEmnt;
 //--------------------------------------------------------------------
-extern CSList  *Ev;//Elements list container
-extern CLItem  *Ex;//list  service  register
-extern CLItem  *Em;//list  service  register
-extern CLItem  *Et;//list  service  register
+extern CDList  *Ev;//Elements list container
+extern CDItem  *Ex;//list  service  register
+extern CDItem  *Em;//list  service  register
+extern CDItem  *Et;//list  service  register
 extern CEmnt   *Ei;//object service register
 extern CEmnt   *Ej;//object service register
 //--------------------------------------------------------------------

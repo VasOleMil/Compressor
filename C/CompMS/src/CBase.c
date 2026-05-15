@@ -20,10 +20,7 @@ long             Sn;//Max simultanious seria
 long             Sc;//Numer simultanious events, dT = 0.0
 double           De;//range (-De;+De) treated as dT = 0.0
 double           Ds;//range (-Ds;+Ds) treated as rv - RV = 0.0
-//--------------------------------------------------------------------
-long 		     UT;// 1, unit memory allocation and UD   start
-long 		     UD;// 2, dedicated destructor,      UD  finish
-long 		     UF;// 0, memory allocation for regular free
+
 double           RN;// sqrt(Rn)
 long             Ce;// Number of e-e interactions 
 long             Cb;// Number of b-e interactions

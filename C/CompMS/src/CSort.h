@@ -21,9 +21,9 @@ typedef struct CSort
 
 } 	CSort;
 //--------------------------------------------------------------------
-extern CSList   *Sv;//Sorts   list  container 
-extern CLItem   *Sx;//list  service  register
-extern CLItem   *St;//list  service  register
+extern CDList   *Sv;//Sorts   list  container 
+extern CDItem   *Sx;//list  service  register
+extern CDItem   *St;//list  service  register
 extern CSort    *Si;//object service register
 extern CSort    *Sj;//object service register
 //--------------------------------------------------------------------

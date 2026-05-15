@@ -1,11 +1,11 @@
 #include"CBase.h"
 #include"CEmnt.h"
 //--------------------------------------------------------------------
-CSList  *Ev;//Elements list items container 
+CDList  *Ev;//Elements list items container 
     
-CLItem  *Ex;//list service register
-CLItem  *Em;//list service register
-CLItem  *Et;//list service register
+CDItem  *Ex;//list service register
+CDItem  *Em;//list service register
+CDItem  *Et;//list service register
     
 CEmnt   *Ei;//object service register
 CEmnt   *Ej;//object service register
@@ -19,7 +19,7 @@ double  RA, RR, RV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
 static void 
 EmntItemNew(void)
 {
-    Lx = (CLItem*)  Malloc(sizeof(CLItem),UT, UT); //create ListItem
+    Lx = (CDItem*)  Malloc(sizeof(CDItem),UT, UT); //create ListItem
     Ei = (CEmnt*)   Malloc(sizeof(CEmnt) ,UT, UT); //create Object
     //Loop Lx ListItem and connect to Ei Object 
     Lx->p = Lx;
@@ -48,7 +48,7 @@ EmntInit(void)
 {
 	if(Ev != NULL) return;
 
-    Ev = (CSList*) Malloc(sizeof(CSList), UT, UT);
+    Ev = (CDList*) Malloc(sizeof(CDList), UT, UT);
     rc = (double*) Malloc(sizeof(double), Rn, UD); 
 	//Set Element contaners counters and providers
 	Ev->Fn = 0; Ev->ListItemDel = EmntItemDel;

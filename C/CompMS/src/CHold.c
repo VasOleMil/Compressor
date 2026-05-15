@@ -1,9 +1,9 @@
 #include"CBase.h"
 #include"CHold.h"
 //--------------------------------------------------------------------
-CSList     *Tv;//Malloc list items container 
-CLItem     *Tx;//list service register
-CLItem     *Tt;//list  service  register
+CDList     *Tv;//Malloc list items container 
+CDItem     *Tx;//list service register
+CDItem     *Tt;//list  service  register
 CHold      *Ti;//object service register
 //--------------------------------------------------------------------
 double     *Xi, *Xj, *Vi, *Vj; 
@@ -11,7 +11,7 @@ double     *Xi, *Xj, *Vi, *Vj;
 static void
 HoldItemNew(void)
 {
-    Lx = (CLItem*)Malloc(sizeof(CLItem), UT, UT);   //create ListItem
+    Lx = (CDItem*)Malloc(sizeof(CDItem), UT, UT);   //create ListItem
     Ti = (CHold*) Malloc(sizeof(CHold),  UT, UT);   //create Object
     //Loop Lx ListItem and connect to Ei Object 
     Lx->p = Lx;
@@ -39,7 +39,7 @@ TimeInit(void)
 {
     if (Tv != NULL) return;
 
-    Tv = (CSList*)Malloc(sizeof(CSList), UT, UD);
+    Tv = (CDList*)Malloc(sizeof(CDList), UT, UD);
     //Set Element contaners counters and providers
     Tv->Fn = 0; Tv->ListItemDel = HoldItemDel;
     Tv->Vn = 0; Tv->ListItemNew = HoldItemNew;

@@ -1,11 +1,15 @@
 #include"CList.h"
 //--------------------------------------------------------------------
-CSList *Lv; //List container
-CLItem *Lx; //List exchange register
+CDList *Lv; //Data container
+CDItem *Lx; //Data exchange register
+CFList *Wv; //Func container
+CFItem *Wx; //Func exchange register
 //--------------------------------------------------------------------
-CLItem *Li; //local list register
-CLItem *Lj; //local list register
-long    Lc; //local list counter
+CDItem *Li; //local list register
+CDItem *Lj; //local list register
+CFItem *Wi; //local list register
+CFItem *Wj; //local list register
+long    Xc; //local list counter
 //==================================================================//
 //                     Base functions section                       //
 //==================================================================//
@@ -185,7 +189,7 @@ ListAdd(void)
         //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
         //Lx->n = Lx;//Looping in new items is also implemented          
     
-        Lv->Fc = Lj;       
+        Lv->Fc = Lj; //DetNF()      
 	}   
     //---------------------------------------------------------   
     Li = (Lv->Vn == 0)?(Lx):(Lv->Vc);
@@ -196,7 +200,7 @@ ListAdd(void)
     Li->n = Lx; //Lx assumed not empty        /*  |   |   |  */          
     Lx->p = Li; //(Lx == Li),  ensured        /*  +-<-+ - 0  */          
 
-    Lv->Vc = Lx; Lv->Vn++;
+    Lv->Vc = Lx; Lv->Vn++; //AttNV()
     //---------------------------------------------------------
 }//Moves Free to Value:                  Fc = Fc->n, Vc->n = Lx  
 //--------------------------------------------------------------------
@@ -215,7 +219,7 @@ ListDel(void)
         //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
         //Lx->n = Lx;//Looping in new items is also implemented     
     
-        Lv->Vc = Li; 
+        Lv->Vc = Li; //DetPV()
         //-----------------------------------------------------
         Lj = (Lv->Fn == 0)?(Lx):(Lv->Fc); 
     
@@ -225,7 +229,7 @@ ListDel(void)
         Lj->p = Lx; //Lx assumed not empty    /*  |   |   |  */  
         Lx->n = Lj; //(Lx == Lj),  ensured    /*  +-<-+ - 0  */ 
     
-        Lv->Fc = Lx; Lv->Fn++; //back  
+		Lv->Fc = Lx; Lv->Fn++; //AttPF() 
         //----------------------------------------------------- 
     }    
 }//Moves Value to Free:                  Vc = Vc->p, Fc->p = Lx
@@ -243,7 +247,7 @@ ListADD(void)
     //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
     //Lx->n = Lx;//Looping in new items is also implemented          
     
-    Lv->Fc = Lj;  
+    Lv->Fc = Lj;   //DetNF()  
     //-----------------------------------------------------
     Li = Lv->Vc; 
 
@@ -253,7 +257,7 @@ ListADD(void)
     Li->n = Lx; //Lx assumed not empty    /*  |   |   |  */          
     Lx->p = Li; //(Lx == Li),  ensured    /*  +-<-+ - 0  */          
 
-    Lv->Vc = Lx; Lv->Vn++;
+    Lv->Vc = Lx; Lv->Vn++; //AttNV()
     //----------------------------------------------------- 
 }//Moves Free to Value:              Fc = Fc->n, Vc->n = Lx 
 //--------------------------------------------------------------------
@@ -270,7 +274,7 @@ ListDEL(void)
     //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
     //Lx->n = Lx;//Looping in new items is also implemented     
     
-    Lv->Vc = Li;
+    Lv->Vc = Li; //DetPV()
     //-----------------------------------------------------
     Lj = Lv->Fc; 
     
@@ -280,7 +284,7 @@ ListDEL(void)
     Lj->p = Lx; //Lx assumed not empty    /*  |   |   |  */  
     Lx->n = Lj; //(Lx == Lj),  ensured    /*  +-<-+ - 0  */ 
        
-    Lv->Fc = Lx; Lv->Fn++;  
+    Lv->Fc = Lx; Lv->Fn++; //AttPF() 
     //-----------------------------------------------------    
 }//Moves Value to Free:              Vc = Vc->p, Fc->p = Lx
 //--------------------------------------------------------------------
@@ -289,13 +293,19 @@ ListClr(void)
 {	
     if (Lv->Vn == 0) return;     //safety
 
-    Lc = Lv->Fn;//assumed controll exists
+    Xc = Lv->Fn;//assumed controll exists
     Lj = Lv->Vc;//assumed  Vn > 0   //[a]
-    Li = (Lc == 0)?(Lj):(Lv->Fc);   //[A]
+    Li = (Xc == 0)?(Lj):(Lv->Fc);   //[A]
 
-    ListMrg();  // a -> A
+    Lx = Li->n;           //Merge: a -> A
+    Lj->n = Lx;
+    Lx->p = Lj;
+
+    Lx = Lj->n;
+    Li->n = Lx;
+    Lx->p = Li;
      
-    Lv->Fn = Lc + Lv->Vn; // add counters
+    Lv->Fn = Xc + Lv->Vn; // add counters
     Lv->Fc = Li;          // link  result
     Lv->Vn = 0;           // reset source
 }//Move Value items, to Free container
@@ -303,13 +313,149 @@ ListClr(void)
 void 
 ListSize(void)
 {
-    while(Lv->Fn) ListDelNF();
+    while (Lv->Fn)  //ListDelNF()
+    {
+        Lx = Lv->Fc; Lv->Fn--;
+
+        Li = Lx->p;
+        Lj = Lx->n;
+        Lj->p = Li;
+        Li->n = Lj;
+
+        Lv->Fc = Lj; Lv->ListItemDel();
+    }
 };//Releases Free container  resources
 //--------------------------------------------------------------------
 void 
 ListFree(void)
 {
-    ListClr();  //Clear Values
-    while(Lv->Fn) ListDelNF();
+    ListClr();      //Clear Values
+    while (Lv->Fn)  //ListDelNF()
+    {
+        Lx = Lv->Fc; Lv->Fn--;
+
+        Li = Lx->p;
+        Lj = Lx->n;
+        Lj->p = Li;
+        Li->n = Lj;
+
+        Lv->Fc = Lj; Lv->ListItemDel();
+    }
+};//Releases List containers resources
+//--------------------------------------------------------------------
+void
+FuncAdd(void)
+{
+    //---------------------------------------------------------
+    if (Wv->Fn == 0)
+    {
+        Wv->ListItemNew();//Create new List element,   in   Wx
+    }
+    else
+    {
+        Wx = Wv->Fc; Wv->Fn--;
+
+        Wi = Wx->p;         
+        Wj = Wx->n;    
+        Wj->p = Wi;         
+        Wi->n = Wj;         
+ 
+        Wv->Fc = Wj;  //DetNF()  
+    }
+    //---------------------------------------------------------   
+    Wi = (Wv->Vn == 0) ? (Wx) : (Wv->Vc);
+
+    Wj = Wi->n;       
+    Wx->n = Wj;          
+    Wj->p = Wx;          
+    Wi->n = Wx;         
+    Wx->p = Wi;        
+
+    Wv->Vc = Wx; Wv->Vn++; //AttNV()
+    //---------------------------------------------------------
+}//Moves Free to Value:                  Fc = Fc->n, Vc->n = Wx  
+//--------------------------------------------------------------------
+void
+FuncDel(void)
+{
+    if (Wv->Vn > 0)
+    {
+        //-----------------------------------------------------
+        Wx = Wv->Vc; Wv->Vn--;
+
+        Wi = Wx->p;         
+        Wj = Wx->n;    
+        Wj->p = Wi;         
+        Wi->n = Wj;         
+      
+        Wv->Vc = Wi; //DetPV()
+        //-----------------------------------------------------
+        Wj = (Wv->Fn == 0) ? (Wx) : (Wv->Fc);
+
+        Wi = Wj->p; 
+        Wx->p = Wi;
+        Wi->n = Wx;
+        Wj->p = Wx; 
+        Wx->n = Wj;
+
+        Wv->Fc = Wx; Wv->Fn++; //AttPF() 
+        //----------------------------------------------------- 
+    }
+}//Moves Value to Free:                  Vc = Vc->p, Fc->p = Wx
+//--------------------------------------------------------------------
+void
+FuncClr(void)
+{
+    if (Wv->Vn == 0) return;     //safety
+
+    Xc = Wv->Fn;//assumed controll exists
+    Wj = Wv->Vc;//assumed  Vn > 0   //[a]
+    Wi = (Xc == 0)?(Wj):(Wv->Fc);   //[A]  
+
+    Wx = Wi->n;           //Merge: a -> A
+    Wj->n = Wx;   
+    Wx->p = Wj;   
+   
+    Wx = Wj->n;   
+    Wi->n = Wx;  
+    Wx->p = Wi;   
+
+    Wv->Fn = Xc + Wv->Vn; // add counters
+    Wv->Fc = Wi;          // Link  result
+    Wv->Vn = 0;           // reset source
+}//Move Value items, to Free container
+//--------------------------------------------------------------------
+void
+FuncSize(void)
+{
+    while (Wv->Fn)  //ListDelNF()
+    {
+        Wx = Wv->Fc; Wv->Fn--;
+        
+        Wi = Wx->p;
+        Wj = Wx->n;
+        Wj->p = Wi;
+        Wi->n = Wj;
+        
+        Wv->Fc = Wj; Wv->ListItemDel();
+    }
+};//Releases Free container  resources
+//--------------------------------------------------------------------
+void
+FuncFree(void)
+{
+    FuncClr();      //Clear Values
+    
+	while (Wv->Fn)  //ListDelNF()
+    {
+        Wx = Wv->Fc; Wv->Fn--;
+
+        Wi = Wx->p;
+        Wj = Wx->n;
+        Wj->p = Wi;
+        Wi->n = Wj;
+
+        Wv->Fc = Wj; Wv->ListItemDel();
+    }
 };//Releases List containers resources
 //--------------------------------------------------------------------

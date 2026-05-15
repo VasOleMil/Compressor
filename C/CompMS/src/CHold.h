@@ -19,9 +19,9 @@ typedef struct CHold
 	double* Xj; //saved Xj for collision handling
 } 	CHold;
 //--------------------------------------------------------------------
-extern CSList   *Tv;//Sorts   list  container 
-extern CLItem   *Tx;//list  service  register
-extern CLItem   *Tt;//list  service  register
+extern CDList   *Tv;//Sorts   list  container 
+extern CDItem   *Tx;//list  service  register
+extern CDItem   *Tt;//list  service  register
 extern CHold    *Ti;//object service register
 
 //--------------------------------------------------------------------

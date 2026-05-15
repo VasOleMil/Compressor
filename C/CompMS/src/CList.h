@@ -6,27 +6,49 @@ extern "C" {
 #endif
 
 //--------------------------------------------------------------------
-typedef struct CLItem
+typedef struct CDItem
 {
-    struct CLItem * p; //Previous item
-    struct CLItem * n; //Next item
-    void          * v; //Object link
-}   CLItem;
+    struct CDItem *p; //Previous item
+    struct CDItem *n; //Next item
+    void          *v; //Object link
+}   CDItem; //Data type list item
 //--------------------------------------------------------------------
-typedef struct CSList
+typedef struct CFItem
 {
-    CLItem          *Vc;//Values container,       current element
+    struct CFItem *p;           //Previous item
+    struct CFItem *n;           //Next item
+    void         (*w)(void);    //function link
+}   CFItem; //Func type list item
+//--------------------------------------------------------------------
+typedef struct CDList
+{
+    CDItem          *Vc;//Values container,       current element
 	long             Vn;//Values counter
 
-	CLItem          *Fc;//Free for use container, current element
+	CDItem          *Fc;//Free for use container, current element
 	long	         Fn;//Free items counter
 
     void           (*ListItemNew)(void); //Invoked in ListNew(N^P)F()
     void           (*ListItemDel)(void); //Invoked in ListDel(N^P)F()
-}   CSList;
+}   CDList; //Data type list container
 //--------------------------------------------------------------------
-extern CSList *Lv; //Lists container
-extern CLItem *Lx; //List  exchange register
+typedef struct CFList
+{
+    CFItem         *Vc;//Values container,       current element
+    long            Vn;//Values counter
+
+    CFItem         *Fc;//Free for use container, current element
+    long	        Fn;//Free items counter
+
+    void           (*ListItemNew)(void); //Invoked in ListNew(N^P)F()
+    void           (*ListItemDel)(void); //Invoked in ListDel(N^P)F()
+}   CFList; //Func type list container
+//--------------------------------------------------------------------
+CDList *Lv; //Data container
+CDItem *Lx; //Data exchange register
+//--------------------------------------------------------------------
+CFList *Wv; //Func container
+CFItem *Wx; //Func exchange register
 //==================================================================//
 //                      Project functions:                          //
 //==================================================================//
@@ -45,6 +67,16 @@ extern void ListDEL(void);//Move Value to Free, unsafe:             Vn
 extern void ListSize(void); //Releases Free container resources
 //--------------------------------------------------------------------
 extern void ListFree(void); //Releases List container resources
+//--------------------------------------------------------------------
+extern void FuncAdd(void);//Move Free to Value, one             Vn, Wx
+//--------------------------------------------------------------------
+extern void FuncDel(void);//Move Value to Free, one                 Vn
+//--------------------------------------------------------------------
+extern void FuncClr(void);//Move Value to Free, all                 Vn 
+//--------------------------------------------------------------------
+extern void FuncSize(void); //Releases Free container resources
+//--------------------------------------------------------------------
+extern void FuncFree(void); //Releases List container resources
 //--------------------------------------------------------------------
 
 

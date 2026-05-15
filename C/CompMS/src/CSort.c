@@ -1,10 +1,10 @@
 #include"CBase.h"
 #include"CSort.h"
 //--------------------------------------------------------------------
-CSList  *Sv;//Sorts  lists  container 
+CDList  *Sv;//Sorts  lists  container 
     
-CLItem  *Sx;//list  service  register
-CLItem  *St;//list  service  register
+CDItem  *Sx;//list  service  register
+CDItem  *St;//list  service  register
     
 CSort   *Si;//object service register
 CSort   *Sj;//object service register
@@ -15,7 +15,7 @@ double  V, r;
 static void 
 SortItemNew(void)
 {
-    Lx = (CLItem*) Malloc(sizeof(CLItem), UT, UT); //create ListItem
+    Lx = (CDItem*) Malloc(sizeof(CDItem), UT, UT); //create ListItem
     Si = (CSort*)  Malloc(sizeof(CSort),  UT, UD); //create Object  
     //Loop Lx ListItem and connect to Si Object 
     Lx->p = Lx;
@@ -34,7 +34,7 @@ SortInit(void)
 {
     if (Sv != NULL) return;
 
-    Sv = (CSList*) Malloc(sizeof(CSList), UT, UD);
+    Sv = (CDList*) Malloc(sizeof(CDList), UT, UD);
 	//Set Sorts containers counters and providers
 	Sv->Fn = 0; Sv->ListItemDel = SortItemDel;
 	Sv->Vn = 0; Sv->ListItemNew = SortItemNew; 
