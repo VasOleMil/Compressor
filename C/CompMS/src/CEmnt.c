@@ -4,8 +4,9 @@
 CDList  *Ev;//Elements list items container 
     
 CDItem  *Ex;//list service register
-CDItem  *Em;//list service register
 CDItem  *Et;//list service register
+CDItem  *ei;//saved element for collision handling
+CDItem  *ej;//saved element for collision handling
     
 CEmnt   *Ei;//object service register
 CEmnt   *Ej;//object service register
@@ -26,7 +27,6 @@ EmntItemNew(void)
     Lx->n = Lx;    
     Lx->v = Ei;
     //Emnt initial setiings
-	Ei->v = Lx;
     Ei->S = NULL; 
     Ei->X = (double*)Malloc(sizeof(double), Rn, UT);
     Ei->V = (double*)Malloc(sizeof(double), Rn, UD);
@@ -233,9 +233,9 @@ EmntCollEF(void)
 void
 EmntColl(void)
 {
-    Ei = ei;
-    if (ej == NULL) EmntCollBS(); else { Ej = ej; EmntCollES(); }
-   
+    Ei = ei->v;
+    if (ej == NULL)  { EmntCollBS(); }
+    else { Ej = ej->v; EmntCollES(); }  
 }//ei, ej  interaction
 //--------------------------------------------------------------------
     

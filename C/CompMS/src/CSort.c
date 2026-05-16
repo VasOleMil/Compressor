@@ -121,9 +121,9 @@ SortGrow(void)
     do
     {      
         Si = St->v; 
-        Si->Rt = (Si->Rc) * GR; //change size
-        if(Gm)
-        Si->Mt = (Si->Mc) * GM; //change mass
+        Si->Rt = (Si->Rc) * GR;     //change size
+		//if (Gm)
+        //Si->Mt = (Si->Mc) * GM;   //change mass
     }
     while((St = St->n) != Sx);
 }//Sizes Sv->Vc Sorts and mass     

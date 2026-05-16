@@ -11,12 +11,12 @@ extern "C" {
 //--------------------------------------------------------------------
 typedef struct CHold
 {
-	CEmnt  *Ei;
-	CEmnt  *Ej;
+	CDItem *ei;
+	CDItem *ej;
 	double  dt; //Time to interaction, tti
-	double  dT; //saved dT for collision handling
-	double *Xi; //saved Xi for collision handling
-	double *Xj; //saved Xj for collision handling
+	double  dT; //Gv, saved dT for collision handling
+	double *Xi; //Gv, saved Xi for collision handling
+	double *Xj; //Gv, saved Xj for collision handling
 } 	CHold;
 //--------------------------------------------------------------------
 extern CDList   *Tv;//Sorts   list  container 

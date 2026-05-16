@@ -26,9 +26,9 @@ extern double           dT;//Current eventual time step, minimal tti
 extern double           Te;//Eventual time
 
 extern long             Sn;//Max simultanious seria
-extern long             Sc;//Numer simultanious events, dT = 0.0
-extern double           De;//range (-De;+De) treated as dT = 0.0
-extern double           Ds;//range (-Ds;+Ds) treated as rv - RV = 0.0
+extern long             Sc;//Number of simultanious events,   dT = 0.0
+extern double           De;//range (-De;+De) treated as zero, dT = 0.0
+extern double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
 
 extern long             Cx;// Interactions type
 extern long             Ce;// Number of e-e interactions 
@@ -40,11 +40,15 @@ extern double           Vb;// Bound volume
 extern double           Vg;// Vgamma(Rn)
 extern double           GR;// GR = (1.0 + Gc * Te)
 extern double           GM;// GM = GR^Rn
+//--------------------------------------------------------------------
+//extern long             Gv;//(Y) Toggles position verifier
+//extern long             Gm;//(N) Toggles mass change while sizing
+//extern long             Gr;//(N) Toggles element rejection by center
 
 //========================================================== Data.h ==
-//extern long 		    UT;// 1, unit memory allocation and UD   start
-//extern long 		    UD;// 2, dedicated destructor,      UD  finish
-//extern long 		    UF;// 0, memory allocation for regular free
+//extern long 		UT;// 1, unit memory allocation and UD   start
+//extern long 		UD;// 2, dedicated destructor,      UD  finish
+//extern long 		UF;// 0, memory allocation for regular free
 //--------------------------------------------------------------------
 //extern void*      Malloc(size_t LN,long CN,long UD);//malloc wrapper
 //========================================================== List.h ==

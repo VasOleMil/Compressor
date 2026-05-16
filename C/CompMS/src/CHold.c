@@ -16,15 +16,17 @@ CDItem     *Tm;//list service register
 static void
 HoldItemNew(void)
 {
-    Lx = (CDItem*)Malloc(sizeof(CDItem), UT, UT);   //create ListItem
-    Ti = (CHold*) Malloc(sizeof(CHold),  UT, UT);   //create Object
+    Lx = (CDItem*)Malloc(sizeof(CDItem),UT, UT);//create ListItem
+    Ti = (CHold*) Malloc(sizeof(CHold), UT, UT);//create Object,!Gv=UD
     //Loop Lx ListItem and connect to Ei Object 
     Lx->p = Lx;
     Lx->n = Lx;
     Lx->v = Ti;
-    //Holder initial setiings
-    Ti->Xi = (double*)Malloc(sizeof(double), Rn, UT);
-    Ti->Xj = (double*)Malloc(sizeof(double), Rn, UD);
+	//if (Gv) //Gv = Y, for Gm = N use UD object Ti initialization 
+    {
+        Ti->Xi = (double*)Malloc(sizeof(double), Rn, UT); //Gv = Y
+        Ti->Xj = (double*)Malloc(sizeof(double), Rn, UD); //Gv = Y
+    }
 }//ListNew item provider for CHold,                            Set: Lx
 //--------------------------------------------------------------------
 static void
@@ -69,8 +71,8 @@ TimeGetStp(void)
     if ((Ti = Tt->v)->dt < dT)
     {  Tm = Tt; dT = Ti->dt; }
     //Tm is minimal tti item
-	ei = (Ti = Tm->v)->Ei;
-    ej = (Ti = Tm->v)->Ej;
+	ei = (Ti = Tm->v)->ei;
+    ej = (Ti = Tm->v)->ej;
 }//Select minimal tti Tm from Tv
 //--------------------------------------------------------------------
 void 
@@ -88,7 +90,7 @@ TimeDelCol(void)
     n = Tv->Vn, Tx = Tv->Vc; Lv = Tv;
     for (i = 0; i < n; i++)
     {
-        if ((Ei == (Ti=Tx->v)->Ei) || (Ei == (Ti=Tx->v)->Ej))
+        if ((Ex == (Ti=Tx->v)->ei) || (Ex == (Ti=Tx->v)->ej))
         {
             Tv->Vc = Tx; ListDel();
         };  Tx = Tx->n;
@@ -98,9 +100,9 @@ TimeDelCol(void)
 void
 TimeDelStp()
 {
-    { Ei = ei; TimeDelCol(); }
+    { Ex = ei; TimeDelCol(); }
     if (ej != NULL)  
-    { Ei = ej; TimeDelCol(); }  
+    { Ex = ej; TimeDelCol(); }  
 }//Delete ei, ej tti in Tv
 //--------------------------------------------------------------------
 static void
@@ -119,9 +121,9 @@ static void
 TimeSaveBE()
 {
 	ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
-    Ti->Ei = Ei; 
-	Ti->Ej = Ej; 
-    if (Gv)
+    Ti->ei =   Ex; 
+	Ti->ej = NULL; //indicates bound interaction
+    //if (Gv) //Gv = Y 
     { 
         memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt; 
     }
@@ -131,9 +133,9 @@ static void
 TimeSaveEE()
 {
     ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
-    Ti->Ei = Ei;
-    Ti->Ej = Ej;
-    if (Gv)
+    Ti->ei = Ex;
+    Ti->ej = Et;
+	//if (Gv) //Gv = Y
     {
         memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt;
         memcpy(Ti->Xj, Ej->X, LN);
@@ -143,8 +145,8 @@ TimeSaveEE()
 static void 
 TimeCalcEx()
 {   
-    Ei = Ex->v; Et = Ex; Lv = Tv; // Lv initilized in TimeDelStp
-    Ej = NULL; //NULL indicates bound interaction     
+    Ei = Ex->v; Et = Ex; Lv = Tv; // Lv initilized in TimeDelStp     
+	    //Ej not used for bound interaction, ej = NULL in TimeSaveBE
         TimeCalcBS(); if (dt >= De) TimeSaveBE();
     
     while ((Et = Et->n) != Ex)  //Calc elements, Ei != Ej
@@ -157,9 +159,9 @@ TimeCalcEx()
 void
 TimeCalcTT()
 {
-    { Ex = ei->v; TimeCalcEx(); }
+    { Ex = ei; TimeCalcEx(); }
     if (ej != NULL)
-    { Ex = ej->v; TimeCalcEx(); }
+    { Ex = ej; TimeCalcEx(); }
 }//Calculate  ei,ej elements tti
 //--------------------------------------------------------------------
 
