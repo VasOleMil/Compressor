@@ -14,10 +14,6 @@ extern long             Rn;//Space dimension
 extern long             Bn;//Number of elements
 extern double           Rb;//Bound radius
 
-extern long             Gv;//Toggles position verifier
-extern long             Gm;//Toggles mass change while sizing
-extern long             Gr;//Toggles element rejection by center
-
 extern double           Gc;//Sizing speed, Rt = Rc*(1.0 + Gc * Te)
 
 extern double           kT;//Element doubled energy per dimension
@@ -38,8 +34,13 @@ extern double           RN;// sqrt(Rn)
 extern long             LN;// Rn * sizeof(double),coordinates & speeds
 extern double           Vb;// Bound volume
 extern double           Vg;// Vgamma(Rn)
+extern double           GG;// GG = Gc * Gc
 extern double           GR;// GR = (1.0 + Gc * Te)
-extern double           GM;// GM = GR^Rn
+extern double           GM;// GM = GR^Rn, for Gm = Y
+//--------------------------------------------------------------------
+extern double *Xi,*Xj,*Vi,*Vj;
+
+extern double  RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
 //--------------------------------------------------------------------
 //extern long             Gv;//(Y) Toggles position verifier
 //extern long             Gm;//(N) Toggles mass change while sizing

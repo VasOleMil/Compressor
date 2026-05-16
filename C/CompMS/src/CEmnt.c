@@ -13,9 +13,7 @@ CEmnt   *Ej;//object service register
 //--------------------------------------------------------------------
 long    k, c, n;
 
-double  *rc, *Xi, *Xj, *Vi, *Vj; //rc = r(j) - r(i)
-
-double  RA, RR, RV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
+double *rc; //rc = r(j) - r(i)
 //--------------------------------------------------------------------
 static void 
 EmntItemNew(void)

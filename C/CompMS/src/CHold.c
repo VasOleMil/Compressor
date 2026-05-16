@@ -9,8 +9,8 @@ CDItem     *Tx;//list service register
 CDItem     *Tt;//list service register
 CHold      *Ti;//object service register
 //--------------------------------------------------------------------
-long        i, n;
-double     *Xi, *Xj, *Vi, *Vj, dt; 
+long        i, k, n;
+double      a, b, c, dt;
 CDItem     *Tm;//list service register
 //--------------------------------------------------------------------
 static void
@@ -108,13 +108,72 @@ TimeDelStp()
 static void
 TimeCalcBS()
 {
-    dt = 1.0;
+    Xi = Ei->X; Vi = Ei->V; Si = Ei->S;
+    vv =  0.0 ; rv =  0.0 ; rr =  0.0 ;
+    //Calculate scalar product
+    for (k = 0; k < Rn; k++)
+    {
+        rk = Xi[k]; rr += rk*rk;
+        vk = Vi[k]; rv += rk*vk; vv += vk*vk;
+    }
+    //Gr = N
+    RR = Rb - Si->Rt; VV = Si->Vc;
+    RV = RR*VV; VV*=VV;  RR *= RR;
+
+    a = vv - VV; b = rv - RV;  c = rr - RR;
+    // b or even rv for Ds, zero processing
+    if  (  (c >= 0.0)   &&   (b >= 0.0)   )
+    {
+                       dt = -0.0;
+    }
+    else if(a == 0.0)
+    {
+        if (b == 0.0){ dt = -1.0;         }
+        else         { dt = -0.5 * c / b; }
+    }
+    else
+    {
+        if((RV = a * c)   >=  (rv = b * b))
+        {               dt = -1.0;        }
+        else
+        {  dt = +(sqrt(rv - RV) - b) / a; }
+    }
 }//
 //--------------------------------------------------------------------
 static void
 TimeCalcES()
 {
-    dt = 1.0;
+    Xi = Ei->X; Vi = Ei->V; Ri = Ei->S->Rc; 
+    Xj = Ej->X; Vj = Ej->V; Rj = Ej->S->Rc;
+    vv =  0.0 ; rv =  0.0 ; rr =   0.0    ;
+    //Calculate scalar product
+    for (k = 0; k < Rn; k++)
+    {
+        rk = Xj[k] - Xi[k]; vk = Vj[k] - Vi[k];
+		rr += rk*rk; rv += rk*vk;  vv += vk*vk;
+    }
+
+    RR = Ri + Rj; RR *= RR; VV = GG * RR;
+    RV = Gc * GR * RR;     RR *= GR * GR;
+
+    a = vv - VV; b = rv - RV;  c = rr - RR;
+    // b or even rv for Ds, zero processing
+    if  (  (c <= 0.0)    &&   (b <= 0.0)  ) 
+    {
+                       dt = -0.0;           
+    }
+    else if(a == 0.0)
+    {
+        if (b == 0.0){ dt = -1.0;         }
+        else         { dt = -0.5 * c / b; }
+    }
+    else
+    {
+        if((RV = a * c)   >=  (rv = b * b))
+        {              dt  = -1.0;        }
+        else
+        {  dt = -(sqrt(rv - RV) + b) / a; }
+    }
 }//
 //--------------------------------------------------------------------
 static void
