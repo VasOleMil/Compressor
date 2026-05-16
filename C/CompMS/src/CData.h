@@ -2,6 +2,14 @@
 #define DATA_H888
 
 #include<stdlib.h>
+#include<math.h>
+
+#ifdef  _MSC_VER
+#define _CRT_SECURE_DEPRECATE_MEMORY
+#include <memory.h>
+#else
+#include <string.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,6 +1,7 @@
 #ifndef COMP_H888
 #define COMP_H888
 
+#include"CBase.h"
 
 #ifdef __cplusplus
 extern "C" {

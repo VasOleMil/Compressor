@@ -1,9 +1,10 @@
 #ifndef CBASE_H888
 #define CBASE_H888
 
-#include<math.h>
 
+#ifndef COMP_H888
 #include"CData.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,6 +1,3 @@
-#define _CRT_SECURE_DEPRECATE_MEMORY
-#include <memory.h>
-
 #include"CBase.h"
 #include"CHold.h"
 //--------------------------------------------------------------------
