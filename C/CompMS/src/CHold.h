@@ -29,13 +29,15 @@ extern void TimeInit(void);//Inits start values in Time container: Tv
 //--------------------------------------------------------------------
 extern void TimeFree(void);//Releases resources  Tv
 //--------------------------------------------------------------------
-extern void	TimeGetStp(void);//Gets current time step,		  sets: Tm
+extern void	TimeGetStp(void);//Gets current time step.  Sets: ei,ej,dT
 //--------------------------------------------------------------------
 extern void TimeDecStp(void);//Decreases tti in Tv, using dT
 //--------------------------------------------------------------------
 extern void TimeDelStp(void);//Delete ei, ej tti in Tv
 //--------------------------------------------------------------------
 extern void TimeCalcTT(void);//Calculate ei, ej elements tti
+//--------------------------------------------------------------------
+extern void TimeCalcST(void);//Calculate   all  elements tti
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

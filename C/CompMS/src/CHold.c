@@ -9,9 +9,9 @@ CDItem     *Tx;//list service register
 CDItem     *Tt;//list service register
 CHold      *Ti;//object service register
 //--------------------------------------------------------------------
-long        i, k, n;
-double      a, b, c, dt;
-CDItem     *Tm;//list service register
+long         i,  k,  n;
+double       a,  b,  c, dt;
+CDItem     *Tm,*Es;//list service register
 //--------------------------------------------------------------------
 static void
 HoldItemNew(void)
@@ -221,7 +221,25 @@ TimeCalcTT()
     { Ex = ei; TimeCalcEx(); }
     if (ej != NULL)
     { Ex = ej; TimeCalcEx(); }
-}//Calculate  ei,ej elements tti
+}//Calculate  ei,ej elements times to interaction - tti
+//--------------------------------------------------------------------
+void
+TimeCalcST()
+{
+    Es = Ex = Ev->Vc; Lv = Tv;
+
+    while ((Ex = Ex->n) != Es)
+    {
+        Ei = Ex->v; Et = Ex; //Ej not used, bound interaction
+            TimeCalcBS(); if (dt >= De) TimeSaveBE();
+
+        while ((Et = Et->n) != Es)  //Calc elements, Ei != Ej
+        {
+            Ej = Et->v;
+            TimeCalcES(); if (dt >= De) TimeSaveEE();
+        }
+    }
+}//Calculate   all  elements times to interaction - tti
 //--------------------------------------------------------------------
 
 
