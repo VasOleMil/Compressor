@@ -1,4 +1,5 @@
 #include"CBase.h"
+#include"CEmnt.h"
 #include"CHold.h"
 //--------------------------------------------------------------------
 CDList     *Tv;//Time list items container 

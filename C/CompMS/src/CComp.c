@@ -3,7 +3,6 @@
 #include"CSort.h"
 #include"CEmnt.h"
 #include"CHold.h"
-#include"CData.h"
 #include"CComp.h"
 //--------------------------------------------------------------------
 //

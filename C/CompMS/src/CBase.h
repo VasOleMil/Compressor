@@ -1,7 +1,6 @@
 #ifndef CBASE_H888
 #define CBASE_H888
 
-
 #ifndef COMP_H888
 #include"CData.h"
 #endif

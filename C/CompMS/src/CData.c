@@ -1,3 +1,4 @@
+#include"CBase.h"
 #include"CList.h"
 #include"CSort.h"
 #include"CEmnt.h"

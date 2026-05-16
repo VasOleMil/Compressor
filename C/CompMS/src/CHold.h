@@ -2,7 +2,6 @@
 #define CHOLD_H888
 
 #include"CList.h"
-#include"CEmnt.h"
 
 #ifdef __cplusplus
 extern "C" {
