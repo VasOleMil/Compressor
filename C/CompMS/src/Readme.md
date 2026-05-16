@@ -5,13 +5,14 @@ Sorts, Elements, Times, Data - processing with linked list.
 To increase speed and reduce memory usage, program can be reshaped withiout position verifier module, but it required base structure changes, so places with feature support is just highlited by cooments for simplicity of branch modification.
 
 
-Header usage:
+Notes:
 
-CComp.h        → Public library interface
-   |
-   └── CBase.h   → Global simulation parameters & constants
-          |
-          └── CData.h   → Collector of standard libs + memory discipline
-          
+* CComp.h is the entry point for library users (CompInit, CompStep, CompFree).
 
-CData.h is excluded by macro while use in Comp.h
+* CBase.h holds global simulation parameters and constants.
+
+* CData.h centralizes standard library includes and memory wrappers.
+
+_CData.h is excluded by macro when included through CComp.h to avoid redundant linkage._
+
+
