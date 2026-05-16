@@ -105,6 +105,27 @@ TimeDelStp()
     { Ex = ej; TimeDelCol(); }  
 }//Delete ei, ej tti in Tv
 //--------------------------------------------------------------------
+void
+TimeValStp(void)
+{   
+    dt = (Ti = Tm->v)->dt; //restoring of saved predicted position 
+        //Tm is minimal tti CHold list item, evaluated in TimeGetStp
+        Ei = ei->v; Xi = Ei->X; Xj = Ti->Xi; Vj = Ei->V; 
+        for (k = 0; k < Rn; k++) Xi[k] = Xj[k] + Vj[k] * dt;
+
+    if (ej != NULL)  
+	{
+        Cx = 1; Ce++; 
+        
+        Ej = ej->v; Xi = Ej->X; Xj = Ti->Xj; Vj = Ej->V;
+        for (k = 0; k < Rn; k++) Xi[k] = Xj[k] + Vj[k] * dt;
+	}
+    else
+    { 
+        Cx = 0; Cb++;
+    }
+}//Verify position, to prevent Te += dT summing errors
+//--------------------------------------------------------------------
 static void
 TimeCalcBS()
 {
@@ -184,7 +205,9 @@ TimeSaveBE()
 	Ti->ej = NULL; //indicates bound interaction
     //if (Gv) //Gv = Y 
     { 
-        memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt; 
+        memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt;
+        //dT and X are saved for calculation economy
+		//not all saved tti require verification
     }
 }//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv = Tv: initilized in TimeCalcEx
 //--------------------------------------------------------------------

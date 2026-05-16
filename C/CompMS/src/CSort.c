@@ -70,8 +70,8 @@ SortInit(long Id, long Bn, double Rc, double Mc)
 
     r = Rc; V = Vg * r; for (k = 1; k < Rn; k++) V *= r; 
 
-    Si->Mc = (Mc > 0.0)? Mc : V; Si->Mt = Si->Mc * GM; // GM = GT^Rn		        
-}//Init sort object, uses: Si
+    Si->Mc = (Mc > 0.0)? Mc : V; Si->Mt = Si->Mc * GM; // GM = GR^Rn		        
+}//Init sort object, uses: Si, Gm(N) -> GM = 1.0
 //--------------------------------------------------------------------
 void 
 SortGet(long Id)
@@ -117,7 +117,7 @@ SortDel(long Id)
 void 
 SortGrow(void)
 {
-    Sx = St = Sv->Vc;      
+    Sx = St = Sv->Vc; Te += dT; GR = (1.0 + Gc * Te);
     do
     {      
         Si = St->v; 

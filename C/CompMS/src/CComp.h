@@ -7,9 +7,11 @@ extern "C" {
 #endif
 
 //--------------------------------------------------------------------
-extern void CompInit(void);
+extern void CompInit(void);//Construction, inits containers
 //--------------------------------------------------------------------
-extern void CompFree(void);
+extern void CompStep(void);//main loop, is called until Sc >= Sn
+//--------------------------------------------------------------------
+extern void CompFree(void);//Destruction, releases resources
 //--------------------------------------------------------------------
 
 
