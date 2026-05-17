@@ -96,7 +96,7 @@ TimeDelCol(void)
 }//Delete (ei, #) or (#, ei) tti in Tv
 //--------------------------------------------------------------------
 void
-TimeDelStp()
+TimeDelStp(void)
 {
     { Ex = ei; TimeDelCol(); }
     if (ej != NULL)  
@@ -125,7 +125,7 @@ TimeValStp(void)
 }//Verify position, to prevent Te += dT summing errors
 //--------------------------------------------------------------------
 static void
-TimeCalcBS()
+TimeCalcBS(void)
 {
     Xi = Ei->X; Vi = Ei->V; Si = Ei->S;
     vv =  0.0 ; rv =  0.0 ; rr =  0.0 ;
@@ -160,7 +160,7 @@ TimeCalcBS()
 }//
 //--------------------------------------------------------------------
 static void
-TimeCalcES()
+TimeCalcES(void)
 {
     Xi = Ei->X; Vi = Ei->V; Ri = Ei->S->Rc; 
     Xj = Ej->X; Vj = Ej->V; Rj = Ej->S->Rc;
@@ -196,7 +196,7 @@ TimeCalcES()
 }//
 //--------------------------------------------------------------------
 static void
-TimeSaveBE()
+TimeSaveBE(void)
 {
 	ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
     Ti->ei =   Ex; 
@@ -210,7 +210,7 @@ TimeSaveBE()
 }//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv = Tv: initilized in TimeCalcEx
 //--------------------------------------------------------------------
 static void
-TimeSaveEE()
+TimeSaveEE(void)
 {
     ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
     Ti->ei = Ex;
@@ -223,7 +223,7 @@ TimeSaveEE()
 }//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv initilized in TimeCalcEx
 //--------------------------------------------------------------------
 static void 
-TimeCalcEx()
+TimeCalcEx(void)
 {   
     Ei = Ex->v; Et = Ex; //Ej not used in bound interaction, ej = NULL
         TimeCalcBS(); if (dt >= De) TimeSaveBE();
@@ -236,7 +236,7 @@ TimeCalcEx()
 }//Calculate  Ex element tti, Lv initilized in TimeCalc[S/T]T
 //--------------------------------------------------------------------
 void
-TimeCalcTT()
+TimeCalcTT(void)
 {
 	Lv = Tv; // Lv initilized in TimeDelStp 
     
@@ -246,7 +246,7 @@ TimeCalcTT()
 }//Calculate  ei,ej elements times to interaction - tti
 //--------------------------------------------------------------------
 void
-TimeCalcST()
+TimeCalcST(void)
 {
     Es = Ex = Ev->Vc; Lv = Tv; // Lv initilized in TimeDelStp     
 
