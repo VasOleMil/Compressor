@@ -117,7 +117,8 @@ SortDel(long Id)
 void 
 SortGrow(void)
 {
-    Sx = St = Sv->Vc; Te += dT; GR = (1.0 + Gc * Te);
+	Sx = St = Sv->Vc; Te += dT; GR = (1.0 + Gc * Te); 
+    GM = GR; for (k = 1; k < Rn; k++) GM *= GR;
     do
     {      
         Si = St->v; 

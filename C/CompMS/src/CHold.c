@@ -3,9 +3,11 @@
 #include"CHold.h"
 //--------------------------------------------------------------------
 CDList     *Tv;//Time list items container 
+
 CDItem     *Tx;//list service register
 CDItem     *Tt;//list service register
 CDItem     *Tm;//list service register
+
 CHold      *Ti;//object service register
 //--------------------------------------------------------------------
 long         i,  k,  n;

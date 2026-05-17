@@ -8,7 +8,11 @@ extern "C" {
 #endif
 
 //--------------------------------------------------------------------
-extern void CompInit(void);//Construction, inits containers
+extern void CompInit(long Rn);//resets containers and data, if changed
+//--------------------------------------------------------------------
+extern void CompLoad(double GC);//init stepping for sizing speed
+//--------------------------------------------------------------------
+extern void CompLoad(double KT, double KS, double GC);//init stepping
 //--------------------------------------------------------------------
 extern void CompStep(void);//main loop, is called until Sc >= Sn
 //--------------------------------------------------------------------

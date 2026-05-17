@@ -6,9 +6,11 @@
 #include"CData.h"
 
 //--------------------------------------------------------------------
-long    UT;// 1, unit memory allocation and UD   start
-long    UD;// 2, dedicated destructor,      UD  finish
-long    UF;// 0, memory allocation for regular free
+//      UT == 0 || thread start indicator value, RTL default
+//--------------------------------------------------------------------
+long    UT  = 0;// 1, unit memory allocation and UD   start
+long    UD;     // 2, dedicated destructor,      UD  finish
+long    UF;     // 0, memory allocation for regular free
 //--------------------------------------------------------------------
 double *Xi,*Xj,*Vi,*Vj;
 double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;

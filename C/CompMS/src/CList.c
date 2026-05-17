@@ -9,7 +9,7 @@ CDItem *Li; //local list register
 CDItem *Lj; //local list register
 CFItem *Wi; //local list register
 CFItem *Wj; //local list register
-long    Xc; //local list counter
+long    Xn; //local list counter
 //==================================================================//
 //                     Base functions section                       //
 //==================================================================//
@@ -293,9 +293,9 @@ ListClr(void)
 {	
     if (Lv->Vn == 0) return;     //safety
 
-    Xc = Lv->Fn;//assumed controll exists
+    Xn = Lv->Fn;//assumed controll exists
     Lj = Lv->Vc;//assumed  Vn > 0   //[a]
-    Li = (Xc == 0)?(Lj):(Lv->Fc);   //[A]
+    Li = (Xn == 0)?(Lj):(Lv->Fc);   //[A]
 
     Lx = Li->n;           //Merge: a -> A
     Lj->n = Lx;
@@ -305,7 +305,7 @@ ListClr(void)
     Li->n = Lx;
     Lx->p = Li;
      
-    Lv->Fn = Xc + Lv->Vn; // add counters
+    Lv->Fn = Xn + Lv->Vn; // add counters
     Lv->Fc = Li;          // link  result
     Lv->Vn = 0;           // reset source
 }//Move Value items, to Free container
@@ -408,9 +408,9 @@ FuncClr(void)
 {
     if (Wv->Vn == 0) return;     //safety
 
-    Xc = Wv->Fn;//assumed controll exists
+    Xn = Wv->Fn;//assumed controll exists
     Wj = Wv->Vc;//assumed  Vn > 0   //[a]
-    Wi = (Xc == 0)?(Wj):(Wv->Fc);   //[A]  
+    Wi = (Xn == 0)?(Wj):(Wv->Fc);   //[A]  
 
     Wx = Wi->n;           //Merge: a -> A
     Wj->n = Wx;   
@@ -420,7 +420,7 @@ FuncClr(void)
     Wi->n = Wx;  
     Wx->p = Wi;   
 
-    Wv->Fn = Xc + Wv->Vn; // add counters
+    Wv->Fn = Xn + Wv->Vn; // add counters
     Wv->Fc = Wi;          // Link  result
     Wv->Vn = 0;           // reset source
 }//Move Value items, to Free container
@@ -444,8 +444,7 @@ FuncSize(void)
 void
 FuncFree(void)
 {
-    FuncClr();      //Clear Values
-    
+    FuncClr();      //Clear Values  
 	while (Wv->Fn)  //ListDelNF()
     {
         Wx = Wv->Fc; Wv->Fn--;

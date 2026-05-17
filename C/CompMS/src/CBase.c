@@ -23,10 +23,11 @@ long             Cx;// interactions type
 double           RN;// sqrt(Rn)
 long             LN;// Rn * sizeof(double), coordinates or speeds size
 double           Vb;// Bound volume
+double           Ve;// Elements volume, based on Rc
 double           Vg;// Vgamma(Rn)
 double           GG;// GG = Gc * Gc
 double           GR;// GR = (1.0 + Gc * Te)
-double           GM;// GM = GR^Rn, for Gm = Y
+double           GM;// GM = GR^Rn
 //--------------------------------------------------------------------
 //long             Gv;//Toggles position verifier
 //long             Gm;//Toggles mass change while sizing
