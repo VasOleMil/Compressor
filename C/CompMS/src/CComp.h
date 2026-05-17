@@ -1,5 +1,5 @@
-#ifndef COMP_H888
-#define COMP_H888
+#ifndef CCOMP_H888
+#define CCOMP_H888
 
 #include"CBase.h"
 
@@ -19,4 +19,4 @@ extern void CompFree(void);//Destruction, releases resources
 #ifdef __cplusplus
 }
 #endif
-#endif//COMP_H888
+#endif//CCOMP_H888

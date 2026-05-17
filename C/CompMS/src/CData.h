@@ -1,5 +1,5 @@
-#ifndef DATA_H888
-#define DATA_H888
+#ifndef CDATA_H888
+#define CDATA_H888
 
 #include<stdlib.h>
 #include<math.h>
@@ -34,4 +34,4 @@ extern void		DataFree(void); //Destruction
 #ifdef __cplusplus
 }
 #endif
-#endif//DATA_H888
+#endif//CDATA_H888
