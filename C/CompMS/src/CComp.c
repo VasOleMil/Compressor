@@ -7,7 +7,7 @@
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
-long k;
+long k, n;
 //--------------------------------------------------------------------
 void
 CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
@@ -132,9 +132,9 @@ SetGBound(void)
     RA = 0.0; Bn = 0; St = Sx = Sv->Vc; rr = 2.0;
     do
     { 
-        Si = St->v; RA += Si->Rc; Bn += Si->Bn; 
+        Si = St->v; Bn += n = Si->Bn; RA += n * Si->Rc;
     }   while ((St = St->n) != Sx);
-	RA /= (double)(Sv->Vn);
+	RA /= (double)Bn;
 	//Set radius for even gemetrical probality P = 0.5
     //intersect or not. Simultanois drop, all elements.
     Rb = RA * (1.0 + 2.0 * pow(
