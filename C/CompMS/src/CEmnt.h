@@ -32,7 +32,7 @@ extern void EmntFree(void);//Releases Free resources  Ev
 //--------------------------------------------------------------------
 extern void EmntSize(void);//Si sort, align number to Si->Bn
 //--------------------------------------------------------------------
-inline void EmntMove(void);//Moves all elements
+extern void EmntMove(void);//Moves all elements
 //--------------------------------------------------------------------
 extern void EmntColl(void);//ei, ej  interaction
 //--------------------------------------------------------------------
