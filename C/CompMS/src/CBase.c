@@ -28,10 +28,6 @@ double           GG;// GG = Gc * Gc
 double           GR;// GR = (1.0 + Gc * Te)
 double           GM;// GM = GR^Rn, for Gm = Y
 //--------------------------------------------------------------------
-double *Xi,*Xj,*Vi,*Vj;
-
-double  RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
-//--------------------------------------------------------------------
 //long             Gv;//Toggles position verifier
 //long             Gm;//Toggles mass change while sizing
 //long             Gr;//Toggles element rejection by center

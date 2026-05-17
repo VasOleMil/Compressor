@@ -38,10 +38,6 @@ extern double           GG;// GG = Gc * Gc
 extern double           GR;// GR = (1.0 + Gc * Te)
 extern double           GM;// GM = GR^Rn, for Gm = Y
 //--------------------------------------------------------------------
-extern double *Xi,*Xj,*Vi,*Vj;
-
-extern double  RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
-//--------------------------------------------------------------------
 //extern long             Gv;//(Y) Toggles position verifier
 //extern long             Gm;//(N) Toggles mass change while sizing
 //extern long             Gr;//(N) Toggles element rejection by center
@@ -52,22 +48,30 @@ extern double  RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
 //extern long 		UF;// 0, memory allocation for regular free
 //--------------------------------------------------------------------
 //extern void*      Malloc(size_t LN,long CN,long UD);//malloc wrapper
-//========================================================== List.h ==
-//extern CDItem     *Lv;//CList.h
+//---------------------------------------------------------- List.h --
+//extern CDItem     *Lv;   //CList.h
 //extern CDItem     *Lx;
-//========================================================== Sort.h ==
+//---------------------------------------------------------- Sort.h --
 //extern CDList     *Sv;
 //extern CDItem     *Sx;
-//extern CDItem     *St;//Sort.h
+//extern CDItem     *St;   //Sort.h
 //extern CSort      *Si;
 //extern CSort      *Sj;
-//========================================================== Emnt.h ==
+//---------------------------------------------------------- Emnt.h --
 //extern CDList     *Ev;
 //extern CDItem     *Ex;
-//extern CDItem     *ei;//CEmnt.h
+//extern CDItem     *Et;
+//extern CDItem     *Es;   //CEmnt.h 
+//extern CDItem     *ei;
 //extern CDItem     *ej;
 //extern CEmnt      *Ei;
 //extern CEmnt      *Ej;
+//---------------------------------------------------------- Hold.h --
+//extern CDList     *Tv;
+//extern CDItem     *Tx;
+//extern CDItem     *Tt;   //CHold.h 
+//extern CDItem     *Tm;
+//extern CHold      *Ti;
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

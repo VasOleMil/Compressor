@@ -10,6 +10,9 @@ long    UT;// 1, unit memory allocation and UD   start
 long    UD;// 2, dedicated destructor,      UD  finish
 long    UF;// 0, memory allocation for regular free
 //--------------------------------------------------------------------
+double *Xi,*Xj,*Vi,*Vj;
+double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
+//--------------------------------------------------------------------
 CDList *Dv;//Malloc list items container 
 void   *DA;//Memory allocator register, used in Dalloc, CompFree
 void   *Dx;//Memory allocator register, used locally in DataItemDel

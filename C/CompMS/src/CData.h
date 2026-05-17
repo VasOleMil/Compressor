@@ -20,12 +20,16 @@ extern long 		    UT;// 1, unit memory allocation and UD   start
 extern long 		    UD;// 2, dedicated destructor,      UD  finish
 extern long 		    UF;// 0, memory allocation for regular free
 //--------------------------------------------------------------------
+extern double  *Xi,*Xj,*Vi,*Vj;
+extern double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
+//--------------------------------------------------------------------
 extern void*    Malloc(size_t LN,long CN,long UD);   // malloc wrapper
 //--------------------------------------------------------------------
 extern void		DataInit(void); //Construction
 //--------------------------------------------------------------------
 extern void		DataFree(void); //Destruction
 //--------------------------------------------------------------------
+
 
 #ifdef __cplusplus
 }

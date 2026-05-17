@@ -5,11 +5,11 @@
 CDList     *Tv;//Time list items container 
 CDItem     *Tx;//list service register
 CDItem     *Tt;//list service register
+CDItem     *Tm;//list service register
 CHold      *Ti;//object service register
 //--------------------------------------------------------------------
 long         i,  k,  n;
 double       a,  b,  c, dt;
-CDItem     *Tm,*Es;//list service register
 //--------------------------------------------------------------------
 static void
 HoldItemNew(void)
@@ -201,7 +201,7 @@ TimeSaveBE()
 	ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
     Ti->ei =   Ex; 
 	Ti->ej = NULL; //indicates bound interaction
-    //if (Gv) //Gv = Y 
+    //if (Gv) //Gv(Y) 
     { 
         memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt;
         //dT and X are saved for calculation economy
@@ -215,51 +215,42 @@ TimeSaveEE()
     ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
     Ti->ei = Ex;
     Ti->ej = Et;
-	//if (Gv) //Gv = Y
+	//if (Gv) //Gv(Y)
     {
         memcpy(Ti->Xi, Ei->X, LN); Ti->dT = dt;
         memcpy(Ti->Xj, Ej->X, LN);
     }
-}//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv = Tv: initilized in TimeCalcEx
+}//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv initilized in TimeCalcEx
 //--------------------------------------------------------------------
 static void 
 TimeCalcEx()
 {   
-    Ei = Ex->v; Et = Ex; Lv = Tv; // Lv initilized in TimeDelStp     
-	    //Ej not used for bound interaction, ej = NULL in TimeSaveBE
+    Ei = Ex->v; Et = Ex; //Ej not used in bound interaction, ej = NULL
         TimeCalcBS(); if (dt >= De) TimeSaveBE();
-    
-    while ((Et = Et->n) != Ex)  //Calc elements, Ei != Ej
+        
+    while ((Et = Et->n) != Es)  //Calc elements, Ei != Ej
     {
         Ej = Et->v; 
         TimeCalcES(); if (dt >= De) TimeSaveEE();     
     }  
-}//Calculate  Ex element tti
+}//Calculate  Ex element tti, Lv initilized in TimeCalc[S/T]T
 //--------------------------------------------------------------------
 void
 TimeCalcTT()
 {
-    { Ex = ei; TimeCalcEx(); }
+	Lv = Tv; // Lv initilized in TimeDelStp 
+    
+    { Es = Ex = ei; TimeCalcEx(); }
     if (ej != NULL)
-    { Ex = ej; TimeCalcEx(); }
+    { Es = Ex = ej; TimeCalcEx(); }
 }//Calculate  ei,ej elements times to interaction - tti
 //--------------------------------------------------------------------
 void
 TimeCalcST()
 {
-    Es = Ex = Ev->Vc; Lv = Tv;
+    Es = Ex = Ev->Vc; Lv = Tv; // Lv initilized in TimeDelStp     
 
-    while ((Ex = Ex->n) != Es)
-    {
-        Ei = Ex->v; Et = Ex; //Ej not used, bound interaction
-            TimeCalcBS(); if (dt >= De) TimeSaveBE();
-
-        while ((Et = Et->n) != Es)  //Calc elements, Ei != Ej
-        {
-            Ej = Et->v;
-            TimeCalcES(); if (dt >= De) TimeSaveEE();
-        }
-    }
+    while ((Ex = Ex->n) != Es) TimeCalcEx();
 }//Calculate   all  elements times to interaction - tti
 //--------------------------------------------------------------------
 

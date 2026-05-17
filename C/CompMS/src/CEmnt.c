@@ -5,6 +5,8 @@ CDList  *Ev;//Elements list items container
     
 CDItem  *Ex;//list service register
 CDItem  *Et;//list service register
+CDItem  *Es;//list  service  register
+
 CDItem  *ei;//saved element for collision handling
 CDItem  *ej;//saved element for collision handling
     

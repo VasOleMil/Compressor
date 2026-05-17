@@ -16,11 +16,13 @@ typedef struct CHold
 	double  dT; //Gv, saved dT for collision handling
 	double *Xi; //Gv, saved Xi for collision handling
 	double *Xj; //Gv, saved Xj for collision handling
+
 } 	CHold;
 //--------------------------------------------------------------------
 extern CDList   *Tv;//Sorts   list  container 
 extern CDItem   *Tx;//list  service  register
 extern CDItem   *Tt;//list  service  register
+extern CDItem   *Tm;//list  service  register
 extern CHold    *Ti;//object service register
 
 //--------------------------------------------------------------------
