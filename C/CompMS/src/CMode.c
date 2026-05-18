@@ -1,17 +1,18 @@
 #include"CBase.h"
 #include"CSort.h"
+#include"CEmnt.h"
 #include"CMode.h"
 //--------------------------------------------------------------------
 CDList *Mv;//Modes resources container
 //--------------------------------------------------------------------
-long    k, n, i, j; double* X;
+long    k, n, i, j, rn; double* X;
 //--------------------------------------------------------------------
 void
 ModeInit(void)
 {
-    if (Mv != NULL) return;
+	if (Mv != NULL) return; rn = Rn + 2;
 
-    X = (double*)Malloc((sizeof(double))*((size_t)(Rn + 2)), UT, UD);
+    X = (double*)Malloc((sizeof(double))*((size_t)(rn)), UT, UD);
     Mv = X; //non zero value to mark initialization, used in ModeFree
    
 }//Inits start values in Mode container.                        Set: X
@@ -95,32 +96,71 @@ SetRanges(void)
     e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 2e1 * Ds;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
+void
+EngPhases(void)
+{
+	//NOT COMPLETTED, only volume density, no threshold for tries!
+    //Currently weighted average mass for volume density
+	//should be recalculated for the case of dedicated mass
+    VV = sqrt(3.0 * kT * Bn / Ve);
+    rr = 2.0 / (double)RAND_MAX;
+    Es = Ex = Ev->Vc;
+    do
+    {
+		Ei = Ex->v; Et = Ex; Xi = Ei->X; Vi = Ei->V;
+
+		RandomSphere(); //Generate random point X on (Rn+2) sphere
+       
+		for (k = 0; k < Rn; k++)//Set random speeds, and positions
+        { 
+			Xi[k] = X[k]; //Rn projection is distribution in ball
+            Vi[k] = VV*((double)rand() * rr - 1.0); 
+        }
+
+        while ((Et = Et->n) != Es)  //test intersection, Ei != Ej
+        {
+            Ej = Et->v; Xj = Ej->X; vv = 0.0;//vv-distance squared
+
+            for (k = 0; k < Rn; k++)
+            {
+				rk = Xi[k] - Xj[k]; vv += rk * rk;       
+            }
+            //check distances, if intersect, regenerate Ei
+            if ((rv = Ei->S->Rt + Ei->S->Rt) * rv > vv)
+            { 
+				Ex = Ex->p; break; //regenerate Ei
+            }//no tries count yet,
+        }
+    } while ((Ex = Ex->n) != Es);
+    
+}//Engage phase space, random values {X,V}
+//--------------------------------------------------------------------
 static void 
 RandomSphere() 
 {  
-    RR = 0.0; rr = 2.0 / (double)RAND_MAX;
+	RR = 0.0; //rr = 2.0 / (double)RAND_MAX; //rn = Rn + 2
     // pick one index coordinate belong to cube face
-    i = rand() % Rn;  
+    i = rand() % rn;  
 	// generate others coordinates, uniformly distributed
-    for (k = 0; k < Rn; k++) 
+    for (k = 0; k < rn; k++) 
     {
         if (k != i) { rk = X[k] = (double)rand() * rr - 1.0; }
         else        { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
         RR += rk * rk;
     }
     // project cube face point to sphere surface
-    rr = 1.0/sqrt(RR); for (k = 0; k < Rn; k++) { X[k] *= rr;}
+    RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR;}
 	// random rotations of coordinates, to smooth distribution
-    for (k = 0; k < Rn; k++) 
+    for (k = 0; k < rn; k++) 
     {
-        i = rand() % Rn; do { j = rand() % Rn; } while (i == j);
+        i = rand() % rn; do  j = rand() % rn;  while (i == j);
         
         Ri = X[i]; Rj = X[j];
         X[i] = s * (Rj - Ri); // s = 1.0 / sqrt(2.0)
         X[j] = s * (Rj + Ri);
     }
     // scale to bound radius
-    for (k = 0; k < Rn; k++) { X[k] *= Rb; }
+    for (k = 0; k < rn; k++) { X[k] *= Rb; }
 }//Generate random point on Rn-sphere of radius Rb
 //--------------------------------------------------------------------
 

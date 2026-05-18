@@ -10,21 +10,21 @@ extern "C" {
 //--------------------------------------------------------------------
 // no structures defined yet
 //--------------------------------------------------------------------
-CDList	*Mv;//Modes resources container
+CDList	*Mv;//Modes resources container, only starting indicator
 //--------------------------------------------------------------------
 extern void ModeInit(void);
 //--------------------------------------------------------------------
 extern void ModeFree(void);
 //--------------------------------------------------------------------
-extern double Vgamma(void);
+extern double Vgamma(void);//Multiplier Vb = Vg * Rb^Rn, Vg=Vgamma(Rn)
 //--------------------------------------------------------------------
-extern void SetGBound(void);
+extern void SetGBound(void);//Size for even interaction/move probality
 //--------------------------------------------------------------------
-extern void SetVolume(void);
+extern void SetVolume(void);//Summary elements volume Ve based on Rc
 //--------------------------------------------------------------------
-extern void SetRanges(void);
+extern void SetRanges(void);//Zero drift ranges, for reporting only 
 //--------------------------------------------------------------------
-//extern void RandomSphere(void);
+extern void EngPhases(void);//Engage phase space, random values {X,V}
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

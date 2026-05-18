@@ -55,9 +55,9 @@ CompLoad(double KT, double KS, double GC)
     else
     {   SetVolume(); Rb = pow(Ve / KS, 1.0 / Rn); }
     
-    SetRanges();
+    SetRanges(); //Zero drift ranges, for reporting only
 
-    /* yet a lot to implement in random initialization */
+    EngPhases(); //Engage phase space, random values {X,V}
     
 	TimeCalcST(); //finally initiate all elements tti
 }//init tti for stepping for kT, volume density,  sizing speed

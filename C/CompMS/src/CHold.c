@@ -95,7 +95,7 @@ TimeDelCol(void)
             Tv->Vc = Tx; ListDel();
         };  Tx = Tx->n;
     }
-}//Delete (ei, #) or (#, ei) tti in Tv
+}//Delete (Ex, #) or (#, Ex) tti in Tv
 //--------------------------------------------------------------------
 void
 TimeDelStp(void)
@@ -252,7 +252,7 @@ TimeCalcST(void)
 {
     Es = Ex = Ev->Vc; Lv = Tv; // Lv initilized in TimeDelStp     
 
-    while ((Ex = Ex->n) != Es) TimeCalcEx();
+    do TimeCalcEx(); while ((Ex = Ex->n) != Es);
 }//Calculate   all  elements times to interaction - tti
 //--------------------------------------------------------------------
 
