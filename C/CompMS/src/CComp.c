@@ -16,7 +16,7 @@ CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
 	// (Rn >= 2 )  is expected, but not tested
     RN = sqrt((double)Rn); LN = Rn * sizeof(double);
 
-    DataInit();
+    DataInit();                          // https://youtu.be/jaFnirguL54
 }//resets all containers and data, if space dimension is changed
 //--------------------------------------------------------------------
 void
@@ -55,7 +55,7 @@ CompLoad(double KT, double KS, double GC)
     
     De = Rb * RN * 8e-10; Ds = Rb * RN * 1e-12;
 
-    /* yet a lot to implement in random initializatio */
+    /* yet a lot to implement in random initialization */
     
 	TimeCalcST(); //finally initiate all elements tti
 }//init tti for stepping for kT, volume density,  sizing speed
@@ -101,57 +101,58 @@ CompStep()
 static double
 Vgamma(void)
 {
-    double Pk, Pi; long i, k, d, Rh;
+    static double Pk, Pi; static long i, n, d, Rh;
 
-    k = 1; d = 2; Pk = 1.0; Pi = 3.141592653589793;
+    n = 1; d = 2; Pk = 1.0; Pi = 3.141592653589793;
 
     if (Rn % 2 == 0)
     {
         for (i = 1, Rh = (Rn - 0) / 2; i <= Rh; i++)
         {
-            Pk *= Pi; k *= i;
+            Pk *= Pi; n *= i; // n! factorial
         }
 
-        return Pk / k;
+        return Pk * 1 / n;
     }
     else
     {
         for (i = 1, Rh = (Rn - 1) / 2; i <= Rh; i++)
         {
-            Pk *= Pi;  d *= 2; k *= 2 * i + 1;
+            Pk *= Pi; n *= 2 * i + 1; d *= 2;
         }
 
-        return Pk * d / k;
+        return Pk * d / n;
     }
-}//Multiplier for volume of Rn-sphere:Vb = Vg * Rb^Rn, Vg = Vgamma(Rn)
+}//Multiplier for Rn-sphere volume: Vb = Vg * Rb^Rn, Vg = Vgamma(Rn)
 //--------------------------------------------------------------------
 static void
 SetGBound(void)
 {
-    //get current Bn and Average radius, P = 1/rr = 0.5
-    RA = 0.0; Bn = 0; St = Sx = Sv->Vc; rr = 2.0;
+    //Weighted Average radius (RA) over all elements.
+    RA = 0.0; Bn = 0; Sx = St = Sv->Vc;
     do
     { 
         Si = St->v; Bn += n = Si->Bn; RA += n * Si->Rc;
     }   while ((St = St->n) != Sx);
-	RA /= (double)Bn;
-	//Set radius for even gemetrical probality P = 0.5
-    //intersect or not. Simultanois drop, all elements.
+	RA /= (double)Bn; rr = 0.5;  // P(move) = rr = 0.5
+	//Set radius for even gemetrical probality P = 1/2
+    //intersect or move freely. Simultanious drop, all elements.
     Rb = RA * (1.0 + 2.0 * pow(
-        (1.0 - pow(rr, -2.0 / (Bn * (Bn - 1)))),
+        (1.0 - pow(rr, 2.0 / (Bn * (Bn - 1)))),
 		-1.0 / Rn));//provides easy initial random drop 
-}//Set radius for even interaction probality
+}//Set radius for even interaction/move probality
 //--------------------------------------------------------------------
 static void
 SetVolume(void)
 {
-	RV = 0.0; Bn = 0; St = Sx = Sv->Vc; //Bn calculated with volume
+	RV = 0.0; Bn = 0; Sx = St = Sv->Vc; // Bn calculated with volume
     do
     {
-        Si = St->v; Ri = Si->Rc; Bn += Si->Bn;
-        RR = Vg * Ri; for (k = 1; k < Rn; k++) RR *= Ri;
-		RV += RR * Si->Bn;
-    }   while ((St = St->n) != Sx); Ve = RV;
-}//Set summary elements volume, Ks - volume density, Ks = GM * Ve / Vb
+        Si = St->v; Bn += n = Si->Bn; Ri = Si->Rc; RR = Vg * Ri;
+        for (k = 1; k < Rn; k++) { RR *= Ri; };    RV += RR * n;
+	} while ((St = St->n) != Sx); 
+    // Ks - volume density, Ks = GM * Ve / Vb
+    Ve = RV;       // GM = (1.0 + Gc * Te)^Rn
+}//Set summary elements volume Ve based on Rc, use GM to get current
 //--------------------------------------------------------------------
     
