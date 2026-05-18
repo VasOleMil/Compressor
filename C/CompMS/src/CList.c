@@ -289,7 +289,7 @@ ListDEL(void)
 }//Moves Value to Free:              Vc = Vc->p, Fc->p = Lx
 //--------------------------------------------------------------------
 void
-ListClr(void)
+ListClrV(void)
 {	
     if (Lv->Vn == 0) return;     //safety
 
@@ -329,7 +329,7 @@ ListSize(void)
 void 
 ListFree(void)
 {
-    ListClr();      //Clear Values
+    ListClrV();      //Clear Values
     while (Lv->Fn)  //ListDelNF()
     {
         Lx = Lv->Fc; Lv->Fn--;
@@ -404,7 +404,7 @@ FuncDel(void)
 }//Moves Value to Free:                  Vc = Vc->p, Fc->p = Wx
 //--------------------------------------------------------------------
 void
-FuncClr(void)
+FuncClrV(void)
 {
     if (Wv->Vn == 0) return;     //safety
 
@@ -444,7 +444,7 @@ FuncSize(void)
 void
 FuncFree(void)
 {
-    FuncClr();      //Clear Values  
+    FuncClrV();      //Clear Values  
 	while (Wv->Fn)  //ListDelNF()
     {
         Wx = Wv->Fc; Wv->Fn--;

@@ -62,11 +62,11 @@ extern void ListAdd(void);//Move Free to Value, one             Vn, Lx
 //--------------------------------------------------------------------
 extern void ListDel(void);//Move Value to Free, one                 Vn
 //--------------------------------------------------------------------
-extern void ListClr(void);//Move Value to Free, all                 Vn 
-//--------------------------------------------------------------------
 extern void ListADD(void);//Move Free to Value, unsafe:         Vn, Lx
 //--------------------------------------------------------------------
 extern void ListDEL(void);//Move Value to Free, unsafe:             Vn
+//--------------------------------------------------------------------
+extern void ListClrV(void);//Move Value to Free, all                Vn 
 //--------------------------------------------------------------------
 extern void ListSize(void); //Releases Free container resources
 //--------------------------------------------------------------------
@@ -76,7 +76,7 @@ extern void FuncAdd(void);//Move Free to Value, one             Vn, Wx
 //--------------------------------------------------------------------
 extern void FuncDel(void);//Move Value to Free, one                 Vn
 //--------------------------------------------------------------------
-extern void FuncClr(void);//Move Value to Free, all                 Vn 
+extern void FuncClrV(void);//Move Value to Free, all                Vn 
 //--------------------------------------------------------------------
 extern void FuncSize(void); //Releases Free container resources
 //--------------------------------------------------------------------

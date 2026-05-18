@@ -30,13 +30,13 @@ CompLoad(double GC)
 {
 	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
 
-    St = Sx = Sv->Vc; //set sized radii Rt as constant initial Rc
+    Sx = St = Sv->Vc; //set sized radii Rt as constant initial Rc
     while ((St = St->n) != Sx)
     {
         Si = St->v; Si->Vc = Si->Rt * Gc;
         Si->Rc = Si->Rt; Si->Mc = Si->Mt;      
     }
-	Lv = Tv->Vc; ListClr(); //clear time list, save items for reuse
+	Lv = Tv->Vc; ListClrV(); //clear time list, save items for reuse
     TimeCalcST(); //calculate all elements tti, for stepping
 	Lv = Tv->Vc; ListSize();//clear free items, release resources
 }//init tti for stepping, arguments: sizing speed
@@ -46,14 +46,14 @@ CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
     
-    Sn = 100; Sc = 0; Vg = Vgamma(); Te = 0.0; GR = GM = 1.0;
+    Sn = 100; Sc = 0; Vg = Vgamma(); 
     
     if (KS <= 0.0)
     {   SetGBound(); }
     else
     {   SetVolume(); Rb = pow(Ve / KS, 1.0 / Rn); }
     
-    De = Rb * RN * 8e-10; Ds = Rb * RN * 1e-12;
+    SetRanges();
 
     /* yet a lot to implement in random initialization */
     
@@ -154,5 +154,19 @@ SetVolume(void)
     // Ks - volume density, Ks = GM * Ve / Vb
     Ve = RV;       // GM = (1.0 + Gc * Te)^Rn
 }//Set summary elements volume Ve based on Rc, use GM to get current
+//--------------------------------------------------------------------
+static void 
+SetRanges(void)
+{
+    static double e; static long m; //Precision adaptation:
+
+    e = 1.0; m = 0; while (1.0 < 1.0 + e) { e /= 10.0; m++; }
+	Fm = m; //Mantisse test, decimal digits: 1.0 + 10^-Fm == 1.0
+
+    e = 1.0; m = 0; while (0.0 < 0.0 + e) { e /= 10.0; m++; }
+	Fe = m; //Exponent test, decimal power : 0.0 + 10^-Fe == 0.0
+
+    e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 4e2 * Ds;
+}//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
     
