@@ -7,7 +7,7 @@
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
-long k, n;
+long i, j, k, n;
 //--------------------------------------------------------------------
 void
 CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
@@ -165,8 +165,42 @@ SetRanges(void)
 
     e = 1.0; m = 0; while (0.0 < 0.0 + e) { e /= 10.0; m++; }
 	Fe = m; //Exponent test, decimal power : 0.0 + 10^-Fe == 0.0
-
-    e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 4e2 * Ds;
+    //De should be greater without poition verifier, De *= Bn
+	//ranging not implemented, currently for reporting only
+    e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 2e1 * Ds;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
+static void 
+RandomSphere(int Rn, double Rb, double* X) 
+{
+    static double s = 0.707106781186547;// s = 1.0 / sqrt(2.0)
+    
+    RR = 0.0; rr = 2.0 / (double)RAND_MAX;
+    // pick one index coordinate belong to cube face
+    i = rand() % Rn;  
+	//generate others coordinates, uniformly distributed
+    for (k = 0; k < Rn; k++) 
+    {
+        if (k != i) { rk = X[k] = (double)rand() * rr - 1.0; }
+        else        { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
+        RR += rk * rk;
+    }
+    // project cube face point to sphere surface
+    rr = sqrt(RR); for (k = 0; k < Rn; k++) { X[k] /= rr; }
+	// random rotations of coordinates, to smooth distribution
+    for (k = 0; k < Rn; k++) 
+    {
+        i = rand() % Rn; do { j = rand() % Rn; } while (i == j);
+        
+        Ri = X[i];
+        Rj = X[j];
+        X[i] = s * (Rj - Ri);
+        X[j] = s * (Rj + Ri);
+    }
+    // scale to bound radius
+    for (k = 0; k < Rn; k++) { X[k] *= Rb; }
+} // Generate random point on Rn-sphere of radius Rb
+//--------------------------------------------------------------------
+
+
     
