@@ -1,31 +1,33 @@
-#ifndef CCOMP_H888
-#define CCOMP_H888
+#ifndef CMODE_H888
+#define CMODE_H888
 
-#include"CBase.h"
+#include"CList.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 //--------------------------------------------------------------------
-extern void CompInit(long Rn);//resets containers and data, if changed
+// no structures defined yet
 //--------------------------------------------------------------------
-extern void SortAdd(long id, long Bn, double Rc, double Mc);// 
+CDList	*Mv;//Modes resources container
 //--------------------------------------------------------------------
-extern void SortSet(long id, long Bn, double Rc, double Mc);// 
+extern void ModeInit(void);
 //--------------------------------------------------------------------
-extern void SortDel(long id);//
+extern void ModeFree(void);
 //--------------------------------------------------------------------
-extern void CompLoad(double GC);//init stepping for sizing speed
+extern double Vgamma(void);
 //--------------------------------------------------------------------
-extern void CompLoad(double KT, double KS, double GC);//init stepping
+extern void SetGBound(void);
 //--------------------------------------------------------------------
-extern void CompStep(void);//main loop, is called until Sc >= Sn
+extern void SetVolume(void);
 //--------------------------------------------------------------------
-extern void CompFree(void);//Destruction, releases resources
+extern void SetRanges(void);
+//--------------------------------------------------------------------
+//extern void RandomSphere(void);
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus
 }
 #endif
-#endif//CCOMP_H888
+#endif//CMODE_H888

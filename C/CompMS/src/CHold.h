@@ -24,7 +24,6 @@ extern CDItem   *Tx;//list  service  register
 extern CDItem   *Tt;//list  service  register
 extern CDItem   *Tm;//list  service  register
 extern CHold    *Ti;//object service register
-
 //--------------------------------------------------------------------
 extern void TimeInit(void);//Inits start values in Time container: Tv
 //--------------------------------------------------------------------

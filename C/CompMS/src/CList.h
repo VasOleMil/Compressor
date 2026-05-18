@@ -13,7 +13,7 @@ typedef struct CDItem
     void          *v; //Object link
 
 }   CDItem; //Data type list item
-//--------------------------------------------------------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 typedef struct CFItem
 {
     struct CFItem *p;           //Previous item
@@ -34,7 +34,7 @@ typedef struct CDList
     void           (*ListItemDel)(void); //Invoked in ListDel(N^P)F()
 
 }   CDList; //Data type list container
-//--------------------------------------------------------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 typedef struct CFList
 {
     CFItem         *Vc;//Values container,       current element
@@ -50,37 +50,37 @@ typedef struct CFList
 //--------------------------------------------------------------------
 CDList *Lv; //Data container
 CDItem *Lx; //Data exchange register
-//--------------------------------------------------------------------
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 CFList *Wv; //Func container
 CFItem *Wx; //Func exchange register
 //==================================================================//
 //                      Project functions:                          //
 //==================================================================//
-//  Y - container  |   Lx == Lv->Yc         |                       //
+//  Y - container  |   Lx == Lv->Yc         |    Wx == Wv->Yc       //
 //--------------------------------------------------------------------
 extern void ListAdd(void);//Move Free to Value, one             Vn, Lx
 //--------------------------------------------------------------------
-extern void ListDel(void);//Move Value to Free, one                 Vn
+extern void ListDel(void);//Move Value to Free, one             Fn, Lx
 //--------------------------------------------------------------------
-extern void ListADD(void);//Move Free to Value, unsafe:         Vn, Lx
+extern void ListADD(void);//Move Free to Value, unsafe Vn & Fn > 2, Lx   
 //--------------------------------------------------------------------
-extern void ListDEL(void);//Move Value to Free, unsafe:             Vn
+extern void ListDEL(void);//Move Value to Free, unsafe Vn & Fn > 2, Lx            
 //--------------------------------------------------------------------
 extern void ListClrV(void);//Move Value to Free, all                Vn 
 //--------------------------------------------------------------------
-extern void ListSize(void); //Releases Free container resources
+extern void ListSize(void);//Releases Free container resources
 //--------------------------------------------------------------------
-extern void ListFree(void); //Releases List container resources
-//--------------------------------------------------------------------
+extern void ListFree(void);//Releases List container resources
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 extern void FuncAdd(void);//Move Free to Value, one             Vn, Wx
 //--------------------------------------------------------------------
-extern void FuncDel(void);//Move Value to Free, one                 Vn
+extern void FuncDel(void);//Move Value to Free, one             Fn, Wx
 //--------------------------------------------------------------------
 extern void FuncClrV(void);//Move Value to Free, all                Vn 
 //--------------------------------------------------------------------
-extern void FuncSize(void); //Releases Free container resources
+extern void FuncSize(void);//Releases Free container resources
 //--------------------------------------------------------------------
-extern void FuncFree(void); //Releases List container resources
+extern void FuncFree(void);//Releases List container resources
 //--------------------------------------------------------------------
 
 

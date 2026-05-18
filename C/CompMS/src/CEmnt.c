@@ -1,4 +1,5 @@
 #include"CBase.h"
+#include"CSort.h"
 #include"CEmnt.h"
 //--------------------------------------------------------------------
 CDList  *Ev;//Elements list items container 

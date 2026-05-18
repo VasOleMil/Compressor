@@ -16,11 +16,16 @@ extern "C" {
 #endif
 
 //--------------------------------------------------------------------
-extern long 		    UT;// 1, unit memory allocation and UD   start
-extern long 		    UD;// 2, dedicated destructor,      UD  finish
-extern long 		    UF;// 0, memory allocation for regular free
+//				UT == 0, thread start indicator value, RTL default
 //--------------------------------------------------------------------
-extern double  *Xi,*Xj,*Vi,*Vj;
+extern long 	UT;// 1, unit memory allocation and UD   start
+extern long 	UD;// 2, dedicated destructor,      UD  finish
+extern long 	UF;// 0, memory allocation for regular free
+
+extern double	Pi;// Pi number 3.1415...
+extern double	s ;// s = 1.0 / sqrt(2.0)
+//--------------------------------------------------------------------
+extern double  *Xi,*Xj,*Vi,*Vj; //global registers 
 extern double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
 //--------------------------------------------------------------------
 extern void*    Malloc(size_t LN,long CN,long UD);   // malloc wrapper
@@ -29,7 +34,6 @@ extern void		DataInit(void); //Construction
 //--------------------------------------------------------------------
 extern void		DataFree(void); //Destruction
 //--------------------------------------------------------------------
-
 
 #ifdef __cplusplus
 }

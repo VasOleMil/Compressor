@@ -2,6 +2,7 @@
 //--------------------------------------------------------------------
 CDList *Lv; //Data container
 CDItem *Lx; //Data exchange register
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 CFList *Wv; //Func container
 CFItem *Wx; //Func exchange register
 //--------------------------------------------------------------------
@@ -324,12 +325,12 @@ ListSize(void)
 
         Lv->Fc = Lj; Lv->ListItemDel();
     }
-};//Releases Free container  resources
+}//Releases Free container  resources
 //--------------------------------------------------------------------
 void 
 ListFree(void)
 {
-    ListClrV();      //Clear Values
+    ListClrV();     //Clear Values
     while (Lv->Fn)  //ListDelNF()
     {
         Lx = Lv->Fc; Lv->Fn--;
@@ -341,8 +342,8 @@ ListFree(void)
 
         Lv->Fc = Lj; Lv->ListItemDel();
     }
-};//Releases List containers resources
-//--------------------------------------------------------------------
+}//Releases List containers resources
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 void
 FuncAdd(void)
 {
@@ -439,12 +440,12 @@ FuncSize(void)
         
         Wv->Fc = Wj; Wv->ListItemDel();
     }
-};//Releases Free container  resources
+}//Releases Free container  resources
 //--------------------------------------------------------------------
 void
 FuncFree(void)
 {
-    FuncClrV();      //Clear Values  
+    FuncClrV();     //Clear Values  
 	while (Wv->Fn)  //ListDelNF()
     {
         Wx = Wv->Fc; Wv->Fn--;
@@ -456,5 +457,5 @@ FuncFree(void)
 
         Wv->Fc = Wj; Wv->ListItemDel();
     }
-};//Releases List containers resources
+}//Releases List containers resources
 //--------------------------------------------------------------------
