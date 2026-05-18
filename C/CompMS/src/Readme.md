@@ -8,11 +8,13 @@ To increase speed and reduce memory usage, program can be reshaped withiout posi
 Notes:
 
 * CComp.h is the entry point for library users (CompInit, CompStep, CompFree).
-
 * CBase.h holds global simulation parameters and constants.
+* CData.h centralizes standard library includes, memory wrappers, core data exchange. Header is excluded by macro when used by CComp.h to avoid redundant export linkage.
 
-* CData.h centralizes standard library includes and memory wrappers.
+Core stepping:
 
-_CData.h is excluded by macro when included through CComp.h to avoid redundant linkage._
-
-
+* CSort.h - Sort structure, container and service
+* CEmnt.h - Element structure, container and service
+* CHold.h - Time-holder structure, container and service
+* CComp.h - Core stepping functions
+* CMode.h - entry for core extensioos, service, tools.
