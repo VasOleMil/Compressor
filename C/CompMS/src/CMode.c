@@ -114,11 +114,11 @@ EngPhases(void)
             Vi[k] = VV * ((double)rand() * rr - 1.0);
         }
 
-        while ((Et = Et->n) != Es)  // test intersection, Ei != Ej
-        {
-            Ej = Et->v; Xj = Ej->X; //  rv & vv - distance squared
+        while (Et != Es)  // test intersection, Ei != Ej
+        {        
+            Et = Et->p; Ej = Et->v; Xj = Ej->X; 
             rv = Ei->S->Rt + Ej->S->Rt; rv *= rv; vv = 0.0;
-            for (k = 0; k < Rn; k++)
+            for (k = 0; k < Rn; k++) // rv & vv - distance squared
             {
 				rk = Xi[k] - Xj[k]; vv += rk * rk;       
             }
@@ -127,7 +127,7 @@ EngPhases(void)
             { 
                 if(Sc >= Tn){ DataFree(); exit(1); }//tries control
                 else    { Sc++; Ex = Ex->p; break; }//regenerate Ei
-            }//exits since single threaded, global scope control 
+            }//exits since single threaded, global scope control             
         }
     } while ((Ex = Ex->n) != Es);   
 }//Engage phase space, random values {X,V}
