@@ -13,6 +13,7 @@ double           Te;//Eventual time
 
 long             Sn;//Max simultanious seria
 long             Sc;//Number of simultanious events,   dT = 0.0
+long             Tn;//Max initial random placing seria
 
 double           De;//range (-De;+De) treated as zero, dT = 0.0
 double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
@@ -27,6 +28,7 @@ double           RN;// sqrt(Rn)
 long             LN;// Rn * sizeof(double), coordinates or speeds size
 double           Vb;// Bound volume
 double           Ve;// Elements volume, based on Rc
+double           Me;// Elements mass, based on Mc
 double           Vg;// Vgamma(Rn)
 double           GG;// GG = Gc * Gc
 double           GR;// GR = (1.0 + Gc * Te)

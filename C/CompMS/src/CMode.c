@@ -71,15 +71,16 @@ SetGBound(void)
 void
 SetVolume(void)
 {
-	RV = 0.0; Bn = 0; Sx = St = Sv->Vc; // Bn calculated with volume
+    RV = VV = 0.0; Bn = 0; Sx = St = Sv->Vc;//Bn refreshed with volume
     do
     {
-        Si = St->v; Bn += n = Si->Bn; Ri = Si->Rc; RR = Vg * Ri;
-        for (k = 1; k < Rn; k++) { RR *= Ri; };    RV += RR * n;
+		Si = St->v; Bn += n = Si->Bn; Ri = Si->Rc;
+        Mi = Si->Mc;  VV += Mi * n;  RR = Vg * Ri;
+        for (k = 1; k < Rn; k++) RR *= Ri; RV += RR * n;
 	} while ((St = St->n) != Sx); 
-    // Ks - volume density, Ks = GM * Ve / Vb
-    Ve = RV;       // GM = (1.0 + Gc * Te)^Rn
-}//Set summary elements volume Ve based on Rc, use GM to get current
+    // Ks - volume density, Ks = GM * Ve / Vb, GM = (1.0 + Gc * Te)^Rn
+    Ve = RV; Me = VV; // 
+}//Summary elements volume Ve & Me based on Rc, Ve *=GM to get current
 //--------------------------------------------------------------------
 void 
 SetRanges(void)
@@ -99,47 +100,43 @@ SetRanges(void)
 void
 EngPhases(void)
 {
-	//NOT COMPLETTED, only volume density, no threshold for tries!
-    //Currently weighted average mass for volume density
-	//should be recalculated for the case of dedicated mass
-    VV = sqrt(3.0 * kT * Bn / Ve);
-    rr = 2.0 / (double)RAND_MAX;
-    Es = Ex = Ev->Vc;
+    VV = sqrt(3.0 * kT * Bn / Me); rr = 2.0 / (double)RAND_MAX;
+    Es = Ex = Ev->Vc; Sc = 0; //Tries counter, not in steping use 
     do
     {
-		Ei = Ex->v; Et = Ex; Xi = Ei->X; Vi = Ei->V;
+        Et = Ex; Ei = Ex->v; Xi = Ei->X; Vi = Ei->V;
 
 		RandomSphere(); //Generate random point X on (Rn+2) sphere
        
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
         { 
-			Xi[k] = X[k]; //Rn projection is distribution in ball
-            Vi[k] = VV*((double)rand() * rr - 1.0); 
+			Xi[k] = X[k]; // Rn projection is distribution in ball
+            Vi[k] = VV * ((double)rand() * rr - 1.0);
         }
 
-        while ((Et = Et->n) != Es)  //test intersection, Ei != Ej
+        while ((Et = Et->n) != Es)  // test intersection, Ei != Ej
         {
-            Ej = Et->v; Xj = Ej->X; vv = 0.0;//vv-distance squared
-
+            Ej = Et->v; Xj = Ej->X; //  rv & vv - distance squared
+            rv = Ei->S->Rt + Ej->S->Rt; rv *= rv; vv = 0.0;
             for (k = 0; k < Rn; k++)
             {
 				rk = Xi[k] - Xj[k]; vv += rk * rk;       
             }
             //check distances, if intersect, regenerate Ei
-            if ((rv = Ei->S->Rt + Ei->S->Rt) * rv > vv)
+            if (rv > vv)
             { 
-				Ex = Ex->p; break; //regenerate Ei
-            }//no tries count yet,
+                if(Sc >= Tn){ DataFree(); exit(1); }//tries control
+                else    { Sc++; Ex = Ex->p; break; }//regenerate Ei
+            }//exits since single threaded, global scope control 
         }
-    } while ((Ex = Ex->n) != Es);
-    
+    } while ((Ex = Ex->n) != Es);   
 }//Engage phase space, random values {X,V}
 //--------------------------------------------------------------------
 static void 
 RandomSphere() 
 {  
 	RR = 0.0; //rr = 2.0 / (double)RAND_MAX; //rn = Rn + 2
-    // pick one index coordinate belong to cube face
+    // pick one index coordinate, will belong to cube face
     i = rand() % rn;  
 	// generate others coordinates, uniformly distributed
     for (k = 0; k < rn; k++) 
@@ -148,19 +145,17 @@ RandomSphere()
         else        { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
         RR += rk * rk;
     }
-    // project cube face point to sphere surface
-    RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR;}
+    // project cube face point to, Rb scaled, sphere surface
+    RR = Rb / sqrt(RR); for (k = 0; k < rn; k++){ X[k] *= RR;}
 	// random rotations of coordinates, to smooth distribution
     for (k = 0; k < rn; k++) 
     {
         i = rand() % rn; do  j = rand() % rn;  while (i == j);
         
         Ri = X[i]; Rj = X[j];
-        X[i] = s * (Rj - Ri); // s = 1.0 / sqrt(2.0)
-        X[j] = s * (Rj + Ri);
+        X[i] = s * (Rj - Ri); 
+        X[j] = s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
     }
-    // scale to bound radius
-    for (k = 0; k < rn; k++) { X[k] *= Rb; }
 }//Generate random point on Rn-sphere of radius Rb
 //--------------------------------------------------------------------
 

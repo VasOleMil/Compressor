@@ -20,7 +20,7 @@ extern double Vgamma(void);//Multiplier Vb = Vg * Rb^Rn, Vg=Vgamma(Rn)
 //--------------------------------------------------------------------
 extern void SetGBound(void);//Size for even interaction/move probality
 //--------------------------------------------------------------------
-extern void SetVolume(void);//Summary elements volume Ve based on Rc
+extern void SetVolume(void);//Summary elements volume Ve & Me, uses Rc
 //--------------------------------------------------------------------
 extern void SetRanges(void);//Zero drift ranges, for reporting only 
 //--------------------------------------------------------------------

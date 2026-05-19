@@ -41,14 +41,16 @@ CompLoad(double GC)
 	Lv = Tv->Vc; ListClrV(); //clear time list, save items for reuse
     TimeCalcST(); //calculate all elements tti, for stepping
 	Lv = Tv->Vc; ListSize();//clear free items, release resources
+    //reset counters for stepping
+    Sc = 0; Ce = 0; Cb = 0; Cx = 0;
 }//init tti for stepping, arguments: sizing speed
 //--------------------------------------------------------------------
 void
 CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
-    
-    Sn = 100; Sc = 0; Vg = Vgamma(); 
+    Tn = 10 * Bn * Bn; kT = KT;
+    Sn = Bn; Vg = Vgamma(); 
     
     if (KS <= 0.0)
     {   SetGBound(); }
@@ -60,6 +62,8 @@ CompLoad(double KT, double KS, double GC)
     EngPhases(); //Engage phase space, random values {X,V}
     
 	TimeCalcST(); //finally initiate all elements tti
+	//reset counters for stepping
+	Sc = 0; Ce = 0; Cb = 0; Cx = 0;
 }//init tti for stepping for kT, volume density,  sizing speed
 //--------------------------------------------------------------------
 void

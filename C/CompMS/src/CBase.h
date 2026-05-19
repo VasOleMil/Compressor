@@ -23,6 +23,7 @@ extern double           Te;//Eventual time
 
 extern long             Sn;//Max simultanious seria
 extern long             Sc;//Number of simultanious events,   dT = 0.0
+extern long             Tn;//Max initial random placing seria
 
 extern double           De;//range (-De;+De) treated as zero, dT = 0.0
 extern double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
@@ -37,6 +38,7 @@ extern double           RN;// sqrt(Rn)
 extern long             LN;// Rn * sizeof(double),coordinates & speeds
 extern double           Vb;// Bound volume
 extern double           Ve;// Elements volume, based on Rc
+extern double           Me;// Elements mass, based on Mc
 extern double           Vg;// Vgamma(Rn)
 extern double           GG;// GG = Gc * Gc
 extern double           GR;// GR = (1.0 + Gc * Te)
