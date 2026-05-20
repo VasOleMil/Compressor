@@ -18,9 +18,9 @@ SortItemNew(void)
     Lx = (CDItem*) Malloc(sizeof(CDItem), UT, UT); //create ListItem
     Si = (CSort*)  Malloc(sizeof(CSort),  UT, UD); //create Object  
     //Loop Lx ListItem and connect to Si Object 
-    Lx->p = Lx;
-    Lx->n = Lx;    
-    Lx->v = Si;
+    Lx->p = Lx; //Lv = Sv; //restore context
+    Lx->n = Lx;            //loop item
+    Lx->v = Si;            //connect object
 }//ListNew item provider for Sort, sets looped Lx
 //--------------------------------------------------------------------
 static void 
@@ -49,7 +49,7 @@ SortFree(void)
 }//Releases Free resources  Sv
 //--------------------------------------------------------------------
 static void
-SortTest(long Id, long Bn, double Rc, double Mc)
+SortTesT(long Id, long Bn, double Rc, double Mc)
 {
     if (Rc <= 0.00 || Bn <= 0)  
     { 
@@ -60,7 +60,7 @@ SortTest(long Id, long Bn, double Rc, double Mc)
 }//Test sort parameters. Set: Si
 //--------------------------------------------------------------------
 static void
-SortInit(long Id, long Bn, double Rc, double Mc)
+SortIniT(long Id, long Bn, double Rc, double Mc)
 {     
     Si->id = Id;   
     Si->Bn = Bn;
@@ -92,19 +92,19 @@ void
 SortAdd(long Id, long Bn, double Rc, double Mc)
 {   
     SortGet(Id);      if(Sx != NULL) { return; }
-    SortTest(Id, Bn, Rc, Mc); if(Si) { return; }
+    SortTesT(Id, Bn, Rc, Mc); if(Si) { return; }
     Lv = Sv; ListAdd();  Sx = Lx; // Add new List item,  Lx == Sv->Vc
     Si = Sx->v; //Localize new object  
-    SortInit(Id, Bn, Rc, Mc);  //Set values
+    SortIniT(Id, Bn, Rc, Mc);  //Set values
 }//Add new element to Sorts selector container.    Set: Sv->Vc, Sx, Si
 //--------------------------------------------------------------------
 void 
 SortSet(long Id, long Bn, double Rc, double Mc)
 {   
     SortGet(Id);      if(Sx == NULL) { return; }
-    SortTest(Id, Bn, Rc, Mc); if(Si) { return; }
+    SortTesT(Id, Bn, Rc, Mc); if(Si) { return; }
     Si = Sx->v; //Localize new object
-    SortInit(Id, Bn, Rc, Mc);  //Set values
+    SortIniT(Id, Bn, Rc, Mc);  //Set values
 }//Set values Sort object.                                 Set: Sx, Si
 //--------------------------------------------------------------------
 void 
