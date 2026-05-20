@@ -71,6 +71,8 @@ extern void ListClrV(void);//Move Value to Free, all                Vn
 extern void ListSize(void);//Releases Free container resources
 //--------------------------------------------------------------------
 extern void ListFree(void);//Releases List container resources
+//--------------------------------------------------------------------
+extern void ListVoid(void);//void function for seria call tests
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 extern void FuncAdd(void);//Move Free to Value, one             Vn, Wx
 //--------------------------------------------------------------------
@@ -81,6 +83,8 @@ extern void FuncClrV(void);//Move Value to Free, all                Vn
 extern void FuncSize(void);//Releases Free container resources
 //--------------------------------------------------------------------
 extern void FuncFree(void);//Releases List container resources
+//--------------------------------------------------------------------
+extern void FuncVoid(void);//void function for seria call tests
 //--------------------------------------------------------------------
 
 

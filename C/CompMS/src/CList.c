@@ -1,4 +1,4 @@
-#include"CList.h"
+﻿#include"CList.h"
 //--------------------------------------------------------------------
 CDList *Lv; //Data container
 CDItem *Lx; //Data exchange register
@@ -8,8 +8,10 @@ CFItem *Wx; //Func exchange register
 //--------------------------------------------------------------------
 CDItem *Li; //local list register
 CDItem *Lj; //local list register
+
 CFItem *Wi; //local list register
 CFItem *Wj; //local list register
+
 long    Xn; //local list counter
 //==================================================================//
 //                     Base functions section                       //
@@ -188,10 +190,10 @@ ListAdd(void)
         Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
         Li->n = Lj;  //connect next over Lx   /*  |       |  */          
         //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
-        //Lx->n = Lx;//Looping in new items is also implemented          
+        Lx->n = Lx;  //Looping in new items is also implemented          
     
-        Lv->Fc = Lj; //DetNF()      
-	}   
+        Lv->Fc = Lj; //DetNF(),      
+	}//uncomment or change reduced looping for other stepping   
     //---------------------------------------------------------   
     Li = (Lv->Vn == 0)?(Lx):(Lv->Vc);
 
@@ -208,32 +210,30 @@ ListAdd(void)
 void 
 ListDel(void)
 {	
-    if (Lv->Vn > 0) 
-    { 
-        //-----------------------------------------------------
-        Lx = Lv->Vc; Lv->Vn--;   
-    
-        Li = Lx->p;  //Lx is caller defined   /*  +--->---+  */          
-        Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
-        Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
-        Li->n = Lj;  //connect next over Lx   /*  |       |  */          
-        //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
-        //Lx->n = Lx;//Looping in new items is also implemented     
-    
-        Lv->Vc = Li; //DetPV()
-        //-----------------------------------------------------
-        Lj = (Lv->Fn == 0)?(Lx):(Lv->Fc); 
-    
-        Li = Lj->p; //Lj is caller defined    /*  0 - +-<-+  */ 
-        Lx->p = Li; //Lx is caller defined    /*  |   |   |  */ 
-        Li->n = Lx; //Li assumed not empty    /*--i->-x->-j--*/ 
-        Lj->p = Lx; //Lx assumed not empty    /*  |   |   |  */  
-        Lx->n = Lj; //(Lx == Lj),  ensured    /*  +-<-+ - 0  */ 
-    
-		Lv->Fc = Lx; Lv->Fn++; //AttPF() 
-        //----------------------------------------------------- 
-    }    
-}//Moves Value to Free:                  Vc = Vc->p, Fc->p = Lx
+    if (Lv->Vn == 0) return;                        // done
+    //-----------------------------------------------------
+    Lx = Lv->Vc; Lv->Vn--; //DetPV()
+
+    Li = Lx->p;  //Lx is caller defined   /*  +--->---+  */          
+    Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
+    Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
+    Li->n = Lj;  //connect next over Lx   /*  |       |  */          
+    Lx->p = Lx;  //Loop for uniform add   /*  +---<---+  */          
+    //Lx->n = Lx;//Looping in new items is also implemented     
+    //uncomment or change reduced looping for other stepping
+    Lv->Vc = Li; 
+    //-----------------------------------------------------     
+    Lj = (Lv->Fn == 0) ? (Lx) : (Lv->Fc);
+
+    Li = Lj->p; //Lj is caller defined    /*  0 - +-<-+  */ 
+    Lx->p = Li; //Lx is caller defined    /*  |   |   |  */ 
+    Li->n = Lx; //Li assumed not empty    /*--i->-x->-j--*/ 
+    Lj->p = Lx; //Lx assumed not empty    /*  |   |   |  */  
+    Lx->n = Lj; //(Lx == Lj),  ensured    /*  +-<-+ - 0  */ 
+           
+    Lv->Fc = Lx; Lv->Fn++; //AttPF() 
+    //-----------------------------------------------------
+}//Moves Value to Free:              Vc = Vc->p, Fc->p = Lx
 //--------------------------------------------------------------------
 void 
 ListADD(void)
@@ -246,7 +246,7 @@ ListADD(void)
     Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
     Li->n = Lj;  //connect next over Lx   /*  |       |  */          
     //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
-    //Lx->n = Lx;//Looping in new items is also implemented          
+    Lx->n = Lx;//Looping in new items is also implemented          
     
     Lv->Fc = Lj;   //DetNF()  
     //-----------------------------------------------------
@@ -272,7 +272,7 @@ ListDEL(void)
     Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
     Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
     Li->n = Lj;  //connect next over Lx   /*  |       |  */          
-    //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
+    Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
     //Lx->n = Lx;//Looping in new items is also implemented     
     
     Lv->Vc = Li; //DetPV()
@@ -289,26 +289,45 @@ ListDEL(void)
     //-----------------------------------------------------    
 }//Moves Value to Free:              Vc = Vc->p, Fc->p = Lx
 //--------------------------------------------------------------------
-void
+void 
 ListClrV(void)
-{	
-    if (Lv->Vn == 0) return;     //safety
+{
+    if (Lv->Vn == 0) return;    // done
+    if (Lv->Fn == 0) 
+    { 
+        Lv->Fc = Lv->Vc; 
+    }
+    else
+    {
+        //-------------------------------------------------
+        //connect two rings: A (Fc) & B (Vc)
+        //Li = Lv->Fc; Lj = Lv->Vc;
+        //CDItem* Ai = Li->p;   // tail A
+        //CDItem* Bj = Lj->p;   // tail B
 
-    Xn = Lv->Fn;//assumed controll exists
-    Lj = Lv->Vc;//assumed  Vn > 0   //[a]
-    Li = (Xn == 0)?(Lj):(Lv->Fc);   //[A]
+        //Ai->n = Lj; Lj->p = Ai;   // end A -> begin B
+        //Bj->n = Li; Li->p = Bj;   // end B -> begin A
+        //-------------------------------------------------
+        Li = Lv->Fc;/*[a]*/; Wi = Li->n;/*[b]*/
+        Lj = Lv->Vc;/*[A]*/; Wj = Lj->n;/*[B]*/
 
-    Lx = Li->n;           //Merge: a -> A
-    Lj->n = Lx;
-    Lx->p = Lj;
+        Li->n = Wj; Wj->p = Li;  /*a->B, B<-a*/
+        Lj->n = Wi; Wi->p = Lj;  /*A->b, B<-a*/
+        //-------------------------------------------------
+        //Li = Lv->Fc;/*[a]*/;    //see merge function
+        //Lj = Lv->Vc;/*[A]*/;    //for diagram
+        
+        //Lx = Li->n; /*[b]*/;
+        //Lj->n = Lx; Lx->p = Lj;  /*a->B, B<-a*/
 
-    Lx = Lj->n;
-    Li->n = Lx;
-    Lx->p = Li;
-     
-    Lv->Fn = Xn + Lv->Vn; // add counters
-    Lv->Fc = Li;          // link  result
-    Lv->Vn = 0;           // reset source
+        //Lx = Lj->n; /*[B]*/
+        //Li->n = Lx; Lx->p = Li;  /*A->b, B<-a*/
+        //last looks fine, but not work on some platforms
+        //optimizers (Lx->p->n) may treat as (Lx)
+    }
+
+    Lv->Fn += Lv->Vn;
+    Lv->Vn = 0;
 }//Move Value items, to Free container
 //--------------------------------------------------------------------
 void 
@@ -330,7 +349,18 @@ ListSize(void)
 void 
 ListFree(void)
 {
-    ListClrV();     //Clear Values
+    while (Lv->Vn)  //ListDelNF()
+    {
+        Lx = Lv->Vc; Lv->Vn--;
+
+        Li = Lx->p;
+        Lj = Lx->n;
+        Lj->p = Li;
+        Li->n = Lj;
+
+        Lv->Vc = Lj; Lv->ListItemDel();
+    }
+    
     while (Lv->Fn)  //ListDelNF()
     {
         Lx = Lv->Fc; Lv->Fn--;
@@ -343,6 +373,12 @@ ListFree(void)
         Lv->Fc = Lj; Lv->ListItemDel();
     }
 }//Releases List containers resources
+//--------------------------------------------------------------------
+void
+ListVoid(void)
+{
+    return;
+}//void function for tests
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 void
 FuncAdd(void)
@@ -359,7 +395,9 @@ FuncAdd(void)
         Wi = Wx->p;         
         Wj = Wx->n;    
         Wj->p = Wi;         
-        Wi->n = Wj;         
+        Wi->n = Wj;
+        Wx->p = Wx;
+        Wx->n = Wx;
  
         Wv->Fc = Wj;  //DetNF()  
     }
@@ -387,7 +425,9 @@ FuncDel(void)
         Wi = Wx->p;         
         Wj = Wx->n;    
         Wj->p = Wi;         
-        Wi->n = Wj;         
+        Wi->n = Wj;  
+        Wx->p = Wx;      
+        Wx->n = Wx;
       
         Wv->Vc = Wi; //DetPV()
         //-----------------------------------------------------
@@ -407,23 +447,22 @@ FuncDel(void)
 void
 FuncClrV(void)
 {
-    if (Wv->Vn == 0) return;     //safety
+    if (Wv->Vn == 0) return;    // done
+    if (Wv->Fn == 0)
+    {
+        Wv->Fc = Wv->Vc;
+    }
+    else
+    {
+        Wi = Lv->Fc;/*[a]*/; Li = Wi->n;/*[b]*/
+        Wj = Lv->Vc;/*[A]*/; Lj = Wj->n;/*[B]*/
 
-    Xn = Wv->Fn;//assumed controll exists
-    Wj = Wv->Vc;//assumed  Vn > 0   //[a]
-    Wi = (Xn == 0)?(Wj):(Wv->Fc);   //[A]  
+        Wi->n = Lj; Lj->p = Wi;  /*a->B, B<-a*/
+        Wj->n = Li; Li->p = Wj;  /*A->b, B<-a*/
+    }
 
-    Wx = Wi->n;           //Merge: a -> A
-    Wj->n = Wx;   
-    Wx->p = Wj;   
-   
-    Wx = Wj->n;   
-    Wi->n = Wx;  
-    Wx->p = Wi;   
-
-    Wv->Fn = Xn + Wv->Vn; // add counters
-    Wv->Fc = Wi;          // Link  result
-    Wv->Vn = 0;           // reset source
+    Wv->Fn += Wv->Vn;           // add counters
+    Wv->Vn = 0;                 // reset source
 }//Move Value items, to Free container
 //--------------------------------------------------------------------
 void
@@ -445,8 +484,19 @@ FuncSize(void)
 void
 FuncFree(void)
 {
-    FuncClrV();     //Clear Values  
-	while (Wv->Fn)  //ListDelNF()
+    while (Wv->Vn)  //ListDelNF()
+    {
+        Wx = Wv->Vc; Wv->Vn--;
+
+        Wi = Wx->p;
+        Wj = Wx->n;
+        Wj->p = Wi;
+        Wi->n = Wj;
+
+        Wv->Vc = Wj; Wv->ListItemDel();
+    }
+	
+    while (Wv->Fn)  //ListDelNF()
     {
         Wx = Wv->Fc; Wv->Fn--;
 
@@ -458,4 +508,10 @@ FuncFree(void)
         Wv->Fc = Wj; Wv->ListItemDel();
     }
 }//Releases List containers resources
+//--------------------------------------------------------------------
+void
+FuncVoid(void)
+{
+    return;
+}//void function for tests
 //--------------------------------------------------------------------
