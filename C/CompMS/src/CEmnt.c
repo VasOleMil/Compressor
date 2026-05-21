@@ -14,7 +14,7 @@ CDItem  *ej;//saved element for collision handling
 CEmnt   *Ei;//object service register
 CEmnt   *Ej;//object service register
 //--------------------------------------------------------------------
-long    k, c, n;
+long    c, n;
 
 double *rc; //rc = r(j) - r(i)
 //--------------------------------------------------------------------
@@ -25,13 +25,13 @@ EmntItemNew(void)
     Ei = (CEmnt*)   Malloc(sizeof(CEmnt) ,UT, UT); //create Object
     //Loop Lx ListItem and connect to Ei Object 
     Lx->p = Lx;
-    Lx->n = Lx;    
+    Lx->n = Lx;
     Lx->v = Ei;
     //Emnt initial setiings
     Ei->S = NULL; 
-    Ei->X = (double*)Malloc(sizeof(double), Rn, UT);
-    Ei->V = (double*)Malloc(sizeof(double), Rn, UD);
-}//ListNew item provider for Emnt, sets looped Lx
+    Ei->X = (double*)Malloc(sizeof(double), Rn, UT); //restore context
+    Ei->V = (double*)Malloc(sizeof(double), Rn, UD); //Lv = Ev; 
+}//ListNew item provider for Emnt, sets it looped               Ei, Lx
 //--------------------------------------------------------------------
 static void 
 EmntItemDel(void)
@@ -43,7 +43,7 @@ EmntItemDel(void)
     
     free(Ei);
     free(Lx);  
-}//ListRem item provider for Emnt
+}//ListDel item provider for Emnt                               Ei, Lx
 //--------------------------------------------------------------------
 void 
 EmntInit(void)
@@ -55,7 +55,7 @@ EmntInit(void)
 	//Set Element contaners counters and providers
 	Ev->Fn = 0; Ev->ListItemDel = EmntItemDel;
     Ev->Vn = 0; Ev->ListItemNew = EmntItemNew;
- }//Inits start values in Emnt container.                   Set: Ev
+ }//Inits start values in Emnt container.                       rc, Ev
 //--------------------------------------------------------------------
 void 
 EmntFree(void)
@@ -65,7 +65,7 @@ EmntFree(void)
     Lv = Ev; ListFree(); 
     free(Ev); Ev = NULL;
     free(rc); rc = NULL;
-}//Releases Free resources  Ev
+}//Releases Free resources                              rc, Lx, Lv, Ev
 //--------------------------------------------------------------------
 void 
 EmntSize(void)
@@ -222,7 +222,7 @@ EmntCollEF(void)
 {
     Si = Ei->S; Mi = Si->Mt; Sj = Ej->S; Mj = Sj->Mt;    
     rv = 2.0 / (Mi + Mj);   Vi = Ei->V;   Vj = Ej->V;
-           
+    // unconditional, guided only by time      
     for(k = 0; k < Rn; k++)
     {
         vk  = rv * (Vj[k] - Vi[k]); 
@@ -234,8 +234,8 @@ EmntCollEF(void)
 void
 EmntColl(void)
 {
-    Ei = ei->v;
-    if (ej == NULL)  { EmntCollBS(); }
+    Ei = ei->v;        if (ej == NULL)  
+           { EmntCollBS(); }
     else { Ej = ej->v; EmntCollES(); }  
 }//ei, ej  interaction
 //--------------------------------------------------------------------

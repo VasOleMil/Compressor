@@ -16,7 +16,7 @@ extern void SortSet(long id, long Bn, double Rc, double Mc);//
 //--------------------------------------------------------------------
 extern void SortDel(long id);//
 //--------------------------------------------------------------------
-extern void CompLoad(double GC);//init stepping for sizing speed
+extern void CompLoaD(double GC);//init stepping for sizing speed
 //--------------------------------------------------------------------
 extern void CompLoad(double KT, double KS, double GC);//init stepping
 //--------------------------------------------------------------------

@@ -333,14 +333,12 @@ ListClrV(void)
 void 
 ListSize(void)
 {
-    while (Lv->Fn)  //ListDelNF()
+    while (Lv->Fn)   //ListDelNF()
     {
         Lx = Lv->Fc; Lv->Fn--;
 
-        Li = Lx->p;
-        Lj = Lx->n;
-        Lj->p = Li;
-        Li->n = Lj;
+        Li = Lx->p;  Lj = Lx->n;
+        Lj->p = Li;  Li->n = Lj;
 
         Lv->Fc = Lj; Lv->ListItemDel();
     }
@@ -349,26 +347,22 @@ ListSize(void)
 void 
 ListFree(void)
 {
-    while (Lv->Vn)  //ListDelNF()
+    while (Lv->Vn)   //ListDelNV()
     {
         Lx = Lv->Vc; Lv->Vn--;
 
-        Li = Lx->p;
-        Lj = Lx->n;
-        Lj->p = Li;
-        Li->n = Lj;
+        Li = Lx->p;  Lj = Lx->n;
+        Lj->p = Li;  Li->n = Lj;
 
         Lv->Vc = Lj; Lv->ListItemDel();
     }
     
-    while (Lv->Fn)  //ListDelNF()
+    while (Lv->Fn)   //ListDelNF()
     {
         Lx = Lv->Fc; Lv->Fn--;
 
-        Li = Lx->p;
-        Lj = Lx->n;
-        Lj->p = Li;
-        Li->n = Lj;
+        Li = Lx->p;  Lj = Lx->n;
+        Lj->p = Li;  Li->n = Lj;
 
         Lv->Fc = Lj; Lv->ListItemDel();
     }
@@ -447,7 +441,7 @@ FuncDel(void)
 void
 FuncClrV(void)
 {
-    if (Wv->Vn == 0) return;    // done
+    if (Wv->Vn == 0) return;            // done
     if (Wv->Fn == 0)
     {
         Wv->Fc = Wv->Vc;
@@ -484,26 +478,22 @@ FuncSize(void)
 void
 FuncFree(void)
 {
-    while (Wv->Vn)  //ListDelNF()
+    while (Wv->Vn)   //ListDelNV()
     {
         Wx = Wv->Vc; Wv->Vn--;
 
-        Wi = Wx->p;
-        Wj = Wx->n;
-        Wj->p = Wi;
-        Wi->n = Wj;
+        Wi = Wx->p;  Wj = Wx->n;
+        Wj->p = Wi;  Wi->n = Wj;
 
         Wv->Vc = Wj; Wv->ListItemDel();
     }
-	
-    while (Wv->Fn)  //ListDelNF()
+
+    while (Wv->Fn)   //ListDelNF()
     {
         Wx = Wv->Fc; Wv->Fn--;
 
-        Wi = Wx->p;
-        Wj = Wx->n;
-        Wj->p = Wi;
-        Wi->n = Wj;
+        Wi = Wx->p;  Wj = Wx->n;
+        Wj->p = Wi;  Wi->n = Wj;
 
         Wv->Fc = Wj; Wv->ListItemDel();
     }

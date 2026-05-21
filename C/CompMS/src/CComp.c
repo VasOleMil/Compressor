@@ -8,8 +8,7 @@
 //--------------------------------------------------------------------
 //
 //--------------------------------------------------------------------
-long i, j, k, n;
-
+long i, j, n;
 //--------------------------------------------------------------------
 void
 CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
@@ -18,8 +17,8 @@ CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
 	// (Rn >= 2 )  is expected, but not tested
     RN = sqrt((double)Rn); LN = Rn * sizeof(double);
 
-    DataInit();                          // https://youtu.be/jaFnirguL54
-}//resets all containers and data, if space dimension is changed
+    /*(UT = 1)*/;  DataInit();           // https://youtu.be/jaFnirguL54
+}//if space dimension is changed, resets all containers and data
 //--------------------------------------------------------------------
 void
 CompFree(void)
@@ -28,7 +27,7 @@ CompFree(void)
 }
 //--------------------------------------------------------------------
 void
-CompLoad(double GC)
+CompLoaD(double GC)
 {
 	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
 
@@ -38,11 +37,11 @@ CompLoad(double GC)
         Si = St->v; Si->Vc = Si->Rt * Gc;
         Si->Rc = Si->Rt; Si->Mc = Si->Mt;      
     }
-	Lv = Tv->Vc; ListClrV(); //clear time list, save items for reuse
+    Lv = Tv; ListClrV(); //clear time list, save items for reuse
     TimeCalcST(); //calculate all elements tti, for stepping
-	Lv = Tv->Vc; ListSize();//clear free items, release resources
+	Lv = Tv; ListSize();//clear free items, release resources
     //reset counters for stepping
-    Sc = 0; Ce = 0; Cb = 0; Cx = 0;
+    Sc = 0; Ce = 0; Cb = 0;
 }//init tti for stepping, arguments: sizing speed
 //--------------------------------------------------------------------
 void
@@ -52,6 +51,9 @@ CompLoad(double KT, double KS, double GC)
     Tn = 10 * Bn * Bn; kT = KT;
     Sn = Bn; Vg = Vgamma(); 
     
+    Sx = St = Sv->Vc; //aling elements number to sorts Bn
+    do { Si = St->v; EmntSize(); } while ((St = St->n) != Sx);
+
     if (KS <= 0.0)
     {   SetGBound(); }
     else
@@ -59,11 +61,16 @@ CompLoad(double KT, double KS, double GC)
     
     SetRanges(); //Zero drift ranges, for reporting only
 
-    EngPhases(); //Engage phase space, random values {X,V}
+    EngPhases(); //Engage phase space, random values {X,V} 
     
 	TimeCalcST(); //finally initiate all elements tti
+    
+    //Flush free containers
+    Lv = Tv; ListSize(); Lv = Ev; ListSize();
+    Lv = Sv; ListSize(); Lv = Dv; ListSize();
+
 	//reset counters for stepping
-	Sc = 0; Ce = 0; Cb = 0; Cx = 0;
+	Sc = 0; Ce = 0; Cb = 0;
 }//init tti for stepping for kT, volume density,  sizing speed
 //--------------------------------------------------------------------
 void

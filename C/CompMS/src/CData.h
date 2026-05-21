@@ -26,9 +26,8 @@ extern long 	UF;// 0, memory allocation for regular free
 
 extern double	Pi;// Pi number 3.1415...
 extern double	s ;// s = 1.0 / sqrt(2.0)
-//--------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 extern CDList  *Dv;//Data list items container 
-
 extern long		k ;//index, used in dimension 
 extern double  *Xi,*Xj,*Vi,*Vj; //global registers 
 extern double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;

@@ -22,11 +22,9 @@ HoldItemNew(void)
     Lx->p = Lx;
     Lx->n = Lx;
     Lx->v = Ti;
-	//if (Gv) //Gv = Y, for Gm = N use UD object Ti initialization 
-    {
-        Ti->Xi = (double*)Malloc(sizeof(double), Rn, UT); //Gv = Y
-        Ti->Xj = (double*)Malloc(sizeof(double), Rn, UD); //Gv = Y
-    }
+	//if (Gv) 
+    Ti->Xi = (double*)Malloc(sizeof(double), Rn, UT); //restore context
+    Ti->Xj = (double*)Malloc(sizeof(double), Rn, UD); Lv = Tv;
 }//ListNew item provider for CHold,                            Set: Lx
 //--------------------------------------------------------------------
 static void

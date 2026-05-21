@@ -12,8 +12,8 @@ ModeInit(void)
 {
 	if (Mv != NULL) return; rn = Rn + 2;
 
-    X = (double*)Malloc((sizeof(double))*((size_t)(rn)), UT, UD);
-    Mv = X; //non zero value to mark initialization, used in ModeFree
+    X = (double*)Malloc(sizeof(double), rn, UD);
+    Mv = (CDList*)X; //non zero value to mark initialization, ModeFree
    
 }//Inits start values in Mode container.                        Set: X
 //--------------------------------------------------------------------
@@ -21,7 +21,7 @@ void
 ModeFree(void)
 {
     if (Mv == NULL) return;
-	free(X); X = Mv = NULL;
+    free(X); X = NULL; Mv = NULL;
 }//Releases Free resources  
 //--------------------------------------------------------------------
 double
@@ -97,6 +97,32 @@ SetRanges(void)
     e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 2e1 * Ds;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
+static void
+RandomSphere(void)
+{
+    RR = 0.0; //rr = 2.0 / (double)RAND_MAX; //rn = Rn + 2
+    // pick one index coordinate, will belong to cube face
+    i = rand() % rn;
+    // generate others coordinates, uniformly distributed
+    for (k = 0; k < rn; k++)
+    {
+        if (k != i) { rk = X[k] = (double)rand() * rr - 1.0; }
+        else { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
+        RR += rk * rk;
+    }
+    // project cube face point to, Rb scaled, sphere surface
+    RR = Rb / sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR; }
+    // random rotations of coordinates, to smooth distribution
+    for (k = 0; k < rn; k++)
+    {
+        i = rand() % rn; do  j = rand() % rn;  while (i == j);
+
+        Ri = X[i]; Rj = X[j];
+        X[i] = s * (Rj - Ri);
+        X[j] = s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
+    }
+}//Generate random point on Rn-sphere of radius Rb
+//--------------------------------------------------------------------
 void
 EngPhases(void)
 {
@@ -132,30 +158,5 @@ EngPhases(void)
     } while ((Ex = Ex->n) != Es);   
 }//Engage phase space, random values {X,V}
 //--------------------------------------------------------------------
-static void 
-RandomSphere() 
-{  
-	RR = 0.0; //rr = 2.0 / (double)RAND_MAX; //rn = Rn + 2
-    // pick one index coordinate, will belong to cube face
-    i = rand() % rn;  
-	// generate others coordinates, uniformly distributed
-    for (k = 0; k < rn; k++) 
-    {
-        if (k != i) { rk = X[k] = (double)rand() * rr - 1.0; }
-        else        { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
-        RR += rk * rk;
-    }
-    // project cube face point to, Rb scaled, sphere surface
-    RR = Rb / sqrt(RR); for (k = 0; k < rn; k++){ X[k] *= RR;}
-	// random rotations of coordinates, to smooth distribution
-    for (k = 0; k < rn; k++) 
-    {
-        i = rand() % rn; do  j = rand() % rn;  while (i == j);
-        
-        Ri = X[i]; Rj = X[j];
-        X[i] = s * (Rj - Ri); 
-        X[j] = s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
-    }
-}//Generate random point on Rn-sphere of radius Rb
-//--------------------------------------------------------------------
+
 
