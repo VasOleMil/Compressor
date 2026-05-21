@@ -11,6 +11,18 @@ Notes:
 * CBase.h holds global simulation parameters and constants.
 * CData.h centralizes standard library includes, memory wrappers, core data exchange. Header is excluded by macro when used by CComp.h to avoid redundant export linkage.
 
+Interrnal types and data:
+
+ - **CList**
+Responsible for the data structure (ring lists, addition, deletion, merging, clearing).
+Works exclusively with pointers to list elements, does not deal with memory directly.
+
+- **CData**
+Responsible for memory and internal container. Uses `malloc`/`free` to work with data, does not interfere with the logic of lists.
+Functions are autonomous, do not require stack wrappers.
+
+_Interaction is near type and object. Modules have no dependent functions._
+
 Core stepping:
 
 * CSort.h - Sort structure, container and service
@@ -18,3 +30,5 @@ Core stepping:
 * CHold.h - Time-holder structure, container and service
 * CComp.h - Core stepping functions
 * CMode.h - entry for core extensioos, service, tools.
+
+
