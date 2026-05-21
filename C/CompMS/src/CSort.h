@@ -31,6 +31,8 @@ extern void SortInit(void);//Inits start values in Sorts container: Sv
 //--------------------------------------------------------------------
 extern void SortFree(void);//Releases Free resources  Sv
 //--------------------------------------------------------------------
+extern void SortLoad(void);///Init sort object values, uses: Si 
+//--------------------------------------------------------------------
 extern void SortAdd(long id, long Bn, double Rc, double Mc);// Sx,Si
 //--------------------------------------------------------------------
 extern void SortSet(long id, long Bn, double Rc, double Mc);// Sx,Si

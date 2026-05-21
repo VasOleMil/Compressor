@@ -51,8 +51,8 @@ CompLoad(double KT, double KS, double GC)
     Tn = 10 * Bn * Bn; kT = KT;
     Sn = Bn; Vg = Vgamma(); 
     
-    Sx = St = Sv->Vc; //aling elements number to sorts Bn
-    do { Si = St->v; EmntSize(); } while ((St = St->n) != Sx);
+    Sx = St = Sv->Vc; //aling elements number to sorts Si->Bn
+    do { Si = St->v; SortLoad(); } while ((St = St->n) != Sx);
 
     if (KS <= 0.0)
     {   SetGBound(); }
@@ -66,8 +66,10 @@ CompLoad(double KT, double KS, double GC)
 	TimeCalcST(); //finally initiate all elements tti
     
     //Flush free containers
-    Lv = Tv; ListSize(); Lv = Ev; ListSize();
-    Lv = Sv; ListSize(); Lv = Dv; ListSize();
+    Lv = Tv;    ListSize();   
+    Lv = Ev;    ListSize();
+    Lv = Sv;    ListSize();
+  /*Dv = Dv*/;  DataSize();
 
 	//reset counters for stepping
 	Sc = 0; Ce = 0; Cb = 0;

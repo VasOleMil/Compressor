@@ -36,6 +36,8 @@ extern void*    Malloc(size_t LN,long CN,long UD);   // malloc wrapper
 //--------------------------------------------------------------------
 extern void		DataInit(void); //Construction
 //--------------------------------------------------------------------
+extern void     DataSize(void); //Releases free data  resources
+//--------------------------------------------------------------------
 extern void		DataFree(void); //Destruction
 //--------------------------------------------------------------------
 

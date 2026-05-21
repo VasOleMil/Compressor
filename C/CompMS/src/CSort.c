@@ -1,5 +1,6 @@
 #include"CBase.h"
 #include"CSort.h"
+#include"CEmnt.h"
 //--------------------------------------------------------------------
 CDList  *Sv;//Sorts  lists  container 
     
@@ -58,19 +59,21 @@ SortTesT(long Id, long Bn, double Rc, double Mc)
     Si = NULL; //No error, fail safe
 }//Test sort parameters. Validator connector                        Si
 //--------------------------------------------------------------------
-static void
-SortIniT(long Id, long Bn, double Rc, double Mc)
+void
+SortLoad()
 {     
-    Si->id = Id;   
-    Si->Bn = Bn;
-    Si->Rc = Rc;
-    Si->Vc = Rc * Gc;
-    Si->Rt = Rc * GR; // GR = (1.0 + Gc * Te)
+    EmntSize();// align number of elements to Si->Bn
 
-    Mi = Vg * Rc; for (k = 1; k < Rn; k++) Mi *= Rc; 
+    Ri = Si->Rc;
+    Mi = Si->Mc;
 
-    Si->Mc = (Mc > 0.0)? Mc : Mi; Si->Mt = Si->Mc * GM; // GM = GR^Rn		        
-}//Init sort object, uses: Si, Gm(N) -> GM = 1.0                Mi, Si
+    Si->Vc = Ri * Gc;
+    Si->Rt = Ri * GR; // GR = (1.0 + Gc * Te)
+  
+    Mj = Vg * Ri; for (k = 1; k < Rn; k++) Mj *= Ri; 
+
+    Si->Mc = (Mi > 0.0)? Mi : Mj; Si->Mt = Si->Mc * GM; // GM = GR^Rn		        
+}//Init sort object, uses: Si                           Ri, Rj, Mi, Si
 //--------------------------------------------------------------------
 void 
 SortGet(long Id)
@@ -93,17 +96,21 @@ SortAdd(long Id, long Bn, double Rc, double Mc)
     SortGet(Id);      if(Sx != NULL) { return; }
     SortTesT(Id, Bn, Rc, Mc); if(Si) { return; }
     Lv = Sv; ListAdd();  Sx = Lx; // Add new List item,  Lx == Sv->Vc
-    Si = Sx->v; //Localize new object  
-    SortIniT(Id, Bn, Rc, Mc);  //Set values
-}//Add new element to Sorts selector container. Lx, Vc, Sx, St, Si, Mi
+    Si = Sx->v;                   // Localize new object 
+    Si->id = Id; Si->Bn = Bn;  
+    Si->Rc = Rc; Si->Mc = Mc;  
+    //further processing initiated on load by SortLoad
+}//Add new element to Sorts  container.         Lx, Vc, Sx, St, Si, Mi
 //--------------------------------------------------------------------
 void 
 SortSet(long Id, long Bn, double Rc, double Mc)
 {   
     SortGet(Id);      if(Sx == NULL) { return; }
     SortTesT(Id, Bn, Rc, Mc); if(Si) { return; }
-    Si = Sx->v; //Localize new object
-    SortIniT(Id, Bn, Rc, Mc);  //Set values
+    Si = Sx->v;                   // Localize new object
+    Si->id = Id; Si->Bn = Bn;
+    Si->Rc = Rc; Si->Mc = Mc;
+    //further processing initiated on load by SortLoad
 }//Set values Sort object.                              Sx, St, Si, Mi
 //--------------------------------------------------------------------
 void 

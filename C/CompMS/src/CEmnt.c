@@ -14,9 +14,8 @@ CDItem  *ej;//saved element for collision handling
 CEmnt   *Ei;//object service register
 CEmnt   *Ej;//object service register
 //--------------------------------------------------------------------
-long    c, n;
-
-double *rc; //rc = r(j) - r(i)
+long     c , n;
+double  *rc; //rc = r(j) - r(i)
 //--------------------------------------------------------------------
 static void 
 EmntItemNew(void)

@@ -183,7 +183,7 @@ ListAdd(void)
 	}
 	else 
 	{      
-        Lx = Lv->Fc; Lv->Fn--;
+        Lx = Lv->Fc; Lv->Fn--;    //DetNF() 
     
         Li = Lx->p;  //Lx is caller defined   /*  +--->---+  */          
         Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
@@ -192,7 +192,7 @@ ListAdd(void)
         //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
         Lx->n = Lx;  //Looping in new items is also implemented          
     
-        Lv->Fc = Lj; //DetNF(),      
+        Lv->Fc = Lj;     
 	}//uncomment or change reduced looping for other stepping   
     //---------------------------------------------------------   
     Li = (Lv->Vn == 0)?(Lx):(Lv->Vc);
@@ -203,7 +203,7 @@ ListAdd(void)
     Li->n = Lx; //Lx assumed not empty        /*  |   |   |  */          
     Lx->p = Li; //(Lx == Li),  ensured        /*  +-<-+ - 0  */          
 
-    Lv->Vc = Lx; Lv->Vn++; //AttNV()
+    Lv->Vc = Lx; Lv->Vn++;   //AttNV()
     //---------------------------------------------------------
 }//Moves Free to Value:                  Fc = Fc->n, Vc->n = Lx  
 //--------------------------------------------------------------------
@@ -239,7 +239,7 @@ void
 ListADD(void)
 {
     //-----------------------------------------------------
-    Lx = Lv->Fc; Lv->Fn--;
+    Lx = Lv->Fc; Lv->Fn--;    //DetNF() 
     
     Li = Lx->p;  //Lx is caller defined   /*  +--->---+  */          
     Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
@@ -248,7 +248,7 @@ ListADD(void)
     //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
     Lx->n = Lx;//Looping in new items is also implemented          
     
-    Lv->Fc = Lj;   //DetNF()  
+    Lv->Fc = Lj;    
     //-----------------------------------------------------
     Li = Lv->Vc; 
 
@@ -258,7 +258,7 @@ ListADD(void)
     Li->n = Lx; //Lx assumed not empty    /*  |   |   |  */          
     Lx->p = Li; //(Lx == Li),  ensured    /*  +-<-+ - 0  */          
 
-    Lv->Vc = Lx; Lv->Vn++; //AttNV()
+    Lv->Vc = Lx; Lv->Vn++;   //AttNV()
     //----------------------------------------------------- 
 }//Moves Free to Value:              Fc = Fc->n, Vc->n = Lx 
 //--------------------------------------------------------------------
@@ -266,7 +266,7 @@ void
 ListDEL(void)
 {	
     //-----------------------------------------------------
-    Lx = Lv->Vc; Lv->Vn--;   
+    Lx = Lv->Vc; Lv->Vn--;    //DetPV()
     
     Li = Lx->p;  //Lx is caller defined   /*  +--->---+  */          
     Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
@@ -275,7 +275,7 @@ ListDEL(void)
     Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */          
     //Lx->n = Lx;//Looping in new items is also implemented     
     
-    Lv->Vc = Li; //DetPV()
+    Lv->Vc = Li; 
     //-----------------------------------------------------
     Lj = Lv->Fc; 
     
@@ -285,7 +285,7 @@ ListDEL(void)
     Lj->p = Lx; //Lx assumed not empty    /*  |   |   |  */  
     Lx->n = Lj; //(Lx == Lj),  ensured    /*  +-<-+ - 0  */ 
        
-    Lv->Fc = Lx; Lv->Fn++; //AttPF() 
+    Lv->Fc = Lx; Lv->Fn++;   //AttPF() 
     //-----------------------------------------------------    
 }//Moves Value to Free:              Vc = Vc->p, Fc->p = Lx
 //--------------------------------------------------------------------
@@ -384,27 +384,22 @@ FuncAdd(void)
     }
     else
     {
-        Wx = Wv->Fc; Wv->Fn--;
+        Wx = Wv->Fc; Wv->Fn--;  //DetNF()
 
-        Wi = Wx->p;         
-        Wj = Wx->n;    
-        Wj->p = Wi;         
-        Wi->n = Wj;
-        Wx->p = Wx;
-        Wx->n = Wx;
- 
-        Wv->Fc = Wj;  //DetNF()  
-    }
+        Wi = Wx->p;   Wj = Wx->n;                
+        Wj->p = Wi;   Wi->n = Wj;            
+      /*Wx->p = Wx;*/ Wx->n = Wx;
+       
+        Wv->Fc = Wj;    
+    }// optimize by stepping
     //---------------------------------------------------------   
     Wi = (Wv->Vn == 0) ? (Wx) : (Wv->Vc);
 
-    Wj = Wi->n;       
-    Wx->n = Wj;          
-    Wj->p = Wx;          
-    Wi->n = Wx;         
+    Wj = Wi->n;   Wx->n = Wj;                
+    Wj->p = Wx;   Wi->n = Wx;                   
     Wx->p = Wi;        
 
-    Wv->Vc = Wx; Wv->Vn++; //AttNV()
+    Wv->Vc = Wx; Wv->Vn++;      //AttNV()
     //---------------------------------------------------------
 }//Moves Free to Value:                  Fc = Fc->n, Vc->n = Wx  
 //--------------------------------------------------------------------
@@ -414,23 +409,18 @@ FuncDel(void)
     if (Wv->Vn > 0)
     {
         //-----------------------------------------------------
-        Wx = Wv->Vc; Wv->Vn--;
+        Wx = Wv->Vc; Wv->Vn--; //DetPV()
 
-        Wi = Wx->p;         
-        Wj = Wx->n;    
-        Wj->p = Wi;         
-        Wi->n = Wj;  
-        Wx->p = Wx;      
-        Wx->n = Wx;
-      
-        Wv->Vc = Wi; //DetPV()
+        Wi = Wx->p;   Wj = Wx->n;               
+        Wj->p = Wi;   Wi->n = Wj;              
+        Wx->p = Wx; /*Wx->n = Wx;*/
+     
+        Wv->Vc = Wi;
         //-----------------------------------------------------
         Wj = (Wv->Fn == 0) ? (Wx) : (Wv->Fc);
 
-        Wi = Wj->p; 
-        Wx->p = Wi;
-        Wi->n = Wx;
-        Wj->p = Wx; 
+        Wi = Wj->p;  Wx->p = Wi;    
+        Wi->n = Wx;  Wj->p = Wx;     
         Wx->n = Wj;
 
         Wv->Fc = Wx; Wv->Fn++; //AttPF() 
@@ -462,15 +452,13 @@ FuncClrV(void)
 void
 FuncSize(void)
 {
-    while (Wv->Fn)  //ListDelNF()
+    while (Wv->Fn)   //ListDelNF()
     {
         Wx = Wv->Fc; Wv->Fn--;
         
-        Wi = Wx->p;
-        Wj = Wx->n;
-        Wj->p = Wi;
-        Wi->n = Wj;
-        
+        Wi = Wx->p;  Wj = Wx->n;   
+        Wj->p = Wi;  Wi->n = Wj;
+              
         Wv->Fc = Wj; Wv->ListItemDel();
     }
 }//Releases Free container  resources

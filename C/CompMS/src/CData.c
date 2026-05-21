@@ -204,7 +204,7 @@ Malloc(size_t LN, long CN, long UX)
         while (Da > 0)
         {
             Dx->v = NULL; Da--; //store item
-            DataDel(); // as not UF
+            DataDel();          // as not UF
         }
         //return pointer to allocated memory
         return DA;   //Not optimal, but safe.
