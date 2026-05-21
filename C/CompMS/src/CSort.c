@@ -9,8 +9,7 @@ CDItem  *St;//list  service  register
 CSort   *Si;//object service register
 CSort   *Sj;//object service register
 //--------------------------------------------------------------------
-long    k;
-double  V, r;
+//  No local registers, see Base & Data for reference
 //--------------------------------------------------------------------
 static void 
 SortItemNew(void)
@@ -21,13 +20,13 @@ SortItemNew(void)
     Lx->p = Lx; //Lv = Sv; //restore context
     Lx->n = Lx;            //loop item
     Lx->v = Si;            //connect object
-}//ListNew item provider for Sort, sets looped Lx
+}//ListNew item provider for Sort                               Si, Lx
 //--------------------------------------------------------------------
 static void 
 SortItemDel(void)
 {
-    free(Lx->v); free(Lx);
-}//ListRem item provider for Sort
+    Si = Lx->v; free(Si); free(Lx);
+}//ListDel item provider for Sort                                   Si
 //--------------------------------------------------------------------
 void 
 SortInit(void)
@@ -38,7 +37,7 @@ SortInit(void)
 	//Set Sorts containers counters and providers
 	Sv->Fn = 0; Sv->ListItemDel = SortItemDel;
 	Sv->Vn = 0; Sv->ListItemNew = SortItemNew; 
-}//Inits start values in Sorts container. Set: Sv
+}//Inits start values in Sorts container.                           Sv
 //--------------------------------------------------------------------
 void 
 SortFree(void)
@@ -46,7 +45,7 @@ SortFree(void)
     if (Sv == NULL) return;
     Lv = Sv; ListFree(); 
     free(Sv); Sv = NULL;
-}//Releases Free resources  Sv
+}//Releases Free resources                                  Lx, Si, Sv
 //--------------------------------------------------------------------
 static void
 SortTesT(long Id, long Bn, double Rc, double Mc)
@@ -56,8 +55,8 @@ SortTesT(long Id, long Bn, double Rc, double Mc)
         Si = (CSort*)-1; 
     }
     
-    Si = NULL; //No error
-}//Test sort parameters. Set: Si
+    Si = NULL; //No error, fail safe
+}//Test sort parameters. Validator connector                        Si
 //--------------------------------------------------------------------
 static void
 SortIniT(long Id, long Bn, double Rc, double Mc)
@@ -68,10 +67,10 @@ SortIniT(long Id, long Bn, double Rc, double Mc)
     Si->Vc = Rc * Gc;
     Si->Rt = Rc * GR; // GR = (1.0 + Gc * Te)
 
-    r = Rc; V = Vg * r; for (k = 1; k < Rn; k++) V *= r; 
+    Mi = Vg * Rc; for (k = 1; k < Rn; k++) Mi *= Rc; 
 
-    Si->Mc = (Mc > 0.0)? Mc : V; Si->Mt = Si->Mc * GM; // GM = GR^Rn		        
-}//Init sort object, uses: Si, Gm(N) -> GM = 1.0
+    Si->Mc = (Mc > 0.0)? Mc : Mi; Si->Mt = Si->Mc * GM; // GM = GR^Rn		        
+}//Init sort object, uses: Si, Gm(N) -> GM = 1.0                Mi, Si
 //--------------------------------------------------------------------
 void 
 SortGet(long Id)
@@ -86,7 +85,7 @@ SortGet(long Id)
     while ((St = St->n) != Sx);  
 
     Sx = NULL; //check existence by Sx
-}//Get by id (color) Sort item pointer and object.            Set:  Sx
+}//Get by id (color) Sort item pointer and object.              St, Sx
 //--------------------------------------------------------------------
 void 
 SortAdd(long Id, long Bn, double Rc, double Mc)
@@ -96,7 +95,7 @@ SortAdd(long Id, long Bn, double Rc, double Mc)
     Lv = Sv; ListAdd();  Sx = Lx; // Add new List item,  Lx == Sv->Vc
     Si = Sx->v; //Localize new object  
     SortIniT(Id, Bn, Rc, Mc);  //Set values
-}//Add new element to Sorts selector container.    Set: Sv->Vc, Sx, Si
+}//Add new element to Sorts selector container. Lx, Vc, Sx, St, Si, Mi
 //--------------------------------------------------------------------
 void 
 SortSet(long Id, long Bn, double Rc, double Mc)
@@ -105,14 +104,14 @@ SortSet(long Id, long Bn, double Rc, double Mc)
     SortTesT(Id, Bn, Rc, Mc); if(Si) { return; }
     Si = Sx->v; //Localize new object
     SortIniT(Id, Bn, Rc, Mc);  //Set values
-}//Set values Sort object.                                 Set: Sx, Si
+}//Set values Sort object.                              Sx, St, Si, Mi
 //--------------------------------------------------------------------
 void 
 SortDel(long Id)
 {   
     SortGet(Id); if(Sx == NULL) { return; }
     Lv = Sv; Sv->Vc = Sx; ListDel(); 
-}//Moves selected Sort item to Free container          Set: Sv->Vc, Sx
+}//Moves selected Sort item to Free container                   Lx, Sx
 //--------------------------------------------------------------------
 void 
 SortGrow(void)
@@ -127,5 +126,5 @@ SortGrow(void)
         //Si->Mt = (Si->Mc) * GM;   //change mass
     }
     while((St = St->n) != Sx);
-}//Sizes Sv->Vc Sorts and mass     
+}//Sizes Sv->Vc Sorts and mass                  Te, Sx, St, Si, GR, GM
 //--------------------------------------------------------------------
