@@ -92,9 +92,10 @@ SetRanges(void)
 
     e = 1.0; m = 0; while (0.0 < 0.0 + e) { e /= 10.0; m++; }
 	Fe = m; //Exponent test, decimal power : 0.0 + 10^-Fe == 0.0
-    //De should be greater without poition verifier, De *= Bn
+    
+    //De should be greater without position verifier, De *= Bn
 	//ranging not implemented, currently for reporting only
-    e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 2e1 * Ds;
+    e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 2e2 * Ds;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
 static void
@@ -107,11 +108,11 @@ RandomSphere(void)
     for (k = 0; k < rn; k++)
     {
         if (k != i) { rk = X[k] = (double)rand() * rr - 1.0; }
-        else { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
+        else        { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
         RR += rk * rk;
     }
-    // project cube face point to, RA = Rb - Ri scaled, sphere surface
-    RR = RA / sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR; }
+    // project cube face point to, RA = Rb - Ri, sphere surface
+    RR = RA/sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR; }
     // random rotations of coordinates, to smooth distribution
     for (k = 0; k < rn; k++)
     {
@@ -121,7 +122,7 @@ RandomSphere(void)
         X[i] = s * (Rj - Ri);
         X[j] = s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
     }
-}//Generate random point on Rn-sphere of radius Rb
+}//Generate random point on rn-sphere of radius RA
 //--------------------------------------------------------------------
 void
 EngPhases(void)
@@ -131,7 +132,7 @@ EngPhases(void)
     do
     {
 		Et = Ex; Ei = Ex->v; Xi = Ei->X; Vi = Ei->V; 
-        //Generate random point X on (Rn+2) sphere
+        //Generate random point X on (rn = Rn+2) sphere
         RA = Rb - Ei->S->Rt; RandomSphere(); 	
        
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
