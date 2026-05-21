@@ -14,16 +14,15 @@ CDItem  *ej;//saved element for collision handling
 CEmnt   *Ei;//object service register
 CEmnt   *Ej;//object service register
 //--------------------------------------------------------------------
-long     c , n;
+long      c, n;
 double  *rc; //rc = r(j) - r(i)
 //--------------------------------------------------------------------
 static void 
 EmntItemNew(void)
 {
     Lx = (CDItem*)  Malloc(sizeof(CDItem),UT, UT); //create ListItem
-    Ei = (CEmnt*)   Malloc(sizeof(CEmnt) ,UT, UT); //create Object
-    //Loop Lx ListItem and connect to Ei Object 
-    Lx->p = Lx;
+    Ei = (CEmnt*)   Malloc(sizeof(CEmnt) ,UT, UT); //create Object   
+    Lx->p = Lx; //Loop Lx ListItem and connect to Ei Object 
     Lx->n = Lx;
     Lx->v = Ei;
     //Emnt initial setiings
@@ -81,8 +80,7 @@ EmntSize(void)
     // increase number
     if(c > 0) for (k = 0; k < c; k++)
     {
-		ListAdd();     Ex = Lx; 
-        Ei = Ex->v; Ei->S = Si;
+		ListAdd(); Ei->S = Si;
     }
     // decrease number
     if(c < 0) for (k = 0; k < n; k++)

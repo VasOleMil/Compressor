@@ -17,7 +17,6 @@ SortItemNew(void)
 {
     Lx = (CDItem*) Malloc(sizeof(CDItem), UT, UT); //create ListItem
     Si = (CSort*)  Malloc(sizeof(CSort),  UT, UD); //create Object  
-    //Loop Lx ListItem and connect to Si Object 
     Lx->p = Lx; //Lv = Sv; //restore context
     Lx->n = Lx;            //loop item
     Lx->v = Si;            //connect object
@@ -33,9 +32,8 @@ void
 SortInit(void)
 {
     if (Sv != NULL) return;
-
+    //Set Sorts containers counters and providers
     Sv = (CDList*) Malloc(sizeof(CDList), UT, UD);
-	//Set Sorts containers counters and providers
 	Sv->Fn = 0; Sv->ListItemDel = SortItemDel;
 	Sv->Vn = 0; Sv->ListItemNew = SortItemNew; 
 }//Inits start values in Sorts container.                           Sv

@@ -193,8 +193,8 @@ Malloc(size_t LN, long CN, long UX)
     else if (UX == UT)
     {
         //Dedicated  destructor:       Start
-        DataAdd();                //register 
-        Dx->v = DA;   Da++;       //   as UF
+        DataAdd();     Da++;      //register 
+        Dx->v = DA;               //   as UF
         //return pointer to allocated memory
         return DA;
     }
@@ -203,8 +203,8 @@ Malloc(size_t LN, long CN, long UX)
         //Dedicated  destructor:      Finish
         while (Da > 0)
         {
-            Dx->v = NULL; Da--; //store item
-            DataDel();          // as not UF
+            DataDel(); Da--;    //store item
+            Dx->v = NULL;       // as not UF
         }
         //return pointer to allocated memory
         return DA;   //Not optimal, but safe.
