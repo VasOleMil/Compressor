@@ -5,7 +5,7 @@
 //--------------------------------------------------------------------
 CDList *Mv;//Modes resources container
 //--------------------------------------------------------------------
-long    k, n, i, j, rn; double* X;
+long    k, n, i, j, rn; double *X;
 //--------------------------------------------------------------------
 void
 ModeInit(void)
@@ -110,8 +110,8 @@ RandomSphere(void)
         else { rk = X[k] = (rand() % 2) ? 1.0 : -1.0; }
         RR += rk * rk;
     }
-    // project cube face point to, Rb scaled, sphere surface
-    RR = Rb / sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR; }
+    // project cube face point to, RA = Rb - Ri scaled, sphere surface
+    RR = RA / sqrt(RR); for (k = 0; k < rn; k++) { X[k] *= RR; }
     // random rotations of coordinates, to smooth distribution
     for (k = 0; k < rn; k++)
     {
@@ -130,9 +130,9 @@ EngPhases(void)
     Es = Ex = Ev->Vc; Sc = 0; //Tries counter, not in steping use 
     do
     {
-        Et = Ex; Ei = Ex->v; Xi = Ei->X; Vi = Ei->V;
-
-		RandomSphere(); //Generate random point X on (Rn+2) sphere
+		Et = Ex; Ei = Ex->v; Xi = Ei->X; Vi = Ei->V; 
+        //Generate random point X on (Rn+2) sphere
+        RA = Rb - Ei->S->Rt; RandomSphere(); 	
        
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
         { 
@@ -151,7 +151,7 @@ EngPhases(void)
             //check distances, if intersect, regenerate Ei
             if (rv > vv)
             { 
-                if(Sc >= Tn){ DataFree(); exit(1); }//tries control
+                if(Sc >= Tn){ DataFree(); exit(8); }//tries control
                 else    { Sc++; Ex = Ex->p; break; }//regenerate Ei
             }//exits since single threaded, global scope control             
         }

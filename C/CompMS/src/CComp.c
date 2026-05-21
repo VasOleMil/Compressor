@@ -48,16 +48,17 @@ void
 CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
-    Tn = 10 * Bn * Bn; kT = KT;
-    Sn = Bn; Vg = Vgamma(); 
+    kT = KT; Sn = Bn; Vg = Vgamma(); 
     
     Sx = St = Sv->Vc; //aling elements number to sorts Si->Bn
     do { Si = St->v; SortLoad(); } while ((St = St->n) != Sx);
 
+    SetVolume(); Tn = 10 * Bn * Bn; //Ve, Me, Tn
+
     if (KS <= 0.0)
-    {   SetGBound(); }
+    { SetGBound(); }
     else
-    {   SetVolume(); Rb = pow(Ve / KS, 1.0 / Rn); }
+    { Rb = pow(Ve / KS, 1.0 / Rn); }
     
     SetRanges(); //Zero drift ranges, for reporting only
 
@@ -75,13 +76,19 @@ CompLoad(double KT, double KS, double GC)
 	Sc = 0; Ce = 0; Cb = 0;
 }//init tti for stepping for kT, volume density,  sizing speed
 //--------------------------------------------------------------------
-void
+void //Debug version with direct reporting, for testing and development
 CompStep()
 {
     if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
     
+    printf("\n Step begin:\n");
+    Tx = Tt = Tv->Vc; do { Ti = Tt->v; printf("\tdt = %f\n", Ti->dt);
+    } while ((Tt = Tt->n) != Tx);
+
     //Select minimal tti  from holder Tv
 	TimeGetStp();// Tm, ei, ej, dT are set
+
+    printf("\ndt = %f\n", dT);
     
     //mean free time and path tests. Before interaction
     
@@ -109,6 +116,45 @@ CompStep()
     //mean free time and path tests. Before interaction
 
 }//main loop, is called until Sc >= Sn, or x or t span is covered
+//--------------------------------------------------------------------
+//void
+//CompStep()
+//{
+//    if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
+//
+//    //Select minimal tti  from holder Tv
+//    TimeGetStp();// Tm, ei, ej, dT are set
+//
+//    //mean free time and path tests. Before interaction
+//
+//    //Change geometry and variables, if not simultanious 
+//    if (dT > 0.0) //Time change: Te += dT in SortGrow
+//    {
+//        Sc = 0; EmntMove(); SortGrow();
+//    } //globals refresh
+//    else //impulse loop watchdog, stop on clustering
+//    {
+//        Sc++; if (Sc >= Sn) return;
+//    }
+//
+//    //if Gv(Y), verify position, to prevent time summing errors
+//    //elements ei, ej interaction, initiate counters Cx, Ce, Cb
+//    TimeValStp();  EmntColl(); //procced to new time step
+//
+//    //mean free time and path tests. After interaction
+//
+//    //Clear interacted elements tti in Tv
+//    TimeDelStp();//Tm in free container
+//
+//    //Change tti in time container Tv, Tm values not touched
+//    if (Sc == 0) TimeDecStp();
+//
+//    //Calculate ei, ej elements tti, Tm is overwritted and reused
+//    TimeCalcTT();//ei, ej, dT not actual, but safe to use
+//
+//    //mean free time and path tests. Before interaction
+//
+//}//main loop, is called until Sc >= Sn, or x or t span is covered
 //--------------------------------------------------------------------
 
 
