@@ -47,7 +47,7 @@ DataAdd(void)
     //---------------------------------------------------------
     if (Dv->Fn == 0)
     {
-        Dv->ListItemNew();//Create new list element,   in   Lx
+        Dv->ListItemNew();//Create new list element,   in   Dx
     }
     else
     {
@@ -99,11 +99,11 @@ DataDel(void)
     Dj->p = Dx; //Lx assumed not empty    /*  |   |   |  */  
     Dx->n = Dj; //(Lx == Lj),  ensured    /*  +-<-+ - 0  */ 
 
-    Dv->Fc = Lx; Dv->Fn++; //AttPF() 
+    Dv->Fc = Dx; Dv->Fn++; //AttPF() 
     //-----------------------------------------------------
 }//Moves Value to Free:              Vc = Vc->p, Fc->p = Dx
 //--------------------------------------------------------------------
-static void
+void
 DataSize(void)
 {
     while (Dv->Fn)   //ListDelNF()
@@ -157,7 +157,7 @@ DataFree()
         }
         while (Dv->Fn)   //ListDelNF()
         {
-            Dx = Lv->Fc; Dv->Fn--;
+            Dx = Dv->Fc; Dv->Fn--;
             Di = Dx->p;  Dj = Dx->n;
             Dj->p = Di;  Di->n = Dj;
             Dv->Fc = Dj; Dv->ListItemDel();
