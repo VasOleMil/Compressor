@@ -11,6 +11,47 @@ Notes:
 * CBase.h holds global simulation parameters and constants.
 * CData.h centralizes standard library includes, memory wrappers, core data exchange. Header is excluded by macro when used by CComp.h to avoid redundant export linkage.
 
+Usage:
+
+```c
+//--------------------------------------------------------------------
+//"CompTest.h" example
+//#ifndef COMPTEST_HREADME
+//#define COMPTEST_HREADME
+//
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
+//- - - - - - - - - - - - - - -
+extern void CompTestStep(void);
+//- - - - - - - - - - - - - - -
+//
+//#ifdef __cplusplus
+//}
+//#endif
+//#endif//COMPTEST_HREADME
+//--------------------------------------------------------------------
+//"CompTest.c" example
+#include"CompTest.h"
+void
+CompTestStep()
+{
+	int i, Steps = 200;
+
+	CompInit(2);
+
+	SortAdd(1, 7, 1.0, 0.0);
+
+	CompLoad(1.0, 0.0, 0.0);
+
+	for (i = 0; i < Steps; i++)
+	{      CompStep();        }
+
+	CompFree();
+}
+//--------------------------------------------------------------------
+```
+
 Interrnal types and data:
 
  - **CList**
@@ -30,5 +71,7 @@ Core stepping:
 * CHold.h - Time-holder structure, container and service
 * CComp.h - Core stepping functions
 * CMode.h - entry for core extensioos, service, tools.
+
+
 
 
