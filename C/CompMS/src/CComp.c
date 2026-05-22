@@ -63,74 +63,118 @@ CompLoad(double KT, double KS, double GC)
     SetRanges();    // Zero drift ranges, for reporting only
 
     EngPhases();    // Engage phase space, random values {X,V} 
+        
+    // Initiate new elements tti, flush Tv->Fc free container
+    Lv = Tv; ListClrV(); TimeCalcST(); ListSize();
     
-	TimeCalcST();   // Initiate all elements tti
-    
-    // Flush free containers
-    Lv = Sv;    ListSize();   Lv = Ev;   ListSize();   
-    Lv = Tv;    ListSize(); /*Dv = Dv;*/ DataSize();
+    // Flush other free containers, Dv = Dv, Data has own context
+    Lv = Sv; ListSize();   Lv = Ev;    ListSize();  DataSize();
  
 	// Set counters. Stepping ready
 	Sc = 0; Ce = 0; Cb = 0;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------
-void //Debug version with direct reporting, for testing and development
+void
 CompStep()
 {
     if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
-    
-    printf("\n Step begin:\n");
-    Tx = Tt = Tv->Vc; do { Ti = Tt->v; printf("\tdt = %f\n", Ti->dt);
-    } while ((Tt = Tt->n) != Tx);
 
     //Select minimal tti  from holder Tv
-	TimeGetStp();// Tm, ei, ej, dT are set
+    TimeGetStp();// Tm, ei, ej, dT are set
 
-    printf("\n\t step dt = %f\n", dT);
-    
     //mean free time and path tests. Before interaction
-    
-    // Refresh geometry and globals, if not simultanious 
-    if (dT > 0.0) // time change: Te += dT in SortGrow
-    { Sc = 0; EmntMove(); SortGrow(); } 
-    else // impulse loop watchdog, stop on clustering
-    { Sc++  ; if (Sc >= Sn) return;   }
+
+    //Change geometry and variables, if not simultanious 
+    if (dT > 0.0) //Time change: Te += dT in SortGrow
+    {
+        Sc = 0; EmntMove(); SortGrow();
+    } //globals refresh
+    else //impulse loop watchdog, stop on clustering
+    {
+        Sc++; if (Sc >= Sn) return;
+    }
 
     //if Gv(Y), verify position, to prevent time summing errors
     //elements ei, ej interaction, initiate counters Cx, Ce, Cb
     TimeValStp();  EmntColl(); //procced to new time step
-    
- 	//mean free time and path tests. After interaction
-    
+
+    //mean free time and path tests. After interaction
+
     //Clear interacted elements tti in Tv
     TimeDelStp();//Tm in free container
-    
+
     //Change tti in time container Tv, Tm values not touched
     if (Sc == 0) TimeDecStp();
-    
+
     //Calculate ei, ej elements tti, Tm is overwritted and reused
     TimeCalcTT();//ei, ej, dT not actual, but safe to use
-    
+
     //mean free time and path tests. Before interaction
 
 }//main loop, is called until Sc >= Sn, or x or t span is covered
-//--------------------------------------------------------------------
-//void
+//------------------------------------------------------------------
+//#include<stdio.h>
+//static int
+//StructTestComp(void)
+//{
+//    int a, i, j, t; a = 0;
+//
+//    Tx = Tv->Vc; if ((t = Tv->Vn) >= 1)
+//    {
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->n) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\nEnumeration n Vn FAIL");
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->p) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\nEnumeration p Vn FAIL");
+//    }
+//    Tx = Tv->Fc; if ((t = Tv->Fn) >= 1)
+//    {
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->n) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\nEnumeration n Fn FAIL");
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->p) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\nEnumeration p Fn FAIL");
+//    }
+//
+//    if (a > 0)
+//    {
+//        printf("\nError on step:structure"); return 1;
+//    }
+//    {
+//        return 0;
+//    }
+//}
+////------------------------------------------------------------------
+//void //Debug version with direct reporting, for testing and development
 //CompStep()
 //{
 //    if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
 //
+//    printf("\n Step begin:\n\n"); Tx = Tt = Tv->Vc;
+//    do
+//    {
+//        Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+//    } while ((Tt = Tt->n) != Tx);
+//
+//    if (StructTestComp()) return;
+//
 //    //Select minimal tti  from holder Tv
 //    TimeGetStp();// Tm, ei, ej, dT are set
 //
+//    Ti = Tm->v; printf("\n\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+//
+//    if (StructTestComp()) return;
+//
 //    //mean free time and path tests. Before interaction
 //
-//    //Change geometry and variables, if not simultanious 
-//    if (dT > 0.0) //Time change: Te += dT in SortGrow
+//    // Refresh geometry and globals, if not simultanious 
+//    if (dT > 0.0) // time change: Te += dT in SortGrow
 //    {
 //        Sc = 0; EmntMove(); SortGrow();
-//    } //globals refresh
-//    else //impulse loop watchdog, stop on clustering
+//    }
+//    else // impulse loop watchdog, stop on clustering
 //    {
 //        Sc++; if (Sc >= Sn) return;
 //    }
@@ -144,16 +188,30 @@ CompStep()
 //    //Clear interacted elements tti in Tv
 //    TimeDelStp();//Tm in free container
 //
+//    printf("\n After delete:\n\n"); Tx = Tt = Tv->Vc;
+//    do
+//    {
+//        Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+//    } while ((Tt = Tt->n) != Tx);
+//
+//    if (StructTestComp()) return;
+//
 //    //Change tti in time container Tv, Tm values not touched
 //    if (Sc == 0) TimeDecStp();
 //
 //    //Calculate ei, ej elements tti, Tm is overwritted and reused
 //    TimeCalcTT();//ei, ej, dT not actual, but safe to use
 //
-//    //mean free time and path tests. Before interaction
+//    printf("\n After update:\n\n"); Tx = Tt = Tv->Vc;
+//    do
+//    {
+//        Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+//    } while ((Tt = Tt->n) != Tx);
+//
+//    if (StructTestComp()) return;
 //
 //}//main loop, is called until Sc >= Sn, or x or t span is covered
-//--------------------------------------------------------------------
+////------------------------------------------------------------------
 
 
 

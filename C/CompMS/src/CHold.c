@@ -90,10 +90,10 @@ TimeDelCol(void)
     n = Tv->Vn, Tx = Tv->Vc; Lv = Tv;
     for (i = 0; i < n; i++)
     {
-        Ti = Tx->v; //ListDel steps valued to previous
+        Ti = Tx->v; //ListDel sets Vc to previous
         if ((Ti->ei == Ex) || (Ex == Ti->ej))
         {
-            Tv->Vc = Tx; ListDel();  
+            Tv->Vc = Tx; ListDel(); Tx = Tv->Vc;
         };  
         Tx = Tx->n; //continue with next
     }
@@ -256,7 +256,40 @@ TimeCalcST(void)
 
     do TimeCalcEx(); while ((Ex = Ex->n) != Es);
 }//Calculate   all  elements times to interaction - tti
-//--------------------------------------------------------------------
+////------------------------------------------------------------------
+//#include<stdio.h> 
+//static void
+//StructTestTime(void)
+//{
+//    int a, i, j, t; a = 0;
+//
+//    //printf("\n\tTest CHold->...");
+//    if ((t = Tv->Vn) >= 1)
+//    {
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->n) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\n\tEnumeration n Vn FAIL");
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->p) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\n\tEnumeration p Vn FAIL");
+//    }
+//    if ((t = Tv->Fn) >= 1)
+//    {
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->n) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\n\tEnumeration n Fn FAIL");
+//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->p) != Tx);
+//        if (i != t) { a++; j++; }
+//        if (j > 0) printf("\n\tEnumeration p Fn FAIL");
+//    }
+//
+//    if (a > 0)
+//    {
+//        printf("\n\tHold.c:Error on step:\n");
+//    }
+//    //else { printf("\n\tHold.c: Test passed:\n"); }
+//}
+////------------------------------------------------------------------
 
 
     
