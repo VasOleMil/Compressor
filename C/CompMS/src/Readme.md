@@ -1,9 +1,6 @@
-Source files, currently - sketch for prototypes. Contains simple internal memory optimizer, kind of reduced to explicit constructor-destructor objects calling template. Not optimal for use in direct memory allocation. 
+Current source files provide prototype implementations of core modules. They include a simple internal memory optimizer based on explicit constructor/destructor calls. Direct raw memory allocation is not recommended.
 
-Sorts, Elements, Times, Data - processing with linked list. 
-
-To increase speed and reduce memory usage, program can be reshaped withiout position verifier module, but it required base structure changes, so places with feature support is just highlited by cooments for simplicity of branch modification.
-
+Sorts, Elements, Times, Data - processing with ring list. 
 
 Notes:
 
@@ -53,13 +50,11 @@ CompTestStep()
 
 Interrnal types and data:
 
- - **CList**
-Responsible for the data structure (ring lists, addition, deletion, merging, clearing).
+* CList - responsible for the data structure (ring lists, addition, deletion, merging, clearing).
 Works exclusively with pointers to list elements, does not deal with memory directly.
 
-- **CData**
-Responsible for memory and internal container. Uses `malloc`/`free` to work with data, does not interfere with the logic of lists.
-Functions are autonomous, do not require stack wrappers.
+* CData - responsible for memory and internal container. Uses `malloc`/`free` to work with data, does not interfere with the logic of lists.
+Functions are autonomous, do not require stack wrappers. 
 
 _Interaction is near type and object. Modules have no dependent functions._
 
@@ -70,6 +65,8 @@ Core stepping:
 * CHold.h - Time-holder structure, container and service
 * CComp.h - Core stepping functions
 * CMode.h - entry for core extensioos, service, tools.
+
+To increase speed and reduce memory usage, program can be reshaped withiout position verifier module, but it required base structure changes, so places with feature support is highlited by cooments for simplicity of branch modification.
 
 
 
