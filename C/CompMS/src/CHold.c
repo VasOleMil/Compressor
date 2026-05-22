@@ -1,4 +1,5 @@
 #include"CBase.h"
+#include"CSort.h"
 #include"CEmnt.h"
 #include"CHold.h"
 //--------------------------------------------------------------------
