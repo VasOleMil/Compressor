@@ -49,7 +49,7 @@ SortFree(void)
 static void
 SortTesT(long Id, long Bn, double Rc, double Mc)
 {
-    if (Rc <= 0.00 || Bn <= 0)  
+    if (Id <= 0 || Bn <= 0 || Rc <= 0.00)
     { 
         Si = (CSort*)-1; 
     }
@@ -79,6 +79,8 @@ SortLoad()
     Si->Mt = Mi * GM; // GM = GR^Rn		        
 }//Init sort object, uses Si                               
 //--------------------------------------------------------------------
+//{};{Sx}; St
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void 
 SortGet(long Id)
 {
@@ -92,7 +94,7 @@ SortGet(long Id)
     while ((St = St->n) != Sx);  
 
     Sx = NULL; //check existence by Sx
-}//Get by id (color) Sort item pointer and object.              St, Sx
+}//Get by id (color) Sort item pointer and object.                  Sx
 //--------------------------------------------------------------------
 void 
 SortAdd(long Id, long Bn, double Rc, double Mc)
@@ -117,13 +119,18 @@ SortSet(long Id, long Bn, double Rc, double Mc)
     //further processing initiated on load by SortLoad
 }//Set values Sort object.                              Sx, St, Si, Mi
 //--------------------------------------------------------------------
+//{};{Sx}; Bn,Si,Lv,Sv,Ev,Ex,Et
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void 
 SortDel(long Id)
 {   
     SortGet(Id); if(Sx == NULL) { return; }
-    Lv = Sv; Sv->Vc = Sx; ListDel(); 
-}//Moves selected Sort item to Free container                   Lx, Sx
+    Si = Sx->v ; Si->Bn = 0; EmntSize(); //Clear elements
+    Sv->Vc = Sx; Lv = Sv   ; ListDel();  //Clear sort
+}//Moves selected Sort item to Free container                       Sx
 //--------------------------------------------------------------------
+//{};{}; Te,GR,GM,Si,Sx,St
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void 
 SortGrow(void)
 {

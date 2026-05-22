@@ -17,7 +17,7 @@ CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
 	// (Rn >= 2 )  is expected, but not tested
     RN = sqrt((double)Rn); LN = Rn * sizeof(double);
 
-    /*(UT = 1)*/;  DataInit();           // https://youtu.be/jaFnirguL54
+    if (UT == 0) { DataInit(); }          // https://youtu.be/jaFnirguL54
 }//if space dimension is changed, resets all containers and data
 //--------------------------------------------------------------------
 void
@@ -27,7 +27,7 @@ CompFree(void)
 }
 //--------------------------------------------------------------------
 void
-CompLoaD(double GC)
+CompTemp(double GC)
 {
 	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
 
@@ -50,7 +50,8 @@ CompLoad(double KT, double KS, double GC)
     Te = 0.0; GR = GM = 1.0; //set time, set constants
     Gc = GC ; GG = Gc * Gc ; kT = KT ; Vg = Vgamma(); 
     
-    Sx = St = Sv->Vc; // aling elements number to sorts Si->Bn
+    Lv = Ev; ListClrV();//Move all elements to free buffer Ev->Fc
+    Sx = St = Sv->Vc;   //aling elements number to sorts Si->Bn
     do { Si = St->v; SortLoad(); } while ((St = St->n) != Sx);
 
     SetVolume(); Sn = Bn; Tn = 8 * Bn * Bn;   //Ve, Me, Sn, Tn
@@ -112,7 +113,7 @@ CompStep()
     //mean free time and path tests. Before interaction
 
 }//main loop, is called until Sc >= Sn, or x or t span is covered
-//------------------------------------------------------------------
+//--------------------------------------------------------------------
 //#include<stdio.h>
 //static int
 //StructTestComp(void)
@@ -146,7 +147,7 @@ CompStep()
 //        return 0;
 //    }
 //}
-////------------------------------------------------------------------
+//--------------------------------------------------------------------
 //void //Debug version with direct reporting, for testing and development
 //CompStep()
 //{
@@ -211,7 +212,7 @@ CompStep()
 //    if (StructTestComp()) return;
 //
 //}//main loop, is called until Sc >= Sn, or x or t span is covered
-////------------------------------------------------------------------
+//--------------------------------------------------------------------
 
 
 

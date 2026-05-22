@@ -256,7 +256,7 @@ TimeCalcST(void)
 
     do TimeCalcEx(); while ((Ex = Ex->n) != Es);
 }//Calculate   all  elements times to interaction - tti
-////------------------------------------------------------------------
+//--------------------------------------------------------------------
 //#include<stdio.h> 
 //static void
 //StructTestTime(void)
@@ -289,7 +289,7 @@ TimeCalcST(void)
 //    }
 //    //else { printf("\n\tHold.c: Test passed:\n"); }
 //}
-////------------------------------------------------------------------
+//--------------------------------------------------------------------
 
 
     

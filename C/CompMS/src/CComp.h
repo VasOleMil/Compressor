@@ -10,15 +10,15 @@ extern "C" {
 //--------------------------------------------------------------------
 extern void CompInit(long Rn);//resets containers and data, if changed
 //--------------------------------------------------------------------
-extern void SortAdd(long id, long Bn, double Rc, double Mc);// 
+extern void SortAdd(long id, long Bn, double Rc, double Mc);// id > 0
+//--------------------------------------------------------------- + --
+extern void SortSet(long id, long Bn, double Rc, double Mc);// Bn > 0
 //--------------------------------------------------------------------
-extern void SortSet(long id, long Bn, double Rc, double Mc);// 
+extern void SortDel(long id); //sort manipulators before stepping
 //--------------------------------------------------------------------
-extern void SortDel(long id);//
+extern void CompLoad(double KT, double KS, double GC); //init stepping
 //--------------------------------------------------------------------
-extern void CompLoaD(double GC);//init stepping for sizing speed
-//--------------------------------------------------------------------
-extern void CompLoad(double KT, double KS, double GC);//init stepping
+extern void CompTemp(double GC);//init stepping for sizing speed
 //--------------------------------------------------------------------
 extern void CompStep(void);//main loop, is called until Sc >= Sn
 //--------------------------------------------------------------------

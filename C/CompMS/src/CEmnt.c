@@ -80,16 +80,17 @@ EmntSize(void)
     // increase number
     if(c > 0) for (k = 0; k < c; k++)
     {
-		ListAdd(); Ei->S = Si;
+        ListAdd(); Ei = Lx->v; Ei->S = Si;
     }
     // decrease number
     if(c < 0) for (k = 0; k < n; k++)
     {
         if ((Ei = Et->v)->S == Si)
         {
-            Ev->Vc = Ex; ListDel(); 
+            Ev->Vc = Ex; ListDel(); Ex = Ev->Vc;
             if((++c) == 0)   break;
-        };  Ex = Ex->n;
+        };  
+        Ex = Ex->n;
     }
 }//align number to Si->Bn, Ev->Vn == Bn on success
 //--------------------------------------------------------------------
