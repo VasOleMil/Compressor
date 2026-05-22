@@ -18,7 +18,7 @@ extern void ModeFree(void);
 //--------------------------------------------------------------------
 extern double Vgamma(void);//Multiplier Vb = Vg * Rb^Rn, Vg=Vgamma(Rn)
 //--------------------------------------------------------------------
-extern void SetGBound(void);//Size for even interaction/move probality
+extern void SetPBound(void);//Size for even interaction/move probality
 //--------------------------------------------------------------------
 extern void SetVolume(void);//Summary elements volume Ve & Me, uses Rc
 //--------------------------------------------------------------------

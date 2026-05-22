@@ -231,9 +231,8 @@ EmntCollEF(void)
 void
 EmntColl(void)
 {
-    Ei = ei->v;        if (ej == NULL)  
-           { EmntCollBS(); }
-    else { Ej = ej->v; EmntCollES(); }  
+    Ei = ei->v; if (ej == NULL) { EmntCollBS(); }
+    else        {   Ej = ej->v;   EmntCollES(); }  
 }//ei, ej  interaction
 //--------------------------------------------------------------------
     

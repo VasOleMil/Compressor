@@ -29,7 +29,8 @@ long    Da;//Dedicated destructor transaction length, used in Malloc
 static void
 DataItemNew(void)
 {
-    Dx = (CDItem*)malloc(sizeof(CDItem)); if (Dx == NULL) DataFree();
+    Dx = (CDItem*)malloc(sizeof(CDItem)); //return not reachable
+    if (Dx == NULL) { free(DA); DA = NULL; DataFree(); return; }
     Dx->p = Dx;             // static context       
     Dx->n = Dx;             // create looped item,
     Dx->v = NULL;           // with no data attached
@@ -119,18 +120,17 @@ DataSize(void)
 //--------------------------------------------------------------------
 void
 DataInit()
-{
-    //Set constants
-    UT = 1; UD = 2; Pi = 3.141592653589793;
+{   
+    UT = 1; UD = 2; Pi = 3.141592653589793;      //Set constants
     UF = 0; Da = 0; s  = 0.707106781186547;
 
-    Dv = Ev = Sv = Tv = Mv = Lv = NULL;//initialize modules
-    Dv = (CDList*)malloc(sizeof(CDList));  if (Dv == NULL) exit(1);
+    Dv = Ev = Sv = Tv = Mv = Lv = NULL;   //  initialize modules
+    Dv = (CDList*)malloc(sizeof(CDList));  
+    if (Dv == NULL) { exit(1); return; }; //return not reachable
     //Set data contaners counters and providers
     Dv->Fn = 0; Dv->ListItemDel = DataItemDel;
     Dv->Vn = 0; Dv->ListItemNew = DataItemNew;
-
-    //Init element and time containers   
+    //Init sotrs elements, time and mode containers   
     SortInit();
     EmntInit();
     TimeInit();

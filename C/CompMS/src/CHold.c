@@ -17,14 +17,14 @@ static void
 HoldItemNew(void)
 {
     Lx = (CDItem*)Malloc(sizeof(CDItem),UT, UT);//create ListItem
-    Ti = (CHold*) Malloc(sizeof(CHold), UT, UT);//create Object,!Gv=UD
-    //Loop Lx ListItem and connect to Ei Object 
+    Ti = (CHold*) Malloc(sizeof(CHold), UT, UT);//create Object,!Gv:UD
+    //Loop Lx ListItem and connect to Ti object 
     Lx->p = Lx;
     Lx->n = Lx;
     Lx->v = Ti;
-	//if (Gv) 
+	//if (Gv), attach array for poisition saving 
     Ti->Xi = (double*)Malloc(sizeof(double), Rn, UT); //restore context
-    Ti->Xj = (double*)Malloc(sizeof(double), Rn, UD); Lv = Tv;
+    Ti->Xj = (double*)Malloc(sizeof(double), Rn, UD); //Lv = Tv;
 }//ListNew item provider for CHold,                            Set: Lx
 //--------------------------------------------------------------------
 static void
@@ -59,6 +59,8 @@ TimeFree(void)
     free(Tv); Tv = NULL;
 }//Releases Free resources  Tv
 //--------------------------------------------------------------------
+//{Tv};{Tm,ei,ej,dT}; Lv,Ti,Tx,Tt
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void 
 TimeGetStp(void)
 {
@@ -76,7 +78,7 @@ TimeGetStp(void)
 void 
 TimeDecStp(void)
 {
-	Tt = Tx = Tv->Vc; //dT = (Ti=Tm->v)->dt;//evaluated in TimeGetStp  
+	Tx = Tt = Tv->Vc; //dT = (Ti=Tm->v)->dt;//evaluated in TimeGetStp  
 
     do  (Ti = Tt->v)->dt -= dT; 
     while ((Tt = Tt->n) != Tx);
@@ -88,10 +90,12 @@ TimeDelCol(void)
     n = Tv->Vn, Tx = Tv->Vc; Lv = Tv;
     for (i = 0; i < n; i++)
     {
-        if ((Ex == (Ti=Tx->v)->ei) || (Ex == (Ti=Tx->v)->ej))
+        Ti = Tx->v; //ListDel steps valued to previous
+        if ((Ti->ei == Ex) || (Ex == Ti->ej))
         {
-            Tv->Vc = Tx; ListDel();
-        };  Tx = Tx->n;
+            Tv->Vc = Tx; ListDel();  
+        };  
+        Tx = Tx->n; //continue with next
     }
 }//Delete (Ex, #) or (#, Ex) tti in Tv
 //--------------------------------------------------------------------
@@ -106,7 +110,7 @@ TimeDelStp(void)
 void
 TimeValStp(void)
 {   
-    dt = (Ti = Tm->v)->dt; //restoring of saved predicted position 
+    dt = (Ti = Tm->v)->dT; //restoring of saved predicted position 
         //Tm is minimal tti CHold list item, evaluated in TimeGetStp
         Ei = ei->v; Xi = Ei->X; Xj = Ti->Xi; Vj = Ei->V; 
         for (k = 0; k < Rn; k++) Xi[k] = Xj[k] + Vj[k] * dt;
@@ -238,7 +242,7 @@ TimeCalcEx(void)
 void
 TimeCalcTT(void)
 {
-	Lv = Tv; // Lv initilized in TimeDelStp 
+	Lv = Tv; // Lv in spepping initilized in TimeDelStp 
     
     { Es = Ex = ei; TimeCalcEx(); }
     if (ej != NULL)

@@ -52,7 +52,7 @@ Vgamma(void)
 }//Multiplier for Rn-sphere volume: Vb = Vg * Rb^Rn, Vg = Vgamma(Rn)
 //--------------------------------------------------------------------
 void
-SetGBound(void)
+SetPBound(void)
 {
     //Weighted Average radius (RA) over all elements.
     RA = 0.0; Bn = 0; Sx = St = Sv->Vc;
