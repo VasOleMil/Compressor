@@ -16,20 +16,19 @@ Usage:
 ```c
 //--------------------------------------------------------------------
 //"CompTest.h" example
-//#ifndef COMPTEST_HREADME
-//#define COMPTEST_HREADME
-//
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
+#ifndef COMPTEST_HREADME
+#define COMPTEST_HREADME
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 //- - - - - - - - - - - - - - -
 extern void CompTestStep(void);
 //- - - - - - - - - - - - - - -
-//
-//#ifdef __cplusplus
-//}
-//#endif
-//#endif//COMPTEST_HREADME
+#ifdef __cplusplus
+}
+#endif
+#endif//COMPTEST_HREADME
 //--------------------------------------------------------------------
 //"CompTest.c" example
 #include"CompTest.h"
