@@ -51,7 +51,7 @@ SortTesT(long Id, long Bn, double Rc, double Mc)
 {
     if (Id <= 0 || Bn <= 0 || Rc <= 0.00)
     { 
-        Si = (CSort*)-1; 
+        Si = (CSort*)-8; 
     }
     
     Si = NULL; //No error, fail safe

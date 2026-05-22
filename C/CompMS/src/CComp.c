@@ -13,11 +13,12 @@ long i, j, n;
 void
 CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
 {
-    if((Rn != Dn) && (UT == 1)) DataFree(); Rn = Dn;
-	// (Rn >= 2 )  is expected, but not tested
-    RN = sqrt((double)Rn); LN = Rn * sizeof(double);
+    if((Rn == Dn) && (UT == 1)) return;
+    if((Rn != Dn) && (UT == 1)) DataFree(); 
+	// (Rn >= 2 ) is expected,  but rely on external validators
+    Rn = Dn; RN = sqrt((double)Rn); LN = Rn * sizeof(double); 
 
-    if (UT == 0) { DataInit(); }          // https://youtu.be/jaFnirguL54
+    Vg = Vgamma(); DataInit();           // https://youtu.be/jaFnirguL54
 }//if space dimension is changed, resets all containers and data
 //--------------------------------------------------------------------
 void
@@ -29,7 +30,7 @@ CompFree(void)
 void
 CompTemp(double GC)
 {
-	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //reset time
+	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //Reset time
 
     Sx = St = Sv->Vc; //set sized radii Rt as constant initial Rc
     while ((St = St->n) != Sx)
@@ -37,18 +38,18 @@ CompTemp(double GC)
         Si = St->v; Si->Vc = Si->Rt * Gc;
         Si->Rc = Si->Rt; Si->Mc = Si->Mt;      
     }
-    Lv = Tv; ListClrV(); //clear time list, save items for reuse
-    TimeCalcST(); //calculate all elements tti, for stepping
+    Lv = Tv; ListClrV();//clear time items, save items for reuse
+    TimeCalcST();//calculate all elements tti, Bn*(Bn-1)/2 complexity!
 	Lv = Tv; ListSize();//clear free items, release resources
-    //reset counters for stepping
+    //Reset counters. Stepping ready
     Sc = 0; Ce = 0; Cb = 0;
-}//init tti for stepping, arguments: sizing speed
+}//init tti for stepping, arguments: sizing speed, 
 //--------------------------------------------------------------------
 void
 CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; GR = GM = 1.0; //set time, set constants
-    Gc = GC ; GG = Gc * Gc ; kT = KT ; Vg = Vgamma(); 
+    Gc = GC ; GG = Gc * Gc ; kT = KT ; 
     
     Lv = Ev; ListClrV();//Move all elements to free buffer Ev->Fc
     Sx = St = Sv->Vc;   //aling elements number to sorts Si->Bn
@@ -66,7 +67,7 @@ CompLoad(double KT, double KS, double GC)
     EngPhases();    // Engage phase space, random values {X,V} 
         
     // Initiate new elements tti, flush Tv->Fc free container
-    Lv = Tv; ListClrV(); TimeCalcST(); ListSize();
+    Lv = Tv; ListClrV(); TimeCalcST(); ListSize();//squared complexity
     
     // Flush other free containers, Dv = Dv, Data has own context
     Lv = Sv; ListSize();   Lv = Ev;    ListSize();  DataSize();

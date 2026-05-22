@@ -14,7 +14,7 @@ CDItem  *ej;//saved element for collision handling
 CEmnt   *Ei;//object service register
 CEmnt   *Ej;//object service register
 //--------------------------------------------------------------------
-long      c, n;
+long      c, i, n;
 double  *rc; //rc = r(j) - r(i)
 //--------------------------------------------------------------------
 static void 
@@ -78,12 +78,12 @@ EmntSize(void)
 	}   while ((Et = Et->n) != Ex); 
     c = Si->Bn - c; n += c; Bn = n; Lv = Ev;
     // increase number
-    if(c > 0) for (k = 0; k < c; k++)
+    if(c > 0) for (i = 0; i < c; i++)
     {
         ListAdd(); Ei = Lx->v; Ei->S = Si;
     }
     // decrease number
-    if(c < 0) for (k = 0; k < n; k++)
+    if(c < 0) for (i = 0; i < n; i++)
     {
         if ((Ei = Et->v)->S == Si)
         {

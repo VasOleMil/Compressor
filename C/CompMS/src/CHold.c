@@ -10,7 +10,7 @@ CDItem     *Tm;//list service register
 
 CHold      *Ti;//object service register
 //--------------------------------------------------------------------
-long         i,  k,  n;
+long         i,  n;
 double       a,  b,  c, dt;
 //--------------------------------------------------------------------
 static void
