@@ -29,6 +29,7 @@ extern void CompTestStep(void);
 //--------------------------------------------------------------------
 //"CompTest.c" example
 #include"CompTest.h"
+#include"СComp.h"
 void
 CompTestStep()
 {
