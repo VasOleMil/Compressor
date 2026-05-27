@@ -289,7 +289,7 @@ NormMassCenter(void)
             }
         }//else-> out of bound, error      
         
-        Et = Es;//get possible shift defined by elements
+        Et = Ex;//get possible shift defined by elements
         while (Et != Es) // pair intersection test, Ei != Ej
         {
             Et = Et->p; Ej = Et->v; Xj = Ej->X;   rr = 0.0;
