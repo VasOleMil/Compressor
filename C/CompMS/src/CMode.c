@@ -214,7 +214,7 @@ TestEnergy(void)
 void
 NormEnergy(void)
 {
-    //TestEnergy, copied
+    //TestEnergy, copied, with late assign
     Ex = Ev->Vc; Et = Ex; Qe = 0.0; 
     do  // Et == Ex, on leave
     {
@@ -224,9 +224,9 @@ NormEnergy(void)
             vk = Vi[k]; vv += vk * vk;
         }
         Qe += vv * Ei->S->Mt; 
-    } while ((Et = Et->n) != Ex); Qe /= 2.0; 
-    //Scale to given kT
-    vv = (Qe != 0.0) ? sqrt(kT * Rn * Bn / Qe) : 1.0; 
+    } while ((Et = Et->n) != Ex); //devision by 2.0, later
+    //Scale to given kT, simplified since not divided
+    vv = (Qe != 0.0) ? sqrt(kT * Rn * Bn / Qe) : 1.0; Qe /= 2.0;
     do
     {
         Ei = Et->v; Vi = Ei->V;
@@ -278,7 +278,7 @@ NormMassCenter(void)
         }  
         //Select possible RR or required VV shift, squared
         rk = rv * rv; vk = (rr - RR) * vv; 
-        if (rk >= vk)
+        if (rk >= vk) //discriminant test
         {
             RR = sqrt(rk - vk) - rv; //|dr|
             if (RR >= 0.0) // positive time selection
@@ -300,13 +300,13 @@ NormMassCenter(void)
             for (k = 0; k < Rn; k++)
             {
                 rk = Xi[k] - Xj[k]; rr += rk * rk;
-                vk = Xc[k];          rv += rk * vk;
+                vk = Xc[k];         rv += rk * vk;
             }   //rv calculated with opposite sign
             //Select possible RR or required VV shift, squared
             rk = rv * rv; vk = (rr - RR) * vv;
-            if (rk >= vk)
+            if (rk >= vk) //discriminant test
             {
-                RR = sqrt(rk - vk) - rv; //|dr|
+                RR = rv - sqrt(rk - vk); //|dr|
                 if (RR >= 0.0) // positive time selection
                 {
                     RR *= RR;  //get minimal displacement
