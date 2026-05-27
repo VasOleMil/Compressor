@@ -167,7 +167,7 @@ void
 TestGeometry(void)
 {
     Es = Ex = Ev->Vc; Sc = 0; Qg = 0.0; // counter and averager
-    do // Bn*(Bn - 1) / 2 complexity, not for regular step test
+    do  //Bn*(Bn - 1) / 2 complexity, not for regular step test
     {
         Et = Ex; Ei = Ex->v; Xi = Ei->X; 
         // bound intersection, Ei
@@ -209,12 +209,12 @@ TestEnergy(void)
         Qe += vv * Ei->S->Mt;
     } while ((Et = Et->n) != Ex); Qe /= 2.0;
    
-}//System energy Qe = Rn * kT / 2
+}// Get system energy Qe = Bn * Rn * kT / 2.0
 //--------------------------------------------------------------------
 void
 NormEnergy(void)
 {
-    //TestEnergy, copied, with late assign
+    //TestEnergy, copied, with late Qe assign
     Ex = Ev->Vc; Et = Ex; Qe = 0.0; 
     do  // Et == Ex, on leave
     {
@@ -233,7 +233,7 @@ NormEnergy(void)
         for (k = 0; k < Rn; k++) Vi[k] *= vv;      
     } while ((Et = Et->n) != Ex);
 
-}//Normalize energy to given kT, writes value Qe before correction
+}// Normalize energy to given kT, writes value Qe before correction
 //--------------------------------------------------------------------
 void
 TestMassCenter(void)
@@ -247,7 +247,7 @@ TestMassCenter(void)
     } while ((Et = Et->n) != Ex);
     Mj = (Mj > 0.0) ? 1.0 / Mj : 0.0;
     for (k = 0; k < Rn; k++) Xc[k] *= Mj;
-}// get current mass center vector Xc
+}// Get current mass center vector Xc
 //--------------------------------------------------------------------
 void
 NormMassCenter(void)
@@ -262,13 +262,11 @@ NormMassCenter(void)
     //Try shift elements Xc to the center of bound
     //Possible -> VV = vv <- Required
     Es = Ev->Vc; Ex = Es; VV = vv; 
-    do
-    {
-        //Measure possible coordinate displacement:
-        // line to sphere equation, with speed multiplier
+    do  //Measure possible coordinate displacement:
+    {   // line to sphere equation, with speed multiplier
         // same as repeat math with dt calucalution, wiki 
-        // dr = v*dt = 
-        // = v * (sqrt(rv^2 - (rr - RR) * vv) - rv) / vv
+        // dr = v * dt, v = Xc  
+        // dr = v * (sqrt(rv^2 - (rr-RR) * vv) - rv) / vv
         Ei = Ex->v;    Xi = Ei->X;     rr = 0.0;
         RR = Rb - Ei->S->Rt; RR *= RR; rv = 0.0;
         for (k = 0; k < Rn; k++)
@@ -279,18 +277,17 @@ NormMassCenter(void)
         //Select possible RR or required VV shift, squared
         rk = rv * rv; vk = (rr - RR) * vv; 
         if (rk >= vk) //discriminant test
-        {
+        {   //in bound should always be reachable
             RR = sqrt(rk - vk) - rv; //|dr|
             if (RR >= 0.0) // positive time selection
-            {
-                RR *= RR;  //in bound always reachable
-                VV = (RR > VV) ? VV : RR; // dr^2 ? Xc^2
-            }
+            {   
+                RR *= RR; VV = (RR > VV) ? VV : RR;
+            }   //get minimal displacement, dr^2 ? Xc^2
             else
             {
-                //initial placing was out of bound, error
+                //out of bound, error
             }
-        }       
+        }//else-> out of bound, error      
         
         Et = Es;//get possible shift defined by elements
         while (Et != Es) // pair intersection test, Ei != Ej
@@ -301,7 +298,7 @@ NormMassCenter(void)
             {
                 rk = Xi[k] - Xj[k]; rr += rk * rk;
                 vk = Xc[k];         rv += rk * vk;
-            }   //rv calculated with opposite sign
+            }   //rv calculated with opposite sign, i then j
             //Select possible RR or required VV shift, squared
             rk = rv * rv; vk = (rr - RR) * vv;
             if (rk >= vk) //discriminant test
@@ -309,16 +306,15 @@ NormMassCenter(void)
                 RR = rv - sqrt(rk - vk); //|dr|
                 if (RR >= 0.0) // positive time selection
                 {
-                    RR *= RR;  //get minimal displacement
-                    VV = (RR > VV) ? VV : RR; // dr^2 ? Xc^2
-                }
+                    RR *= RR; VV = (RR > VV) ? VV : RR; 
+                }   //get minimal displacement, dr^2 ? Xc^2
             }
         }    
-        //shift with selected displacement
-        VV = sqrt(VV / vv); //scale and norm
+        //shift with scaled displacement
+        VV = sqrt(VV / vv); // norm
         for (k = 0; k < Rn; k++) Xi[k] -= VV * Xc[k];  
 
-    } while ((Ex = Ex->n) != Es); // dt expressions on wiki in link    
+    }   while ((Ex = Ex->n) != Es); // dt expressions on wiki in link    
 // https://github.com/VasOleMil/Compressor/wiki#time-change-prediction
 }//Try shift elements Xc to the center of bound
 //--------------------------------------------------------------------
