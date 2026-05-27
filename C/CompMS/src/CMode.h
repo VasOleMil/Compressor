@@ -10,7 +10,8 @@ extern "C" {
 //--------------------------------------------------------------------
 // no structures defined yet
 //--------------------------------------------------------------------
-CDList	*Mv;//Modes resources container, only starting indicator
+extern CDList *Mv;//Modes resources container, only starting indicator
+extern double *Xc;//Center of mass vector
 //--------------------------------------------------------------------
 extern void ModeInit(void);
 //--------------------------------------------------------------------
@@ -25,6 +26,18 @@ extern void SetVolume(void);//Summary elements volume Ve & Me, uses Rc
 extern void SetRanges(void);//Zero drift ranges, for reporting only 
 //--------------------------------------------------------------------
 extern void EngPhases(void);//Engage phase space, random values {X,V}
+//--------------------------------------------------------------------
+extern void NormEnergy(void);//Normalize energy to given kT, saves Qe 
+//--------------------------------------------------------------------
+extern void NormMassCenter(void);//Try shift Xc to the center of bound
+//--------------------------------------------------------------------
+extern void TestGeometry(void);// average geometry deviation,  Sc, Qg
+//--------------------------------------------------------------------
+extern void TestEnergy(void);//updates Qe 
+//--------------------------------------------------------------------
+extern void TestMassCenter(void);//get current mass center vector Xc
+//--------------------------------------------------------------------
+extern void GetVolume(void);//output coordinates to consol, debug
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

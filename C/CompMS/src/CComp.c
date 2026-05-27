@@ -48,22 +48,26 @@ void
 CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; GR = GM = 1.0; //set time, set constants
-    Gc = GC ; GG = Gc * Gc ; kT = KT ; 
+    Gc = GC ; GG = Gc * Gc ; kT = KT; Tn = 0;
     
     Lv = Ev; ListClrV();//Move all elements to free buffer Ev->Fc
     Sx = St = Sv->Vc;   //aling elements number to sorts Si->Bn
     do { Si = St->v; SortLoad(); } while ((St = St->n) != Sx);
 
-    SetVolume(); Sn = Bn; Tn = 8 * Bn * Bn;   //Ve, Me, Sn, Tn
+    SetVolume(); Sn = Bn;    //Ve, Me, Sn
 
     if (KS <= 0.0)   // calculate bound radius Rb
-    { SetPBound(); }                   // P-bound
+    { Tn = 8 * Bn * Bn;SetPBound(); }  // P-bound
     else
-    { Rb = pow(Ve / KS, 1.0 / Rn); }   // K-bound
+    { Rb = pow(Ve / KS, 1.0 / Rn);  }  // K-bound
     
-    SetRanges();    // Zero drift ranges, for reporting only
+    SetRanges();     // Zero drift ranges, for reporting only
 
-    EngPhases();    // Engage phase space, random values {X,V} 
+    EngPhases();     // Engage phase space, random values {X,V} 
+
+    NormMassCenter();//Zero center of mas
+
+    NormEnergy();    // correct to accqurate after random
         
     // Initiate new elements tti, flush Tv->Fc free container
     Lv = Tv; ListClrV(); TimeCalcST(); ListSize();//squared complexity

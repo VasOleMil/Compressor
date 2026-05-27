@@ -1,15 +1,17 @@
 #ifndef CDATA_H888
 #define CDATA_H888
 
-#include<stdlib.h>
-#include<math.h>
-
 #ifdef  _MSC_VER
 #define _CRT_SECURE_DEPRECATE_MEMORY
+#define _CRT_SECURE_NO_WARNINGS
 #include <memory.h>
 #else
 #include <string.h>
 #endif
+
+#include<stdlib.h>
+#include<stdio.h>
+#include<math.h>
 
 #include"CList.h"
 

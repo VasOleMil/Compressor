@@ -11,7 +11,8 @@
 long    UT  = 0;// 1, unit memory allocation and UD   start
 long    UD;     // 2, dedicated destructor,      UD  finish
 long    UF;     // 0, memory allocation for regular free
-double  Pi,s;   // s = 1.0 / sqrt(2.0), Pi = Arc/Size
+double  Pi;     // Pi = Arc/Size
+double  s ;     // s = 1.0 / sqrt(2.0)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CDList* Dv;//Malloc list items container
 long	k ;//index, used in dimension 
@@ -128,7 +129,7 @@ DataInit()
     if (Dv == NULL) { exit(1); return; }; //return not reachable
     //Set data contaners counters and providers
     Dv->Fn = 0; Dv->ListItemDel = DataItemDel;
-    Dv->Vn = 0; Dv->ListItemNew = DataItemNew;
+    Dv->Vn = 0; Dv->ListItemNew = DataItemNew;   
     //Init sotrs elements, time and mode containers   
     SortInit();
     EmntInit();
