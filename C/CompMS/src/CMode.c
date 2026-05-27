@@ -188,7 +188,7 @@ TestGeometry(void)
             }
             if (rr < RR) { Sc++; Qg -= rr - RR; }          
         }
-    } while ((Ex = Ex->n) != Es);
+    }   while ((Ex = Ex->n) != Es);
 
     Qg /= Sc > 0 ? Sc : 1.0; // averager saves zero if clean
 
@@ -261,13 +261,13 @@ NormMassCenter(void)
     }   if (vv <= 0.0) return; //Done
     //Try shift elements Xc to the center of bound
     //Possible -> VV = vv <- Required
-    Es = Ev->Vc; Ex = Es; VV = vv; 
+    Ex = Ev->Vc; Et = Ex; VV = vv; 
     do  //Measure possible coordinate displacement:
     {   // line to sphere equation, with speed multiplier
         // same as repeat math with dt calucalution, wiki 
         // dr = v * dt, v = Xc  
         // dr = v * (sqrt(rv^2 - (rr-RR) * vv) - rv) / vv
-        Ei = Ex->v;    Xi = Ei->X;     rr = 0.0;
+        Ei = Et->v;    Xi = Ei->X;     rr = 0.0;
         RR = Rb - Ei->S->Rt; RR *= RR; rv = 0.0;
         for (k = 0; k < Rn; k++)
         {
@@ -287,34 +287,16 @@ NormMassCenter(void)
             {
                 //out of bound, error
             }
-        }//else-> out of bound, error      
+        }//else-> out of bound, error          
         
-        Et = Ex;//get possible shift defined by elements
-        while (Et != Es) // pair intersection test, Ei != Ej
-        {
-            Et = Et->p; Ej = Et->v; Xj = Ej->X;   rr = 0.0;
-            RR = Ei->S->Rt + Ej->S->Rt; RR *= RR; rv = 0.0;
-            for (k = 0; k < Rn; k++)
-            {
-                rk = Xi[k] - Xj[k]; rr += rk * rk;
-                vk = Xc[k];         rv += rk * vk;
-            }   //rv calculated with opposite sign, i then j
-            //Select possible RR or required VV shift, squared
-            rk = rv * rv; vk = (rr - RR) * vv;
-            if (rk >= vk) //discriminant test
-            {
-                RR = rv - sqrt(rk - vk); //|dr|
-                if (RR >= 0.0) // positive time selection
-                {
-                    RR *= RR; VV = (RR > VV) ? VV : RR; 
-                }   //get minimal displacement, dr^2 ? Xc^2
-            }
-        }    
-        //shift with scaled displacement
-        VV = sqrt(VV / vv); // norm
-        for (k = 0; k < Rn; k++) Xi[k] -= VV * Xc[k];  
+    }   while ((Et = Et->n) != Ex); // Et == Ex on leave 
 
-    }   while ((Ex = Ex->n) != Es); // dt expressions on wiki in link    
+    do  //shift with scaled displacement
+    {   //no pair distances changed  
+        VV = sqrt(VV / vv); Ei = Et->v; Xi = Ei->X;
+        for (k = 0; k < Rn; k++) Xi[k] -= VV * Xc[k];
+    }   while ((Et = Et->n) != Ex); // dt expressions on wiki in link 
+   
 // https://github.com/VasOleMil/Compressor/wiki#time-change-prediction
 }//Try shift elements Xc to the center of bound
 //--------------------------------------------------------------------
