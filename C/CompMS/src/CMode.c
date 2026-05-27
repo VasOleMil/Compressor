@@ -291,9 +291,10 @@ NormMassCenter(void)
         
     }   while ((Et = Et->n) != Ex); // Et == Ex on leave 
 
-    do  //shift with scaled displacement
-    {   //no pair distances changed  
-        VV = sqrt(VV / vv); Ei = Et->v; Xi = Ei->X;
+    VV = sqrt(VV / vv); //shift with scaled displacement
+    do  //no pair distances changed
+    {     
+         Ei = Et->v; Xi = Ei->X;
         for (k = 0; k < Rn; k++) Xi[k] -= VV * Xc[k];
     }   while ((Et = Et->n) != Ex); // dt expressions on wiki in link 
    
