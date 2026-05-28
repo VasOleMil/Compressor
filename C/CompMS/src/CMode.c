@@ -343,12 +343,12 @@ NormImpulse(void)
             vk += rv = Mi * Vi[k];   // summary impulse
             rk += fabs(rv);          // average impulse
 
-        }   while ((Et = Et->n) != Ex);
+        }   while ((Et = Et->n) != Ex); if (vk == 0.0) continue;
         // Dynamically distribute drift compensation: 
         // either uniformly across all particles
         // or targeted using j-scaled average unit impulse
         j = 4; // log_2(j) + 1 = 3 last bits loss on summing
-        rk /= Bn; n = (j * (long)(rk / fabs(vk)));
+        rk /= (double)Bn; n = (j * (long)(rk / fabs(vk)));
         n = ((n < 1) ? 1 : n); n = ((n > Bn) ? Bn : n);
         vk /= (double)n; i = 0;
         do  // near or uniform drift supress
