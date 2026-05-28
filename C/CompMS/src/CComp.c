@@ -48,7 +48,7 @@ void
 CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; GR = GM = 1.0; //set time, set constants
-    Gc = GC ; GG = Gc * Gc ; kT = KT; Sn = Bn; Tn = 0;
+    Gc = GC ; GG = Gc * Gc ; kT = KT; 
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     Lv = Ev;  ListClrV(); //move all elements to free buffer Ev->Fc
     Sx = Sv->Vc; St = Sx; //Aling elements number to sorts Si->Bn
@@ -76,7 +76,7 @@ CompLoad(double KT, double KS, double GC)
     Lv = Sv; ListSize(); Lv = Ev; ListSize(); DataSize();
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	// set counters. Stepping & Testing ready.
-	Sc = 0; Ce = 0; Cb = 0;
+	Sc = 0; Ce = 0; Cb = 0; Sn = Bn;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------
 void
