@@ -24,7 +24,8 @@ extern void CompStep(void);//main loop, is called until Sc >= Sn
 //--------------------------------------------------------------------
 extern void CompFree(void);//Destruction, releases resources
 //--------------------------------------------------------------------
-
+// debug
+//--------------------------------------------------------------------
 extern void GetVolume(void);//output coordinates to console
 //--------------------------------------------------------------------
 

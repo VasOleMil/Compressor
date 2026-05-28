@@ -12,10 +12,11 @@ extern "C" {
 //--------------------------------------------------------------------
 extern CDList *Mv;//Modes resources container, only starting indicator
 extern double *Xc;//Center of mass vector
+extern double *Pc;//Summary impulse vector
 //--------------------------------------------------------------------
-extern void ModeInit(void);
+extern void ModeInit(void); //CData.c
 //--------------------------------------------------------------------
-extern void ModeFree(void);
+extern void ModeFree(void); //CData.c
 //--------------------------------------------------------------------
 extern double Vgamma(void);//Multiplier Vb = Vg * Rb^Rn, Vg=Vgamma(Rn)
 //--------------------------------------------------------------------
@@ -35,11 +36,11 @@ extern void NormMomenta(void);// supress system rotation
 //--------------------------------------------------------------------
 extern void NormEnergy(void);//Normalize energy to given kT, saves Qe 
 //--------------------------------------------------------------------
-extern void TestMassCenter(void);//get current mass center vector Xc
+extern void TestMassCenter(void);//get current mass center vector *Xc
 //--------------------------------------------------------------------
-extern void TestImpulse(void);//
+extern void TestImpulse(void);// get current summary impulse  *Pc
 //--------------------------------------------------------------------
-extern void TestEnergy(void);//updates Qe 
+extern void TestEnergy(void);// get system energy value Qe 
 //--------------------------------------------------------------------
 extern void TestGeometry(void);// average geometry deviation,  Sc, Qg
 //--------------------------------------------------------------------

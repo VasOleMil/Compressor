@@ -48,34 +48,34 @@ void
 CompLoad(double KT, double KS, double GC)
 {
     Te = 0.0; GR = GM = 1.0; //set time, set constants
-    Gc = GC ; GG = Gc * Gc ; kT = KT; Tn = 0;
-    
-    Lv = Ev; ListClrV();//Move all elements to free buffer Ev->Fc
-    Sx = St = Sv->Vc;   //aling elements number to sorts Si->Bn
+    Gc = GC ; GG = Gc * Gc ; kT = KT; Sn = Bn; Tn = 0;
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    Lv = Ev;  ListClrV(); //move all elements to free buffer Ev->Fc
+    Sx = Sv->Vc; St = Sx; //Aling elements number to sorts Si->Bn
     do { Si = St->v; SortLoad(); } while ((St = St->n) != Sx);
-
-    SetVolume(); Sn = Bn;    //Ve, Me, Sn
-
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    SetVolume();     //Ve, Me - prepare for bound size solution
     if (KS <= 0.0)   // calculate bound radius Rb
     { Tn = 8 * Bn * Bn;SetPBound(); }  // P-bound
     else
     { Rb = pow(Ve / KS, 1.0 / Rn);  }  // K-bound
-    
-    SetRanges();     // Zero drift ranges, for reporting only
-
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     EngPhases();     // Engage phase space, random values {X,V} 
 
-    NormMassCenter();//Zero center of mas
-
-    NormEnergy();    // correct to accqurate after random
-        
-    // Initiate new elements tti, flush Tv->Fc free container
+    SetRanges();     // Zero drift ranges, for reporting mainly
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    NormMassCenter();// Supress waving, 
+    NormImpulse();   // Zero drift
+    NormMomenta();   // Supress rotation
+    NormEnergy();    // Correct to accqurate
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    
+    // Initiate new elements tti, flush time free container Tv->Fc
     Lv = Tv; ListClrV(); TimeCalcST(); ListSize();//squared complexity
-    
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Flush other free containers, Dv = Dv, Data has own context
-    Lv = Sv; ListSize();   Lv = Ev;    ListSize();  DataSize();
- 
-	// Set counters. Stepping ready
+    Lv = Sv; ListSize(); Lv = Ev; ListSize(); DataSize();
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	// set counters. Stepping & Testing ready.
 	Sc = 0; Ce = 0; Cb = 0;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------

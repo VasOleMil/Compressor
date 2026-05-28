@@ -235,13 +235,13 @@ NormEnergy(void)
     }   while ((Et = Et->n) != Ex); //devision by 2.0, later
     //Scale to given kT, simplified since not divided
     vv = (Qe != 0.0) ? sqrt(Bn * Rn * kT / Qe) : 1.0; Qe /= 2.0;
-    do
-    {
+    do  // NormMassCenter() -> NormImpulse() -> NormMomenta()
+    {   // should be called before this function
         Ei = Et->v; Vi = Ei->V;
         for (k = 0; k < Rn; k++) Vi[k] *= vv;  
 
-    }   while ((Et = Et->n) != Ex);
-
+    }   while ((Et = Et->n) != Ex);   
+    
 }// Normalize energy to given kT, writes value Qe before correction
 //--------------------------------------------------------------------
 void
@@ -381,11 +381,11 @@ NormMomenta(void)
                 RV += Mi * (rr * Vi[j] - rv * Vi[i]);
                 RR += Mi * (rr * rr + rv * rv);
 
-            } while ((Et = Et->n) != Ex); if (RR <= 0.0) continue;
+            }   while ((Et = Et->n) != Ex); if (RR <= 0.0) continue;
 
             VV = RV / RR; // result angular speed in 2D plane 
 
-            do  // suppress rotation
+            do  // suppress rotation, one pass
             {
                 Ei = Et->v; Xi = Ei->X; Vi = Ei->V;
 
@@ -395,9 +395,9 @@ NormMomenta(void)
                 Vi[i] += VV * rv; // compensate
                 Vi[j] -= VV * rr; // by subtaction
 
-            } while ((Et = Et->n) != Ex);
-        }
-    }
+            }   while ((Et = Et->n) != Ex);
+        }   //  use accumulated angular speed as indicator 
+    }       //  or iterator for complete rotation exclusion
 }// suppress system rotation
 //--------------------------------------------------------------------
 // debug
@@ -415,7 +415,7 @@ GetVolume(void)
         Ei = Et->v; Xi = Ei->X;     //no out print
         for (k = 0; k < Rn; k++)    //mark out state
             if (fabs(Xi[k]) >= Rb)  { printf("\n<0"); return; }
-    } while ((Et = Et->n) != Ex);
+    }   while ((Et = Et->n) != Ex);
 
     printf("\nkT = "); printf(fs, kT);
     printf("\nGc = "); printf(fs, Gc);
@@ -436,7 +436,7 @@ GetVolume(void)
         Ei = Et->v; Xi = Ei->X;    printf("\n{");
         for (k = 0; k < rm; k++) { printf(fs, Xi[k]); printf(", "); };
         printf(fs, Xi[rm]);      printf("}%c", (Et->n == Ex)?' ':',');
-    } while ((Et = Et->n) != Ex);
+    }   while ((Et = Et->n) != Ex);
    
 }//output params and array to console, debug
 //--------------------------------------------------------------------
