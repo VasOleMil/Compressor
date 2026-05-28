@@ -29,9 +29,9 @@ extern void EngPhases(void);//Engage phase space, random values {X,V}
 //--------------------------------------------------------------------
 extern void NormMassCenter(void);//Try shift Xc to the center of bound
 //--------------------------------------------------------------------
-extern void NormImpulse(void);//
+extern void NormImpulse(void);// supress system drift
 //--------------------------------------------------------------------
-extern void NormMomenta(void);//
+extern void NormMomenta(void);// supress system rotation
 //--------------------------------------------------------------------
 extern void NormEnergy(void);//Normalize energy to given kT, saves Qe 
 //--------------------------------------------------------------------

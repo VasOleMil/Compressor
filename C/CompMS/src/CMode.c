@@ -348,8 +348,8 @@ NormImpulse(void)
         // either uniformly across all particles
         // or targeted using j-scaled average unit impulse
         j = 4; // log_2(j) + 1 = 3 last bits loss on summing
-        rk /= (double)Bn; n = (j * (long)(rk / fabs(vk)));
-        n = ((n < 1) ? 1 : n); n = ((n > Bn) ? Bn : n);
+        rk /= 2.0 * (double)Bn; n = (j * (long)(rk / fabs(vk)));
+        n = ((n < 1) ? 1 : n);  n = ((n > Bn) ? Bn : n);
         vk /= (double)n; i = 0;
         do  // near or uniform drift supress
         {   // static bound do not demand lsb rigor
@@ -363,8 +363,42 @@ NormImpulse(void)
 void
 NormMomenta(void)
 {
-    return;
-}// 
+    TestMassCenter();       // NormMassCenter() and NormImpulse()
+                            // should be called before this function
+    for (i = 0; i < Rn; i++)
+    {
+        for (j = i + 1; j < Rn; j++)
+        {
+            Ex = Ev->Vc; Et = Ex; RV = 0.0; RR = 0.0;
+            do  // get angular speed in plane (i, j)
+            {
+                Ei = Et->v; Xi = Ei->X; Vi = Ei->V;
+
+                rr = Xi[i] - Xc[i]; // r(i) relative Xc
+                rv = Xi[j] - Xc[j]; // r(j) relative Xc
+                Mi = Ei->S->Mt;
+
+                RV += Mi * (rr * Vi[j] - rv * Vi[i]);
+                RR += Mi * (rr * rr + rv * rv);
+
+            } while ((Et = Et->n) != Ex); if (RR <= 0.0) continue;
+
+            VV = RV / RR; // result angular speed in 2D plane 
+
+            do  // suppress rotation
+            {
+                Ei = Et->v; Xi = Ei->X; Vi = Ei->V;
+
+                rr = Xi[i] - Xc[i]; // r(i) relative Xc
+                rv = Xi[j] - Xc[j]; // r(j) relative Xc
+
+                Vi[i] += VV * rv; // compensate
+                Vi[j] -= VV * rr; // by subtaction
+
+            } while ((Et = Et->n) != Ex);
+        }
+    }
+}// suppress system rotation
 //--------------------------------------------------------------------
 // debug
 //--------------------------------------------------------------------
