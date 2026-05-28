@@ -27,17 +27,25 @@ extern void SetRanges(void);//Zero drift ranges, for reporting only
 //--------------------------------------------------------------------
 extern void EngPhases(void);//Engage phase space, random values {X,V}
 //--------------------------------------------------------------------
-extern void NormEnergy(void);//Normalize energy to given kT, saves Qe 
-//--------------------------------------------------------------------
 extern void NormMassCenter(void);//Try shift Xc to the center of bound
 //--------------------------------------------------------------------
-extern void TestGeometry(void);// average geometry deviation,  Sc, Qg
+extern void NormImpulse(void);//
 //--------------------------------------------------------------------
-extern void TestEnergy(void);//updates Qe 
+extern void NormMomenta(void);//
+//--------------------------------------------------------------------
+extern void NormEnergy(void);//Normalize energy to given kT, saves Qe 
 //--------------------------------------------------------------------
 extern void TestMassCenter(void);//get current mass center vector Xc
 //--------------------------------------------------------------------
-extern void GetVolume(void);//output coordinates to consol, debug
+extern void TestImpulse(void);//
+//--------------------------------------------------------------------
+extern void TestEnergy(void);//updates Qe 
+//--------------------------------------------------------------------
+extern void TestGeometry(void);// average geometry deviation,  Sc, Qg
+//--------------------------------------------------------------------
+// debug
+//--------------------------------------------------------------------
+extern void GetVolume(void);//output coordinates to consol
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

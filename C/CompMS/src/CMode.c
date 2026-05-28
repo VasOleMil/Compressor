@@ -5,6 +5,7 @@
 //--------------------------------------------------------------------
 CDList *Mv;//Modes resources container
 double *Xc;//Center of mass vector
+double *Pc;//Summary impulse
 //--------------------------------------------------------------------
 long    n, i, j, rn; double *Xs;
 //--------------------------------------------------------------------
@@ -15,6 +16,7 @@ ModeInit(void)
 
     Xs = (double*)Malloc(sizeof(double), rn, UD);
     Xc = (double*)Malloc(sizeof(double), Rn, UD);
+    Pc = (double*)Malloc(sizeof(double), Rn, UD);
     
     Mv = (CDList*)Xs; //non zero value to mark initialization, ModeFree
    
@@ -24,8 +26,10 @@ void
 ModeFree(void)
 {
     if (Mv == NULL) return;
-    free(Xs); Xs = NULL;
-    free(Xc); Xc = NULL; Mv = NULL;
+
+    free(Pc); Pc = NULL;
+    free(Xc); Xc = NULL; 
+    free(Xs); Xs = NULL; Mv = NULL;
 }//Releases Free resources  
 //--------------------------------------------------------------------
 double
@@ -62,7 +66,8 @@ SetPBound(void)
     RA = 0.0; Bn = 0; Sx = St = Sv->Vc;
     do
     { 
-        Si = St->v; Bn += n = Si->Bn; RA += n * Si->Rc;
+        Si = St->v; Bn += n = Si->Bn; 
+        RA += n * Si->Rc;
     }   while ((St = St->n) != Sx);
 	RA /= (double)Bn; rr = 0.5;  // P(move) = rr = 0.5
 	//Set radius for even gemetrical probality P = 1/2
@@ -81,7 +86,8 @@ SetVolume(void)
 		Si = St->v; Bn += n = Si->Bn; Ri = Si->Rc;
         Mi = Si->Mc;  VV += Mi * n;  RR = Vg * Ri;
         for (k = 1; k < Rn; k++) RR *= Ri; RV += RR * n;
-	} while ((St = St->n) != Sx); 
+
+	}   while ((St = St->n) != Sx); 
     // Ks - volume density, Ks = GM * Ve / Vb, GM = (1.0 + Gc * Te)^Rn
     Ve = RV; Me = VV; // 
 }//Summary elements volume Ve & Me based on Rc, Ve *=GM to get current
@@ -207,7 +213,8 @@ TestEnergy(void)
             vk = Vi[k]; vv += vk * vk;
         }
         Qe += vv * Ei->S->Mt;
-    } while ((Et = Et->n) != Ex); Qe /= 2.0;
+
+    }   while ((Et = Et->n) != Ex); Qe /= 2.0;
    
 }// Get system energy Qe = Bn * Rn * kT / 2.0
 //--------------------------------------------------------------------
@@ -224,14 +231,16 @@ NormEnergy(void)
             vk = Vi[k]; vv += vk * vk;
         }
         Qe += vv * Ei->S->Mt; 
-    } while ((Et = Et->n) != Ex); //devision by 2.0, later
+
+    }   while ((Et = Et->n) != Ex); //devision by 2.0, later
     //Scale to given kT, simplified since not divided
-    vv = (Qe != 0.0) ? sqrt(kT * Rn * Bn / Qe) : 1.0; Qe /= 2.0;
+    vv = (Qe != 0.0) ? sqrt(Bn * Rn * kT / Qe) : 1.0; Qe /= 2.0;
     do
     {
         Ei = Et->v; Vi = Ei->V;
-        for (k = 0; k < Rn; k++) Vi[k] *= vv;      
-    } while ((Et = Et->n) != Ex);
+        for (k = 0; k < Rn; k++) Vi[k] *= vv;  
+
+    }   while ((Et = Et->n) != Ex);
 
 }// Normalize energy to given kT, writes value Qe before correction
 //--------------------------------------------------------------------
@@ -244,7 +253,8 @@ TestMassCenter(void)
     {
         Ei = Et->v; Xi = Ei->X;  Mi = Ei->S->Mt; Mj += Mi;
         for (k = 0; k < Rn; k++) Xc[k] += Mi * Xi[k];
-    } while ((Et = Et->n) != Ex);
+
+    }   while ((Et = Et->n) != Ex);
     Mj = (Mj > 0.0) ? 1.0 / Mj : 0.0;
     for (k = 0; k < Rn; k++) Xc[k] *= Mj;
 }// Get current mass center vector Xc
@@ -294,14 +304,69 @@ NormMassCenter(void)
     VV = sqrt(VV / vv); //shift with scaled displacement
     do  //no pair distances changed
     {     
-         Ei = Et->v; Xi = Ei->X;
+        Ei = Et->v; Xi = Ei->X;
         for (k = 0; k < Rn; k++) Xi[k] -= VV * Xc[k];
+
     }   while ((Et = Et->n) != Ex); // dt expressions on wiki in link 
    
 // https://github.com/VasOleMil/Compressor/wiki#time-change-prediction
 }//Try shift elements Xc to the center of bound
 //--------------------------------------------------------------------
+void
+TestImpulse(void)
+{
+    for (k = 0; k < Rn; k++) 
+    Pc[k] = 0.0; Ex = Ev->Vc; Et = Ex; //!!
+    for (k = 0; k < Rn; k++)
+    {
+        vk = 0.0; // Pc[k]
+        do
+        {
+            Ei = Et->v; Vi = Ei->V; Mi = Ei->S->Mt;
+            vk += Mi * Vi[k]; 
 
+        }   while ((Et = Et->n) != Ex); Pc[k] = vk;
+    }
+}// Get current summary inpulse Pc
+//--------------------------------------------------------------------
+void
+NormImpulse(void)
+{
+    //Exclude drift by zoroing summury impulse by coordinate
+    Ex = Ev->Vc; Et = Ex; // loops leave state: Et == Ex
+    for (k = 0; k < Rn; k++)
+    {
+        vk = 0.0; rk = 0.0;// get summary impulse for k direction
+        do
+        {
+            Ei = Et->v; Vi = Ei->V; Mi = Ei->S->Mt;
+            vk += rv = Mi * Vi[k];   // summary impulse
+            rk += fabs(rv);          // average impulse
+
+        }   while ((Et = Et->n) != Ex);
+        // Dynamically distribute drift compensation: 
+        // either uniformly across all particles
+        // or targeted using j-scaled average unit impulse
+        j = 4; // log_2(j) + 1 = 3 last bits loss on summing
+        rk /= Bn; n = (j * (long)(rk / fabs(vk)));
+        n = ((n < 1) ? 1 : n); n = ((n > Bn) ? Bn : n);
+        vk /= (double)n; i = 0;
+        do  // near or uniform drift supress
+        {   // static bound do not demand lsb rigor
+            Ei = Et->v;  Vi = Ei->V;
+            Vi[k] -= vk / Ei->S->Mt; i++;
+            
+        }   while ((Et = Et->n) != Ex || i < n);
+    }
+}//Zero system drift
+//--------------------------------------------------------------------
+void
+NormMomenta(void)
+{
+    return;
+}// 
+//--------------------------------------------------------------------
+// debug
 //--------------------------------------------------------------------
 void
 GetVolume(void)
