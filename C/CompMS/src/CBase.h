@@ -50,7 +50,6 @@ extern double           GM;// GM = GR^Rn
 //extern long             Gv;//(Y) Toggles position verifier
 //extern long             Gm;//(N) Toggles mass change while sizing
 //extern long             Gr;//(N) Toggles element rejection by center
-
 //========================================================== Data.h ==
 //extern long 		UT;// 1, unit memory allocation and UD   start
 //extern long 		UD;// 2, dedicated destructor,      UD  finish
@@ -81,6 +80,10 @@ extern double           GM;// GM = GR^Rn
 //extern CDItem     *Tt;   //CHold.h 
 //extern CDItem     *Tm;
 //extern CHold      *Ti;
+//---------------------------------------------------------- Mode.h --
+//extern CDList     *Mv;
+//extern double     *Xc;    //CMode.h
+//extern double     *Pc;
 //--------------------------------------------------------------------
 
 #ifdef __cplusplus

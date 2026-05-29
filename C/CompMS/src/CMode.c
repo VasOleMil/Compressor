@@ -247,16 +247,24 @@ NormEnergy(void)
 void
 TestMassCenter(void)
 {
-    for (k = 0; k < Rn; k++) Xc[k] = 0.0; 
-    Mj = 0.0; Ex = Ev->Vc; Et = Ex;
-    do
+    Ex = Ev->Vc; Et = Ex; RR = 0.0; 
+    do // get current elements Mt masses, RR - summary mass
     {
-        Ei = Et->v; Xi = Ei->X;  Mi = Ei->S->Mt; Mj += Mi;
-        for (k = 0; k < Rn; k++) Xc[k] += Mi * Xi[k];
+        Ei = Et->v; RR += Ei->S->Mt;
 
     }   while ((Et = Et->n) != Ex);
-    Mj = (Mj > 0.0) ? 1.0 / Mj : 0.0;
-    for (k = 0; k < Rn; k++) Xc[k] *= Mj;
+    RR = (RR > 0.0) ? 1.0 / RR : 0.0; // reverse for speed
+    for (k = 0; k < Rn; k++)
+    {
+        rk = 0.0;       // Xc[k] = 0.0;
+        do              // Xc[k] component 
+        {
+            Ei = Et->v; Xi = Ei->X; 
+            rk += Ei->S->Mt * Xi[k];
+
+        }   while ((Et = Et->n) != Ex);
+        Xc[k] = rk * RR; // next k
+    }
 }// Get current mass center vector Xc
 //--------------------------------------------------------------------
 void
@@ -302,7 +310,8 @@ NormMassCenter(void)
     }   while ((Et = Et->n) != Ex); // Et == Ex on leave 
 
     VV = sqrt(VV / vv); //shift with scaled displacement
-    do  //no pair distances changed
+
+    do                  //no pair distances changed
     {     
         Ei = Et->v; Xi = Ei->X;
         for (k = 0; k < Rn; k++) Xi[k] -= VV * Xc[k];
@@ -315,17 +324,17 @@ NormMassCenter(void)
 void
 TestImpulse(void)
 {
-    for (k = 0; k < Rn; k++) 
-    Pc[k] = 0.0; Ex = Ev->Vc; Et = Ex; //!!
+    Ex = Ev->Vc; Et = Ex; 
     for (k = 0; k < Rn; k++)
     {
-        vk = 0.0; // Pc[k]
-        do
+        vk = 0.0;   // Pc[k] = 0.0;
+        do          // Pc[k] component 
         {
-            Ei = Et->v; Vi = Ei->V; Mi = Ei->S->Mt;
-            vk += Mi * Vi[k]; 
+            Ei = Et->v; Vi = Ei->V;  
+            vk += Ei->S->Mt * Vi[k]; 
 
-        }   while ((Et = Et->n) != Ex); Pc[k] = vk;
+        }   while ((Et = Et->n) != Ex); 
+        Pc[k] = vk; // next k
     }
 }// Get current summary inpulse Pc
 //--------------------------------------------------------------------
@@ -379,7 +388,7 @@ NormMomenta(void)
                 Mi = Ei->S->Mt;
 
                 RV += Mi * (rr * Vi[j] - rv * Vi[i]);
-                RR += Mi * (rr * rr + rv * rv);
+                RR += Mi * (rr * rr + rv * rv); // Inetrtia
 
             }   while ((Et = Et->n) != Ex); if (RR <= 0.0) continue;
 
@@ -417,7 +426,11 @@ GetVolume(void)
             if (fabs(Xi[k]) >= Rb)  { printf("\n<0"); return; }
     }   while ((Et = Et->n) != Ex);
 
-    printf("\nkT = "); printf(fs, kT);
+    TestEnergy(); TestGeometry();
+
+    printf("\nQg = "); printf(fs, Qg);
+    printf("\nkT = "); printf(fs, (2.0 * Qe) / (Rn * Bn));
+    printf("\nKT = "); printf(fs, kT);
     printf("\nGc = "); printf(fs, Gc);
     printf("\nDe = "); printf(fs, De);
     printf("\nCb = "); printf("%ld", Cb);
