@@ -365,7 +365,7 @@ NormImpulse(void)
             Ei = Et->v;  Vi = Ei->V;
             Vi[k] -= vk / Ei->S->Mt; i++;
             
-        }   while ((Et = Et->n) != Ex || i < n);
+        }   while ((Et = Et->n) != Ex && i < n);
     }
 }//Zero system drift
 //--------------------------------------------------------------------
@@ -402,7 +402,7 @@ NormMomenta(void)
                 rv = Xi[j] - Xc[j]; // r(j) relative Xc
 
                 Vi[i] += VV * rv; // compensate
-                Vi[j] -= VV * rr; // by subtaction
+                Vi[j] -= VV * rr; // by subtraction
 
             }   while ((Et = Et->n) != Ex);
         }   //  use accumulated angular speed as indicator 
