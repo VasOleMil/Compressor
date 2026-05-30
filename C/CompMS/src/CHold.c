@@ -144,7 +144,7 @@ TimeCalcBS(void)
     RR = Rb - Si->Rt; VV = Si->Vc;
     RV = RR*VV; VV*=VV;  RR *= RR;
 
-    a = vv - VV; b = rv - RV;  c = rr - RR;
+    a = vv - VV; b = rv - RV;  c = rr - RR; Mi = a; Mj = b;
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
     {
@@ -156,11 +156,11 @@ TimeCalcBS(void)
         else         { dt = -0.5 * c / b; }
     }
     else
-    {
+    {   //inbound should be reachable
         if((RV = a * c)   >=  (rv = b * b))
-        {               dt = -1.0;        }
+        {  dt = +(sqrt(rv + RV) - b) / a; } // wiki ? 
         else
-        {  dt = +(sqrt(rv - RV) - b) / a; }
+        {  dt = +(sqrt(rv - RV) - b) / a; } // wiki +
     }
 }//
 //--------------------------------------------------------------------
@@ -196,7 +196,7 @@ TimeCalcES(void)
         if((RV = a * c)   >=  (rv = b * b))
         {              dt  = -1.0;        }
         else
-        {  dt = -(sqrt(rv - RV) + b) / a; }
+        {  dt = -(sqrt(rv - RV) + b) / a; } // wiki + 
     }
 }//
 //--------------------------------------------------------------------
