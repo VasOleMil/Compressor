@@ -48,6 +48,8 @@ extern void TestGeometry(void);// average geometry deviation,  Sc, Qg
 //--------------------------------------------------------------------
 extern void GetVolume(void);//output coordinates to consol
 //--------------------------------------------------------------------
+extern int	TestStruct(CDList* LV);//List test
+//--------------------------------------------------------------------
 
 #ifdef __cplusplus
 }

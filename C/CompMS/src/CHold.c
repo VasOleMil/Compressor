@@ -240,6 +240,8 @@ TimeCalcEx(void)
     }  
 }//Calculate  Ex element tti, Lv initilized in TimeCalc[S/T]T
 //--------------------------------------------------------------------
+//{ei,ej};{Tv}; Lv, Ev, Ex, Et, Es, Ti, Ei, Ej, Ri, rr-rv, RR-RV, dt
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void
 TimeCalcTT(void)
 {
@@ -250,6 +252,8 @@ TimeCalcTT(void)
     { Es = Ex = ej; TimeCalcEx(); }
 }//Calculate  ei,ej elements times to interaction - tti
 //--------------------------------------------------------------------
+//{};{Tv}; Lv, Ev, Ex, Et, Es, Ti, Ei, Ej, Ri, rr-rv, RR-RV, dt, a-c
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void
 TimeCalcST(void)
 {
@@ -257,39 +261,6 @@ TimeCalcST(void)
 
     do TimeCalcEx(); while ((Ex = Ex->n) != Es);
 }//Calculate   all  elements times to interaction - tti
-//--------------------------------------------------------------------
-//#include<stdio.h> 
-//static void
-//StructTestTime(void)
-//{
-//    int a, i, j, t; a = 0;
-//
-//    //printf("\n\tTest CHold->...");
-//    if ((t = Tv->Vn) >= 1)
-//    {
-//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->n) != Tx);
-//        if (i != t) { a++; j++; }
-//        if (j > 0) printf("\n\tEnumeration n Vn FAIL");
-//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->p) != Tx);
-//        if (i != t) { a++; j++; }
-//        if (j > 0) printf("\n\tEnumeration p Vn FAIL");
-//    }
-//    if ((t = Tv->Fn) >= 1)
-//    {
-//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->n) != Tx);
-//        if (i != t) { a++; j++; }
-//        if (j > 0) printf("\n\tEnumeration n Fn FAIL");
-//        Tt = Tx; i = j = 0; do { i++; } while ((Tt = Tt->p) != Tx);
-//        if (i != t) { a++; j++; }
-//        if (j > 0) printf("\n\tEnumeration p Fn FAIL");
-//    }
-//
-//    if (a > 0)
-//    {
-//        printf("\n\tHold.c:Error on step:\n");
-//    }
-//    //else { printf("\n\tHold.c: Test passed:\n"); }
-//}
 //--------------------------------------------------------------------
 
 

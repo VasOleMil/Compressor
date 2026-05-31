@@ -453,6 +453,55 @@ GetVolume(void)
    
 }//output params and array to console, debug
 //--------------------------------------------------------------------
+int
+TestStruct(CDList* LV)
+{
+    int a, i, j, t; a = 0; CDItem * LX, * LT;
+
+    LX = LV->Vc; if ((t = LV->Vn) >= 1)
+    {
+        LT = LX; i = j = 0; do { i++; } while ((LT = LT->n) != LX);
+        if (i != t) { a++; j++; }
+        if (j > 0) printf("\nEnumeration n Vn FAIL");
+        LT = LX; i = j = 0; do { i++; } while ((LT = LT->p) != LX);
+        if (i != t) { a++; j++; }
+        if (j > 0) printf("\nEnumeration p Vn FAIL");
+    }
+    LX = LV->Fc; if ((t = LV->Fn) >= 1)
+    {
+        LT = LX; i = j = 0; do { i++; } while ((LT = LT->n) != LX);
+        if (i != t) { a++; j++; }
+        if (j > 0) printf("\nEnumeration n Fn FAIL");
+        LT = LX; i = j = 0; do { i++; } while ((LT = LT->p) != LX);
+        if (i != t) { a++; j++; }
+        if (j > 0) printf("\nEnumeration p Fn FAIL");
+    }   
+    LX = LV->Vc; if (LV->Vn == 1) if (t = (LX->p != LX || LX->n != LX))
+    {
+        printf("\nCheck Vn self-loop: p==n==self? FAIL"); a++;
+    } 
+    LX = LV->Fc; if (LV->Fn == 1) if (t = (LX->p != LX || LX->n != LX))
+    {
+        printf("\nCheck Fn self-loop: p==n==self? FAIL"); a++;
+    }   
+    LX = LV->Vc; if (LV->Vn >= 2) if (t = (LX->p == LX || LX->n == LX))
+    {
+        printf("\nCheck Vn not-looped: p!=n!=self? FAIL"); a++;
+    }
+    LX = LV->Fc; if (LV->Fn >= 2) if (t = (LX->p == LX || Lx->n == LX))
+    {
+        printf("\nCheck Fn not-looped: p!=n!=self? FAIL"); a++;
+    }
+
+    if (a > 0)
+    {
+        printf("\nError on step: structure"); return 1;
+    }
+    {
+        return 0;
+    }
+}//simple structure list test, enumeration + nonlooped, looped for one
+//--------------------------------------------------------------------
 
 
 

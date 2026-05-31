@@ -41,4 +41,3 @@ double           GM;// GM = GR^Rn
 //long             Gm;//Toggles mass change while sizing
 //long             Gr;//Toggles element rejection by center
 //--------------------------------------------------------------------
-
