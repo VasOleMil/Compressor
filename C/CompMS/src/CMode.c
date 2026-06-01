@@ -1,4 +1,4 @@
-﻿#include"CBase.h"
+#include"CBase.h"
 #include"CSort.h"
 #include"CEmnt.h"
 #include"CMode.h"
@@ -7,16 +7,17 @@ CDList *Mv;//Modes resources container
 double *Xc;//Center of mass vector
 double *Pc;//Summary impulse
 //--------------------------------------------------------------------
-long    n, i, j, rn; double *Xs;
+long    n, i, j, rn; double *Xs,*Vs, a, b, c, ra, dt;
 //--------------------------------------------------------------------
 void
 ModeInit(void)
-{
-	if (Mv != NULL) return; rn = Rn + 2;
+{   //Set constants, Rn + 2 for random point generation
+	if (Mv != NULL) return; rn = Rn + 2; ra = 1.0 / sqrt((double)rn); 
 
-    Xs = (double*)Malloc(sizeof(double), rn, UD);
-    Xc = (double*)Malloc(sizeof(double), Rn, UD);
-    Pc = (double*)Malloc(sizeof(double), Rn, UD);
+    Xs = (double*)Malloc(sizeof(double), rn, UT); //start transaction
+    Vs = (double*)Malloc(sizeof(double), rn, UT);
+    Xc = (double*)Malloc(sizeof(double), Rn, UT);
+    Pc = (double*)Malloc(sizeof(double), Rn, UD); //end   transaction
     
     Mv = (CDList*)Xs; //non zero value to mark initialization, ModeFree
    
@@ -29,6 +30,7 @@ ModeFree(void)
 
     free(Pc); Pc = NULL;
     free(Xc); Xc = NULL; 
+    free(Vs); Vs = NULL;
     free(Xs); Xs = NULL; Mv = NULL;
 }//Releases Free resources  
 //--------------------------------------------------------------------
@@ -67,14 +69,23 @@ SetPBound(void)
     do
     { 
         Si = St->v; Bn += n = Si->Bn; 
-        RA += n * Si->Rc;
-    }   while ((St = St->n) != Sx);
-	RA /= (double)Bn; rr = 0.5;  // P(move) = rr = 0.5
-	//Set radius for even gemetrical probality P = 1/2
-    //intersect or move freely. Simultanious drop, all elements.
-    Rb = RA * (1.0 + 2.0 * pow(
-        (1.0 - pow(rr, 2.0 / (Bn * (Bn - 1)))),
-		-1.0 / Rn));//provides easy initial random drop 
+        RA += n * Si->Rt;
+    }   while ((St = St->n) != Sx); if (Bn <= 1) return;
+    //Set radius for even gemetrical probality P = 1/2
+    //intersect or move freely. Simultanious drop, all elements:
+    VV = vv = (double)Bn; RA /=vv; vv *= vv - 1.0; 
+    vv = 2.0 / vv; rr = 0.5; // P(move) = rr = 0.5
+    // Rb = r (1 + 2 (1 - P^(2/((Bn - 1) Bn)))^(-1/Rn))
+    rv = 1.0 - pow(rr, vv); //inner pow
+    if (rv <= 0.0) // if inner pow becomes too small or zero
+    {   // Rb = r (1 + 2 (2Log[1/P] (Bn+1)/ (Bn^3))^(-(1/Rn)))
+        rv = 2.0 * log(1.0 / rr) * (VV + 1) / (VV * VV * VV);
+    }
+    VV = pow(rv, 1.0 / (double)Rn); //outer pow
+    if (VV > 0.0) 
+    {   Rb = RA * (1.0 + 2.0 / VV); }
+    else //Fallback to a larger radius if calculation fails
+    {   Rb = RA * 3.0;              } 
 }//Set radius for even interaction/move probality
 //--------------------------------------------------------------------
 void
@@ -96,7 +107,7 @@ void
 SetRanges(void)
 {
     static double e; static long m; //Precision adaptation:
-
+    
     e = 1.0; m = 0; while (1.0 < 1.0 + e) { e /= 10.0; m++; }
 	Fm = m; //Mantisse test, decimal digits: 1.0 + 10^-Fm == 1.0
 
@@ -105,40 +116,57 @@ SetRanges(void)
     
     //De should be greater without position verifier, De *= Bn
 	//ranging not implemented, currently for reporting only
-    e = pow(10.0, -Fm); Ds = -(Rb * RN * e); De = 4e6 * Ds;
+    e = 1.0 / pow(10.0, Fm); Ds = -(Rb * RN * e); De = 4e6 * Ds;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
 static void
 RandomSphere(void)
 {
-    RR = 0.0; //rr = 2.0 / (double)RAND_MAX; //rn = Rn + 2
-    // pick one index coordinate, will belong to cube face
-    i = rand() % rn;
-    // generate others coordinates, uniformly distributed
-    for (k = 0; k < rn; k++)
+    n = rn + rand() % rn; // rn = Rn + 2; ra = 1.0 / sqrt((double)rn);   
+    do  // speeds & coordinates within inscribed cube, uniformly 
     {
-        if (k != i) { rk = Xs[k] = (double)rand() * rr - 1.0; }
-        else        { rk = Xs[k] = (rand() % 2) ? 1.0 : -1.0; }
-        RR += rk * rk;
-    }
-    // project cube face point to, RA = Rb - Ri, sphere surface
-    RR = RA/sqrt(RR); for (k = 0; k < rn; k++) { Xs[k] *= RR; }
-    // random rotations of coordinates, to smooth distribution
-    for (k = 0; k < rn; k++)
-    {
-        i = rand() % rn; do  j = rand() % rn;  while (i == j);
-
-        Ri = Xs[i]; Rj = Xs[j];
-        Xs[i] =  s * (Rj - Ri);
-        Xs[j] =  s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
-    }
-}//Generate random point on rn-sphere of radius RA
+        for (rr = rv = vv = 0.0, k = 0; k < rn; k++)
+        {   //rd = 2.0 / RAND_MAX; 
+            rk = Xs[k] = (rd * rand() - 1.0) * ra;
+            vk = Vs[k] = (rd * rand() - 1.0);
+            rr += rk*rk;
+            rv += rk*vk; vv += vk*vk;
+        }
+    }   while (vv <= 0.0);    
+    //bounce point by sphere surface, repeat n steps
+    for (i = 0; i < n; i++) // (a != 0.0)
+    {   // get time dt to reach rn-sphere of radius 1.0  
+        // centered in origin, no point radius Rc = Rt = 0.0
+        a = vv;       b = rv;     c = rr - 1.0; 
+        if  (  (c >= 0.0)   &&   (b >= 0.0)   )
+        {             dt = -0.0;              }
+        else
+        {   //inbound should be reachable
+            if((vv = a * c)   >=  (rv = b * b))
+            {  dt = +(sqrt(rv + vv) - b) / a; } // wiki  
+            else
+            {  dt = +(sqrt(rv - vv) - b) / a; } // wiki 
+        }   // Move to sphere surface
+        for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
+        //reject point by sphere surface, repeat n steps
+        for(rv = 0.0, k = 0; k < rn; k++)
+	    {   //prepare for bounce, scalar product 
+            rk = Xs[k]; 
+		    vk = Vs[k]; rv += rk * vk;
+        }   RV = 2.0 * rv; rr = rv = vv = 0.0;
+        for(k = 0; k < rn; k++) 
+        {
+            rk = Xs[k]; Vs[k] -= RV * rk; //bounce by sphere surface
+            vk = Vs[k];  rr += rk*rk;
+            rv += rk*vk; vv += vk*vk;     //refresh scalar products
+        }
+    }      
+}//Generate random point on rn-sphere of radius 1.0
 //--------------------------------------------------------------------
 void
 EngPhases(void)
 {
-    VV = sqrt(3.0 * kT * Bn / Me); rr = 2.0 / (double)RAND_MAX;
-    Es = Ex = Ev->Vc; Sc = 0; //Tries counter, not in steping use 
+    VV = sqrt(3.0 * kT * Bn / Me); Es = Ex = Ev->Vc; Sc = 0; //Tries counter
     do
     {
 		Et = Ex; Ei = Ex->v; Xi = Ei->X; Vi = Ei->V; 
@@ -147,8 +175,8 @@ EngPhases(void)
        
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
         { 
-			Xi[k] = Xs[k]; // Rn projection is distribution in ball
-            Vi[k] = VV * ((double)rand() * rr - 1.0);
+			Xi[k] = RA * Xs[k]; // Rn projection is distribution in ball
+            Vi[k] = VV * Vs[k];
         }
 
         while (Et != Es)  // test intersection, Ei != Ej
@@ -162,7 +190,7 @@ EngPhases(void)
             //check distances, if intersect, regenerate Ei
             if (rv > vv)
             { 
-                if(Sc >= Tn){ DataFree(); exit(8); }//tries control
+                if(Sc >= Tn){ DataFree(); printf("Loader, too many tries\n"); exit(8); }//tries control
                 else    { Sc++; Ex = Ex->p; break; }//regenerate Ei
             }//exits since single threaded, global scope control             
         }

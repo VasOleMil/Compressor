@@ -60,9 +60,9 @@ CompLoad(double KT, double KS, double GC)
     else
     { Rb = pow(Ve / KS, 1.0 / Rn);  }  // K-bound
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    EngPhases();     // Engage phase space, random values {X,V} 
-
     SetRanges();     // Zero drift ranges, for reporting mainly
+    EngPhases();     // Engage phase space, random values {X,V} 
+    //printf("\nInitial random state:\n"); GetVolume(); //debug
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     NormMassCenter();// Supress waving, 
     NormImpulse();   // Zero drift
@@ -120,72 +120,72 @@ CompStep()
 //--------------------------------------------------------------------
 // debug
 //--------------------------------------------------------------------
-//void 
-//CompStep()
-//{
-//    if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
-//
-//    // show time holder, Step begin
-//    printf("\n Step begin:\n\n"); Tx = Tt = Tv->Vc;
-//    do 
-//    {
-//        Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
-//    } while ((Tt = Tt->n) != Tx);
-//
-//    if (TestStruct()) return;
-//
-//    //Select minimal tti  from holder Tv
-//    TimeGetStp();// Tm, ei, ej, dT are set
-//    
-//    //show result selection of minimal dT
-//    Ti = Tm->v; printf("\n\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
-//
-//    if (TestStruct()) return;
-//
-//    //mean free time and path tests. Before interaction
-//
-//    // Refresh geometry and globals, if not simultanious 
-//    if (dT > 0.0) // time change: Te += dT in SortGrow
-//    {
-//        Sc = 0; EmntMove(); SortGrow();
-//    }
-//    else // impulse loop watchdog, stop on clustering
-//    {
-//        Sc++; if (Sc >= Sn) return;
-//    }
-//
-//    //Verify position, to prevent time summing errors
-//    //elements ei, ej interaction, initiate counters Cx, Ce, Cb
-//    TimeValStp();  EmntColl(); //procced to new time step
-//
-//    //mean free time and path tests. After interaction
-//
-//    //Clear interacted elements tti in Tv
-//    TimeDelStp();//Tm in free container
-//
-//    // show time holder, After delete
-//    printf("\n After delete:\n\n"); Tx = Tt = Tv->Vc;
-//    do
-//    {
-//        Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
-//    } while ((Tt = Tt->n) != Tx);
-//
-//    if (TestStruct()) return;
-//
-//    //Change tti in time container Tv, Tm values not touched
-//    if (Sc == 0) TimeDecStp();
-//
-//    //Calculate ei, ej elements tti, Tm is overwritted and reused
-//    TimeCalcTT();//ei, ej, dT not actual, but safe to use
-//
-//    // show time holder, After update
-//    printf("\n After update:\n\n"); Tx = Tt = Tv->Vc;
-//    do
-//    {
-//        Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
-//    } while ((Tt = Tt->n) != Tx);
-//
-//    if (TestStruct()) return;
-//
-//}//main loop step, direct reporting, for testing and development
+void 
+CompHold()
+{
+   if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
+
+   // show time holder, Step begin
+   printf("\n Step begin:\n\n"); Tx = Tt = Tv->Vc;
+   do 
+   {
+       Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+   } while ((Tt = Tt->n) != Tx);
+
+   if (TestStruct(Tv)) return;
+
+   //Select minimal tti  from holder Tv
+   TimeGetStp();// Tm, ei, ej, dT are set
+   
+   //show result selection of minimal dT
+   Ti = Tm->v; printf("\n\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+
+   if (TestStruct(Tv)) return;
+
+   //mean free time and path tests. Before interaction
+
+   // Refresh geometry and globals, if not simultanious 
+   if (dT > 0.0) // time change: Te += dT in SortGrow
+   {
+       Sc = 0; EmntMove(); SortGrow();
+   }
+   else // impulse loop watchdog, stop on clustering
+   {
+       Sc++; if (Sc >= Sn) return;
+   }
+
+   //Verify position, to prevent time summing errors
+   //elements ei, ej interaction, initiate counters Cx, Ce, Cb
+   TimeValStp();  EmntColl(); //procced to new time step
+
+   //mean free time and path tests. After interaction
+
+   //Clear interacted elements tti in Tv
+   TimeDelStp();//Tm in free container
+
+   // show time holder, After delete
+   printf("\n After delete:\n\n"); Tx = Tt = Tv->Vc;
+   do
+   {
+       Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+   } while ((Tt = Tt->n) != Tx);
+
+   if (TestStruct(Tv)) return;
+
+   //Change tti in time container Tv, Tm values not touched
+   if (Sc == 0) TimeDecStp();
+
+   //Calculate ei, ej elements tti, Tm is overwritted and reused
+   TimeCalcTT();//ei, ej, dT not actual, but safe to use
+
+   // show time holder, After update
+   printf("\n After update:\n\n"); Tx = Tt = Tv->Vc;
+   do
+   {
+       Ti = Tt->v; printf("\tdt = %f\tei = %p\tej = %p\n", Ti->dt, Ti->ei, Ti->ej);
+   } while ((Tt = Tt->n) != Tx);
+
+   if (TestStruct(Tv)) return;
+
+}//main loop steping, direct reporting, for testing and development
 //--------------------------------------------------------------------

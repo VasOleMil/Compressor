@@ -144,7 +144,7 @@ TimeCalcBS(void)
     RR = Rb - Si->Rt; VV = Si->Vc;
     RV = RR*VV; VV*=VV;  RR *= RR;
 
-    a = vv - VV; b = rv - RV;  c = rr - RR; Mi = a; Mj = b;
+    a = vv - VV; b = rv - RV;  c = rr - RR; 
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
     {
@@ -262,6 +262,4 @@ TimeCalcST(void)
     do TimeCalcEx(); while ((Ex = Ex->n) != Es);
 }//Calculate   all  elements times to interaction - tti
 //--------------------------------------------------------------------
-
-
-    
+   

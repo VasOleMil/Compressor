@@ -1,4 +1,4 @@
-﻿#include"CList.h"
+#include"CList.h"
 //--------------------------------------------------------------------
 CDList *Lv; //Data container
 CDItem *Lx; //Data exchange register

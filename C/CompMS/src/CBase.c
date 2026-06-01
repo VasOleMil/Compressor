@@ -19,6 +19,7 @@ double           De;//range (-De;+De) treated as zero, dT = 0.0
 double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
 long 		     Fm;// float mantisse  1.0 + 10^-Fm == 1.0
 long 		     Fe;// float exponent  0.0 + 10^-Fe == 0.0 
+long 		     Fr;// RAND_MAX bits 
 
 double           Qe;//system energy, Bn * Rn * kT / 2
 double           Qg;//geomenty deviation, mean squared

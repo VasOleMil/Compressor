@@ -26,6 +26,8 @@ extern void CompFree(void);//Destruction, releases resources
 //--------------------------------------------------------------------
 // debug
 //--------------------------------------------------------------------
+extern void CompHold(void);//main loop stepping test, direct reporting
+//--------------------------------------------------------------------
 extern void GetVolume(void);//output coordinates to console
 //--------------------------------------------------------------------
 

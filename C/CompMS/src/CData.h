@@ -10,6 +10,7 @@
 #endif
 
 #include<stdlib.h>
+#include<stdint.h>
 #include<stdio.h>
 #include<math.h>
 
@@ -27,7 +28,7 @@ extern long 	UD;// 2, dedicated destructor,      UD  finish
 extern long 	UF;// 0, memory allocation for regular free
 
 extern double	Pi;// Pi number 3.1415...
-extern double	s ;// s = 1.0 / sqrt(2.0)
+extern double   rd;// 2.0 / (RAND_MAX), for random double
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 extern CDList  *Dv;//Data list items container 
 extern long		k ;//index, used in dimension 
