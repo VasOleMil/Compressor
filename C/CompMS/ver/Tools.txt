@@ -1,0 +1,14 @@
+
+static double 
+RandDouble(void) 
+{
+    //Fr=0; m = RAND_MAX; while(m > 0) { Fr++; m>>=1; }; 
+    //mm = 0x000FFFFFFFFFFFFFULL; me = 0x3FF0000000000000ULL; 
+    //n  = 64 / Fr + 1;  mi = (uint64_t *)&Mi; double Mi;
+    for ( *mi = 0, j = 0; j <= n; j++) 
+    {
+        *mi |= ((uint64_t)rand() << (j * (Fr-(rand()%2))));
+    }
+    *mi = ((*mi & mm) | me); //masking to get only Fm bits
+    return Mi - 1.0; //return double in range [0.0;1.0)
+}
