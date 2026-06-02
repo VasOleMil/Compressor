@@ -65,7 +65,7 @@ void
 SetPBound(void)
 {
     //Weighted Average radius (RA) over all elements.
-    RA = 0.0; Bn = 0; Sx = St = Sv->Vc;
+    RA = 0.0; Bn = 0; Sx = Sv->Vc; St = Sx;
     do
     { 
         Si = St->v; Bn += n = Si->Bn; 
@@ -76,12 +76,12 @@ SetPBound(void)
     VV = vv = (double)Bn; RA /=vv; vv *= vv - 1.0; 
     vv = 2.0 / vv; rr = 0.5; // P(move) = rr = 0.5
     // Rb = r (1 + 2 (1 - P^(2/((Bn - 1) Bn)))^(-1/Rn))
-    rv = 1.0 - pow(rr, vv); //inner pow
+    rv = 1.0 - pow(rr, vv); // inner pow
     if (rv <= 0.0) // if inner pow becomes too small or zero
-    {   // Rb = r (1 + 2 (2Log[1/P] (Bn+1)/ (Bn^3))^(-(1/Rn)))
+    {   // Rb = r (1 + 2 (2 Log[1/P] (Bn+1)/ (Bn^3))^(-(1/Rn)))
         rv = 2.0 * log(1.0 / rr) * (VV + 1) / (VV * VV * VV);
     }
-    VV = pow(rv, 1.0 / (double)Rn); //outer pow
+    VV = pow(rv, 1.0 / (double)Rn); // outer pow
     if (VV > 0.0) 
     {   Rb = RA * (1.0 + 2.0 / VV); }
     else //Fallback to a larger radius if calculation fails
@@ -107,6 +107,8 @@ void
 SetRanges(void)
 {
     static double e; static long m; //Precision adaptation:
+    //Fr - bits in RAND_MAX, for random double
+    Fr = 0; m = RAND_MAX; while(m > 0) { Fr++; m>>=1; }; 
     
     e = 1.0; m = 0; while (1.0 < 1.0 + e) { e /= 10.0; m++; }
 	Fm = m; //Mantisse test, decimal digits: 1.0 + 10^-Fm == 1.0
@@ -118,6 +120,33 @@ SetRanges(void)
 	//ranging not implemented, currently for reporting only
     e = 1.0 / pow(10.0, Fm); Ds = -(Rb * RN * e); De = 4e6 * Ds;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
+//--------------------------------------------------------------------
+// static void //alternative function, faster than rejection sampling
+// RandomSphere(void) // PDF tests in wiki and mathmatica file
+// {
+//     RR = 0.0; //rn = Rn + 2; rd = 2.0 / RAND_MAX; 
+//     // pick one index coordinate, will belong to cube face
+//     i = rand() % rn; // s = 1.0 / sqrt(2.0) for random rotation
+//     // generate others coordinates, uniformly distributed
+//     for (k = 0; k < rn; k++)
+//     {
+//         if (k != i) { rk = Xs[k] = rd * rand() - 1.0; }
+//         else        { rk = Xs[k] = (rand() % 2) ? 1.0 : -1.0; }
+//         RR += rk * rk; Vs[k] = rd * rand() - 1.0; 
+//     }   //Vs can be set outside of this function, if needed
+//     // project cube face point to, RA = Rb - Ri, sphere surface
+//     RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++) { Xs[k] *= RR; }
+//     // random rotations of coordinates, to smooth distribution
+//     for (k = 0; k < rn; k++)
+//     {
+//         i = rand() % rn; do  j = rand() % rn;  while (i == j);
+//         do  j = rand() % rn;  while (i == j);
+//
+//         Ri = Xs[i]; Rj = Xs[j];
+//         Xs[i] =  s * (Rj - Ri);
+//         Xs[j] =  s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
+//     }   //Simple fast random point generation on rn-sphere of radius 1.0 
+// }//Generate random point on rn-sphere of radius 1.0
 //--------------------------------------------------------------------
 static void
 RandomSphere(void)
@@ -165,21 +194,19 @@ RandomSphere(void)
 //--------------------------------------------------------------------
 void
 EngPhases(void)
-{
-    VV = sqrt(3.0 * kT * Bn / Me); Es = Ex = Ev->Vc; Sc = 0; //Tries counter
+{   //Tries counter Sc, for control of random point generation
+    VV = sqrt(3.0 * kT * Bn / Me); Es = Ex = Ev->Vc; Sc = 0; 
     do
-    {
-		Et = Ex; Ei = Ex->v; Xi = Ei->X; Vi = Ei->V; 
-        //Generate random point X on (rn = Rn+2) sphere
+    {   //Generate random point Xs on (rn = Rn+2) sphere
         RA = Rb - Ei->S->Rt; RandomSphere(); 	
-       
+        Ei = Ex->v; Xi = Ei->X; Vi = Ei->V; 
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
         { 
 			Xi[k] = RA * Xs[k]; // Rn projection is distribution in ball
-            Vi[k] = VV * Vs[k];
-        }
-
-        while (Et != Es)  // test intersection, Ei != Ej
+            Vi[k] = VV * Vs[k]; // speeds distribution is cubic /rotated
+        }   
+        Et = Ex;  // test intersection, Ei != Ej
+        while (Et != Es)             // Ex != Es
         {        
             Et = Et->p; Ej = Et->v; Xj = Ej->X; 
             rv = Ei->S->Rt + Ej->S->Rt; rv *= rv; vv = 0.0;
@@ -189,33 +216,28 @@ EngPhases(void)
             }
             //check distances, if intersect, regenerate Ei
             if (rv > vv)
-            { 
-                if(Sc >= Tn){ DataFree(); printf("Loader, too many tries\n"); exit(8); }//tries control
+            {   //printf("\nLoader: too many tries\n"); // debug
+                if(Sc >= Tn){ DataFree(); exit(8); }//tries control
                 else    { Sc++; Ex = Ex->p; break; }//regenerate Ei
             }//exits since single threaded, global scope control             
         }
-    } while ((Ex = Ex->n) != Es);   
+    }   while ((Ex = Ex->n) != Es);   
 }//Engage phase space, random values {X,V}
 //--------------------------------------------------------------------
 void
 TestGeometry(void)
 {
     Es = Ex = Ev->Vc; Sc = 0; Qg = 0.0; // counter and averager
-    do  //Bn*(Bn - 1) / 2 complexity, not for regular step test
-    {
-        Et = Ex; Ei = Ex->v; Xi = Ei->X; 
-        // bound intersection, Ei
-        RR = Rb - Ei->S->Rt; RR *= RR; rr = 0.0;
-        for (k = 0; k < Rn; k++)
+    do  // Bn*(Bn - 1) / 2 complexity, not for the regular step 
+    {   // bound intersection, Ei
+        Ei = Ex->v; Xi = Ei->X; rr = 0.0;
+        RR = Rb - Ei->S->Rt; RR *= RR; 
+        for (k = 0; k < Rn; k++) { rk = Xi[k]; rr += rk * rk; }  
+        if (rr > RR) { Sc++; Qg += rr - RR; }; Et = Ex; 
+        while (Et != Es) // pair intersection, Ei != Ej
         {
-            rk = Xi[k]; rr += rk * rk;
-        }  
-        if (rr > RR) { Sc++; Qg += rr - RR; }
-        // pair intersection, Ei != Ej
-        while (Et != Es)  
-        {
-            Et = Et->p; Ej = Et->v; Xj = Ej->X;
-            RR = Ei->S->Rt + Ej->S->Rt; RR *= RR; rr = 0.0;
+            Et = Et->p; Ej = Et->v; Xj = Ej->X; rr = 0.0;
+            RR = Ei->S->Rt + Ej->S->Rt; RR *= RR;
             for (k = 0; k < Rn; k++)
             {
                 rk = Xj[k] - Xi[k]; rr += rk * rk;
@@ -230,8 +252,7 @@ TestGeometry(void)
 //--------------------------------------------------------------------
 void
 TestEnergy(void)
-{
-    //Obtain current energy value
+{   //Obtain current energy value
     Ex = Ev->Vc; Et = Ex; Qe = 0.0;
     do  // Et == Ex, on leave
     {
@@ -242,14 +263,12 @@ TestEnergy(void)
         }
         Qe += vv * Ei->S->Mt;
 
-    }   while ((Et = Et->n) != Ex); Qe /= 2.0;
-   
+    }   while ((Et = Et->n) != Ex); Qe /= 2.0;   
 }// Get system energy Qe = Bn * Rn * kT / 2.0
 //--------------------------------------------------------------------
 void
 NormEnergy(void)
-{
-    //TestEnergy, copied, with late Qe assign
+{   //TestEnergy, copied, with late Qe assign
     Ex = Ev->Vc; Et = Ex; Qe = 0.0; 
     do  // Et == Ex, on leave
     {
@@ -260,16 +279,15 @@ NormEnergy(void)
         }
         Qe += vv * Ei->S->Mt; 
 
-    }   while ((Et = Et->n) != Ex); //devision by 2.0, later
+    }   while ((Et = Et->n) != Ex); // devision by 2.0, later
     //Scale to given kT, simplified since not divided
-    vv = (Qe != 0.0) ? sqrt(Bn * Rn * kT / Qe) : 1.0; Qe /= 2.0;
+    vv = (Qe > 0.0) ? sqrt(Bn * Rn * kT / Qe) : 1.0; Qe /= 2.0;
     do  // NormMassCenter() -> NormImpulse() -> NormMomenta()
     {   // should be called before this function
         Ei = Et->v; Vi = Ei->V;
         for (k = 0; k < Rn; k++) Vi[k] *= vv;  
 
-    }   while ((Et = Et->n) != Ex);   
-    
+    }   while ((Et = Et->n) != Ex);    
 }// Normalize energy to given kT, writes value Qe before correction
 //--------------------------------------------------------------------
 void
@@ -324,17 +342,12 @@ NormMassCenter(void)
         rk = rv * rv; vk = (rr - RR) * vv; 
         if (rk >= vk) //discriminant test
         {   //in bound should always be reachable
-            RR = sqrt(rk - vk) - rv; //|dr|
+            RR = sqrt(rk - vk) - rv; // |dr|
             if (RR >= 0.0) // positive time selection
-            {   
-                RR *= RR; VV = (RR > VV) ? VV : RR;
-            }   //get minimal displacement, dr^2 ? Xc^2
-            else
-            {
-                //out of bound, error
-            }
-        }//else-> out of bound, error          
-        
+            { RR *= RR; VV = (RR > VV) ? VV : RR; }   
+            else //get minimal displacement, dr^2 ? Xc^2
+            {    /*  out of bound, error  */      }
+        }//else  ->  out of bound, error                  
     }   while ((Et = Et->n) != Ex); // Et == Ex on leave 
 
     VV = sqrt(VV / vv); //shift with scaled displacement
@@ -368,12 +381,11 @@ TestImpulse(void)
 //--------------------------------------------------------------------
 void
 NormImpulse(void)
-{
-    //Exclude drift by zoroing summury impulse by coordinate
+{   //Exclude drift by zoroing summury impulse by coordinate
     Ex = Ev->Vc; Et = Ex; // loops leave state: Et == Ex
     for (k = 0; k < Rn; k++)
     {
-        vk = 0.0; rk = 0.0;// get summary impulse for k direction
+        vk = 0.0; rk = 0.0; // get summary impulse for k direction
         do
         {
             Ei = Et->v; Vi = Ei->V; Mi = Ei->S->Mt;

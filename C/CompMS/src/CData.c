@@ -12,7 +12,7 @@ long    UT  = 0;// 1, unit memory allocation and UD   start
 long    UD;     // 2, dedicated destructor,      UD  finish
 long    UF;     // 0, memory allocation for regular free
 double  Pi;     // Pi = Arc/Size
-double  rd;     // 2.0 / (RAND_MAX), for random double
+double  rd;     // 2.0 / RAND_MAX, for random double
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CDList* Dv;//Malloc list items container
 long	k ;//index, used in dimension 
@@ -122,7 +122,7 @@ void
 DataInit()
 {   
     UT = 1; UD = 2; Pi = 3.141592653589793; //Set constants
-    UF = 0; Da = 0; rd= 2.0 / (RAND_MAX); 
+    UF = 0; Da = 0; rd = 2.0 / RAND_MAX; 
 
     Dv = Ev = Sv = Tv = Mv = Lv = NULL;   //  initialize modules
     Dv = (CDList*)malloc(sizeof(CDList));  
