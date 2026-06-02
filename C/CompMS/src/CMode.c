@@ -158,7 +158,7 @@ RandomSphere(void)
         {   //rd = 2.0 / RAND_MAX; 
             rk = Xs[k] = (rd * rand() - 1.0) * ra;
             vk = Vs[k] = (rd * rand() - 1.0);
-            rr += rk*rk;
+            rr += rk*rk; // init scalar products 
             rv += rk*vk; vv += vk*vk;
         }
     }   while (vv <= 0.0);    
@@ -171,10 +171,10 @@ RandomSphere(void)
         {             dt = -0.0;              }
         else
         {   //inbound should be reachable
-            if((vv = a * c)   >=  (rv = b * b))
-            {  dt = +(sqrt(rv + vv) - b) / a; } // wiki  
+            if((RV = a * c)   >=  (rv = b * b))
+            {  dt = +(sqrt(rv + RV) - b) / a; } // wiki  
             else
-            {  dt = +(sqrt(rv - vv) - b) / a; } // wiki 
+            {  dt = +(sqrt(rv - RV) - b) / a; } // wiki 
         }   // Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
         //reject point by sphere surface, repeat n steps
