@@ -64,24 +64,24 @@ CompTestStepHold()
 
 	Strt = 1;    //start  
 	Send = 3;    //end 
-	sr = 7;      //Bn coordination number +1, expected to be > 1
+	sn = 7;      //Bn coordination number +1, expected to be > 1
 	Gspd = 1e-3; //growing speed
 
 	CompInit(2); //dimension
 
-	srand(sr + GetTickCount());
+	srand(sn + GetTickCount());
 
-	SortAdd(1, sr, 1.0, 0.0);
+	SortAdd(1, sn, 1.0, 0.0);
 
 	CompLoad(1.0, 0.0, Gspd);	
 
 	GetVolume();	
 
-	sn = Strt;	while (sn <= Send)
+	sr = Strt;	while (sr <= Send)
 	{		
 		CompHold(); //main loop debug stepping
 		
-		cs = (Cb + Ce); sn++; 			
+		cs = (Cb + Ce); sr++; 			
 	}
 	
 	GetVolume(); 
