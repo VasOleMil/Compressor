@@ -119,6 +119,8 @@ SetRanges(void)
     //De should be greater without position verifier, De *= Bn
 	//ranging not implemented, currently for reporting only
     e = 1.0 / pow(10.0, Fm); Ds = -(Rb * RN * e); De = 4e6 * Ds;
+    //linear dt range
+    dA = 2.0 * sqrt(2.0 * e);
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
 // static void //alternative function, faster than rejection sampling
@@ -166,15 +168,13 @@ RandomSphere(void)
     for (i = 0; i < n; i++) // (a != 0.0)
     {   // get time dt to reach rn-sphere of radius 1.0  
         // centered in origin, no point radius Rc = Rt = 0.0
-        a = vv;       b = rv;     c = rr - 1.0; 
+		a = vv; b = rv; c = rr - 1.0; RV = a * c; rv = b * b;
         if  (  (c >= 0.0)   &&   (b >= 0.0)   )
         {             dt = -0.0;              }
-        else
-        {   //inbound should be reachable
-            if((RV = a * c)   >=  (rv = b * b))
-            {  dt = +(sqrt(rv + RV) - b) / a; } // wiki  
-            else
-            {  dt = +(sqrt(rv - RV) - b) / a; } // wiki 
+        else//inbound should be reachable
+        {   // reverse sign to remove noise 
+            RV = (RV >= rv) ? -RV : RV;
+            dt = +(sqrt(rv - RV) - b) / a; // wiki 
         }   // Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
         //reject point by sphere surface, repeat n steps

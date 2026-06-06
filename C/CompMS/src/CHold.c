@@ -144,10 +144,11 @@ TimeCalcBS(void)
     RR = Rb - Si->Rt; VV = Si->Vc;
     RV = RR*VV; VV*=VV;  RR *= RR;
 
-    a = vv - VV; b = rv - RV;  c = rr - RR; 
+    a = vv - VV; b = rv - RV; c = rr - RR; 
+    RV = a * c; rv = b * b;
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
-    {
+    {   
                        dt = -0.0;
     }
     else if(a == 0.0)
@@ -155,13 +156,15 @@ TimeCalcBS(void)
         if (b == 0.0){ dt = -1.0;         }
         else         { dt = -0.5 * c / b; }
     }
-    else
-    {   //inbound should be reachable
-        if((RV = a * c)   >=  (rv = b * b))
-        {  dt = +(sqrt(rv + RV) - b) / a; } // wiki ? 
-        else
-        {  dt = +(sqrt(rv - RV) - b) / a; } // wiki +
-    }
+    else if (fabs(RV / rv) < dA && b > 0.0) 
+    {   // linear appriximation for small dt 
+        dt = -0.5 * c / b; // c < 0 after first if
+    }   
+    else// inbound should be reachable 
+    {   // reverse sign to remove noise    
+        RV = (RV >= rv) ? -RV : RV; 
+        dt = +(sqrt(rv - RV) - b) / a;  // wiki 
+    }              
 }//
 //--------------------------------------------------------------------
 static void
