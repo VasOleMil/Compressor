@@ -34,8 +34,8 @@ CompTemp(double GC)
     Sx = St = Sv->Vc; //set sized radii Rt as constant initial Rc
     while ((St = St->n) != Sx)
     {
-        Si = St->v; Si->Vc = Si->Rt * Gc;
-        Si->Rc = Si->Rt; Si->Mc = Si->Mt;      
+        Si = St->v;Si->Rc = Si->Rt; Si->Mc = Si->Mt;
+		Si->Vc = VV = Si->Rt * Gc; Si->Vs = VV * VV;
     }
     Lv = Tv; ListClrV();//clear time items, save items for reuse
     TimeCalcST();//calculate all elements tti, Bn*(Bn-1)/2 complexity!

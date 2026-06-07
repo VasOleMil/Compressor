@@ -140,32 +140,33 @@ TimeCalcBS(void)
         rk = Xi[k]; rr += rk*rk;
         vk = Vi[k]; rv += rk*vk; vv += vk*vk;
     }
-    //Gr = N
-    RR = Rb - Si->Rt; VV = Si->Vc;
-    RV = RR*VV; VV*=VV;  RR *= RR;
+    //Gr = N, reject by element surface
+    RR = Rb - Si->Rt;  RV = RR * (Si->Vc);
+    VV = (Si->Vs); RR *= RR;
 
-    a = vv - VV; b = rv - RV; c = rr - RR; 
-    RV = a * c; rv = b * b;
+    a = vv - VV; b = rv + RV; c = rr - RR; 
+    VV = a * c;  vv = b * b;
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
     {   
                        dt = -0.0;
     }
-    else if(a == 0.0)
+	else if(a == 0.0) // theoretical case
     {
-        if (b == 0.0){ dt = -1.0;         }
+        if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }
-    }
-    else if (fabs(RV / rv) < dA && b > 0.0) 
-    {   // linear appriximation for small dt 
-        dt = -0.5 * c / b; // c < 0 after first if
     }   
-    else// inbound should be reachable 
-    {   // reverse sign to remove noise    
-        RV = (RV >= rv) ? -RV : RV; 
-        dt = +(sqrt(rv - RV) - b) / a;  // wiki 
-    }              
-}//
+    else if (fabs(VV/vv) < dA && (b > 0.0)) 
+    {   // A = VV/vv; c < 0 after  first if
+        dt = -0.5 * c / b; // approximation
+    }   
+    else if(VV <= vv) // one root only
+    {   // wiki -> time prediction
+        dt = +(sqrt(vv - VV) - b) / a; 
+    } 
+    else// inbound should be reachable, err 
+    {                  dt  = -0.0;        }
+}// Ei sizing bound-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
 TimeCalcES(void)

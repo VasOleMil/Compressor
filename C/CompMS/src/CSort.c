@@ -57,7 +57,7 @@ SortTesT(long Id, long Bn, double Rc, double Mc)
     Si = NULL; //No error, fail safe
 }//Test sort parameters. Validator connector                        Si
 //--------------------------------------------------------------------
-//{Si};{}; Lv, Ev, Ex, Et, Ei, Ri, Mi
+//{Si};{}; Lv, Ev, Ex, Et, Ei, Ri, Mi, VV
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void
 SortLoad()
@@ -67,8 +67,9 @@ SortLoad()
     Ri = Si->Rc;
     Mi = Si->Mc;
 
-    Si->Vc = Ri * Gc; // surface size speed
-    Si->Rt = Ri * GR; // GR = (1.0 + Gc * Te)
+    Si->Vc = VV = Ri * Gc;  // surface size speed
+    Si->Vs = VV * VV;       // surface size speed, squared
+    Si->Rt = Ri * GR;       // GR = (1.0 + Gc * Te)
     
     if (Mi <= 0.0)
     {

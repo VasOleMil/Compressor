@@ -15,7 +15,8 @@ typedef struct CSort
 
     double  Rc;//Radius
     double  Mc;//Mass
-    double  Vc;//Gc*Rc
+    double  Vc;//Gc * Rc
+    double  Vs;//Vc * Vc
     double  Rt;//Current elements radius, Rc * (1.0 + Gc * Te)
     double  Mt;//Current elements mass,   Mc * (1.0 + Gc * Te)^Rn
 
