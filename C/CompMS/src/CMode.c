@@ -171,8 +171,8 @@ RandomSphere(void)
 		a = vv; b = rv; c = rr - 1.0; VV = a * c; vv = b * b;
         if  (  (c >= 0.0)   &&   (b >= 0.0)   )
         {             dt = -0.0;              }
-        else if((VV >= vv))//inbound should be reachable
-        {    dt = +(sqrt(rv - RV) - b) / a;   } // wiki 
+        else if((vv >= VV))//inbound should be reachable
+        {    dt = +(sqrt(vv - VV) - b) / a;   } // wiki 
         else {        dt = -0.0;              } // warning
         // Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;

@@ -160,11 +160,11 @@ TimeCalcBS(void)
     {   // A = VV/vv; c < 0 after  first if
         dt = -0.5 * c / b; // approximation
     }   
-    else if(VV <= vv) // one root only
+    else if(vv >= VV) // one root only
     {   // wiki -> time prediction
         dt = +(sqrt(vv - VV) - b) / a; 
     } 
-    else// inbound should be reachable, err 
+    else// inbound should be reachable.  
     {                  dt  = -0.0;        }
 }// Ei sizing bound-element interaction, calculates tti
 //--------------------------------------------------------------------

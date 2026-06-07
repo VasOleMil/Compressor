@@ -15,8 +15,8 @@ typedef struct CSort
 
     double  Rc;//Radius
     double  Mc;//Mass
-    double  Vc;//Gc * Rc
-    double  Vs;//Vc * Vc
+	double  Vc;//Gc * Rc, used Gr = N, reject by element surface
+    double  Vs;//Vc * Vc, used Gr = N, reject by element surface
     double  Rt;//Current elements radius, Rc * (1.0 + Gc * Te)
     double  Mt;//Current elements mass,   Mc * (1.0 + Gc * Te)^Rn
 
