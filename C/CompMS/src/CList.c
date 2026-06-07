@@ -189,7 +189,7 @@ ListAdd(void)
         Lj = Lx->n;  //Lx assumed not empty   /*  |       |  */          
         Lj->p = Li;  //connect back over Lx   /*--i (<x>) j--*/          
         Li->n = Lj;  //connect next over Lx   /*  |       |  */          
-        //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */ //         
+        //Lx->p = Lx;//Loop for uniform add   /*  +---<---+  */         
         Lx->n = Lx;  //Looping in new items is also implemented          
     
         Lv->Fc = Lj;     

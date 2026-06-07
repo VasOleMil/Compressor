@@ -64,7 +64,7 @@ extern double           GM;// GM = GR^Rn
 //---------------------------------------------------------- Sort.h --
 //extern CDList     *Sv;
 //extern CDItem     *Sx;
-//extern CDItem     *St;   //Sort.h
+//extern CDItem     *St;   //CSort.h
 //extern CSort      *Si;
 //extern CSort      *Sj;
 //---------------------------------------------------------- Emnt.h --

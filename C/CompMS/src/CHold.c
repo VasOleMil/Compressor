@@ -133,38 +133,36 @@ static void
 TimeCalcBS(void)
 {
     Xi = Ei->X; Vi = Ei->V; Si = Ei->S;
-    vv =  0.0 ; rv =  0.0 ; rr =  0.0 ;
+    rv =  0.0 ; vv =  0.0 ; rr =  0.0 ;
     //Calculate scalar product
     for (k = 0; k < Rn; k++)
     {
         rk = Xi[k]; rr += rk*rk;
         vk = Vi[k]; rv += rk*vk; vv += vk*vk;
     }
-    //Gr = N, reject by element surface
+    //Gr = N, scatter by element surface
     RR = Rb - Si->Rt;  RV = RR * (Si->Vc);
-    VV = (Si->Vs); RR *= RR;
+    RR *= RR; VV = (Si->Vs); // Vs = Vc*Vc
 
     a = vv - VV; b = rv + RV; c = rr - RR; 
-    VV = a * c;  vv = b * b;
+    VV = a * c;  vv = b * b; // A  = VV/vv
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
-    {   
-                       dt = -0.0;
-    }
+    {                  dt = -0.0;         }
 	else if(a == 0.0) // theoretical case
     {
         if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }
     }   
-    else if (fabs(VV/vv) < dA && (b > 0.0)) 
-    {   // A = VV/vv; c < 0 after  first if
+    else if(fabs(VV/vv) < dA && (b > 0.0) ) 
+    {   // VV/vv = A; c < 0 after  first if
         dt = -0.5 * c / b; // approximation
     }   
     else if(vv >= VV) // one root only
     {   // wiki -> time prediction
         dt = +(sqrt(vv - VV) - b) / a; 
     } 
-    else// inbound should be reachable.  
+    else// inbound should be reachable  
     {                  dt  = -0.0;        }
 }// Ei sizing bound-element interaction, calculates tti
 //--------------------------------------------------------------------
@@ -173,7 +171,7 @@ TimeCalcES(void)
 {
     Xi = Ei->X; Vi = Ei->V; Ri = Ei->S->Rc; 
     Xj = Ej->X; Vj = Ej->V; Rj = Ej->S->Rc;
-    vv =  0.0 ; rv =  0.0 ; rr =   0.0    ;
+    rv =  0.0 ; vv =  0.0 ; rr =   0.0    ;
     //Calculate scalar product
     for (k = 0; k < Rn; k++)
     {
@@ -181,31 +179,33 @@ TimeCalcES(void)
 		rr += rk*rk; rv += rk*vk;  vv += vk*vk;
     }
 
-    RR = Ri + Rj; RR *= RR; VV = GG * RR;
-    RV = Gc * GR * RR;     RR *= GR * GR;
+    RR = Ri + Rj;  RR *= RR; VV = GG * RR;
+    RV = Gc * GR * RR; RR *= GR * GR;
 
-    a = vv - VV; b = rv - RV;  c = rr - RR;
+    a = vv - VV; b = rv - RV; c = rr - RR;
+    VV = a * c;  vv = b * b; // A  = VV/vv
     // b or even rv for Ds, zero processing
     if  (  (c <= 0.0)    &&   (b <= 0.0)  ) 
-    {
-                       dt = -0.0;           
-    }
+    {                  dt = -0.0;         }
     else if(a == 0.0)
     {
-        if (b == 0.0){ dt = -1.0;         }
+        if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }
     }
-    else
-    {
-        if((RV = a * c)   >=  (rv = b * b))
-        {              dt  = -1.0;        }
-        else
-        {  dt = -(sqrt(rv - RV) + b) / a; } // wiki + 
-    }
-}//
+    else if(fabs(VV/vv) < dA && (b < 0.0) ) 
+    {   // VV/vv = A; c > 0 after  first if
+        dt = -0.5 * c / b; // approximation
+    }   
+    else if(vv >= VV) // one root only
+    {   // wiki -> time prediction
+        dt = -(sqrt(vv - VV) + b) / a; 
+    } 
+	else// main time span discriminant
+    {                  dt  = -1.0;        }
+}// Ei Ej sizing element-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
-TimeSaveBE(void)
+TimeSaveBS(void)
 {
 	ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
     Ti->ei =   Ex; 
@@ -219,7 +219,7 @@ TimeSaveBE(void)
 }//add {Ei,Ej,dt,Xi,Xj} to Tv, Lv = Tv: initilized in TimeCalcEx
 //--------------------------------------------------------------------
 static void
-TimeSaveEE(void)
+TimeSaveES(void)
 {
     ListAdd(); Ti = Lx->v; Ti->dt = dt; //TimeCalcEx evaluates dt
     Ti->ei = Ex;
@@ -235,12 +235,12 @@ static void
 TimeCalcEx(void)
 {   
     Ei = Ex->v; Et = Ex; //Ej not used in bound interaction, ej = NULL
-        TimeCalcBS(); if (dt >= De) TimeSaveBE();
+        TimeCalcBS(); if (dt >= De) TimeSaveBS();
         
     while ((Et = Et->n) != Es)  //Calc elements, Ei != Ej
     {
         Ej = Et->v; 
-        TimeCalcES(); if (dt >= De) TimeSaveEE();     
+        TimeCalcES(); if (dt >= De) TimeSaveES();     
     }  
 }//Calculate  Ex element tti, Lv initilized in TimeCalc[S/T]T
 //--------------------------------------------------------------------
@@ -249,7 +249,7 @@ TimeCalcEx(void)
 void
 TimeCalcTT(void)
 {
-	Lv = Tv; // Lv in spepping initilized in TimeDelStp 
+	Lv = Tv; // Lv in stepping also initilized in TimeDelStp 
     
     { Es = Ex = ei; TimeCalcEx(); }
     if (ej != NULL)
@@ -261,7 +261,7 @@ TimeCalcTT(void)
 void
 TimeCalcST(void)
 {
-    Es = Ex = Ev->Vc; Lv = Tv; // Lv initilized in TimeDelStp     
+    Es = Ev->Vc; Ex = Es; Lv = Tv; // Prepare list context
 
     do TimeCalcEx(); while ((Ex = Ex->n) != Es);
 }//Calculate   all  elements times to interaction - tti
