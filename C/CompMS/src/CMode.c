@@ -117,10 +117,10 @@ SetRanges(void)
 	Fe = m; //Exponent test, decimal power : 0.0 + 10^-Fe == 0.0
     
     //De should be greater without position verifier, De *= Bn
-	//ranging not implemented, currently for reporting only
-    e = 1.0 / pow(10.0, Fm); Ds = -(Rb * RN * e); De = 4e6 * Ds;
+	//ranging not implemented, currently for reporting mainly
+    e = 1.00 / pow(10.0, Fm); Ds = -(Rb * RN * e); 
     //linear dt range
-    dA = 2.0 * sqrt(2.0 * e);
+    dA = 2.0 * sqrt(2.0 * e); De = -(Rb * dA);
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
 // static void //alternative function, faster than rejection sampling
