@@ -432,7 +432,7 @@ NormMomenta(void)
 
                 rr = xe[i] - Xc[i]; // r(i) relative Xc
                 rv = xe[j] - Xc[j]; // r(j) relative Xc
-                Me = Ei->S->Mt;
+                me = Ei->S->Mt;
 
                 RV += me * (rr * ve[j] - rv * ve[i]);
                 RR += me * (rr * rr + rv * rv); // Inetrtia
