@@ -169,13 +169,20 @@ RandomSphereBC(void)
     for (i = 0; i < n; i++) // (a != 0.0)
     {   // get time dt to reach rn-sphere of radius 1.0  
         // centered in origin, no point radius Rc = Rt = 0.0
-		a = vv; b = rv; c = rr - 1.0; VV = a * c; vv = b * b;
-        if  (  (c >= 0.0)   &&   (b >= 0.0)   )
+		a = vv; b = rv; c = rr - 1.0;  j = 1;
+        VV = a * c; RV = b * b; RR = VV / RV;
+        if  ( (c >= 0.0)      && (b >= 0.0)   )
         {             dt = -0.0;              }
-        else if((vv >= VV)) // inbound should be reachable
-        {    dt = (+sqrt(vv - VV) - b) / a;   } // wiki 
-        else {        dt = -0.0;              } // warning
-        //  Move to sphere surface
+        else if(fabs(RR) < dA && (b != 0.0)   )
+        {   // A = VV / RV, approximation
+            dt = (b > 0) ? -0.5 * c / b:
+               b / a * (0.5 * RR - 2.0); j = 0;
+		}   // dA = 2.0 * sqrt(2.0 * 10^-Fm)
+        else if (j) // take square root
+        {
+            dt = (RV <= VV) ? -0.0:
+               (+sqrt(RV - VV) - b) / a; 
+        }// Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
         //  reject point by sphere surface, repeat n steps
         for(rv = 0.0, k = 0; k < rn; k++)
@@ -195,15 +202,15 @@ RandomSphereBC(void)
 void
 EngPhases(void)
 {   //Tries counter Sc, for control of random point generation
-    VV = sqrt(3.0 * kT * Bn / Me); Es = Ex = Ev->Vc; Sc = 0; 
+    Mj = sqrt(3.0 * kT * Bn / Me); Es = Ex = Ev->Vc; Sc = 0; 
     do
     {   //Generate random point Xs on (rn = Rn+2) sphere
-        RA = Rb - Ei->S->Rt; RandomSphereBC(); // use IC on small K,	
+        Mi = Rb - Ei->S->Rt; RandomSphereBC(); // use IC on small K,	
         Ei = Ex->v; Xi = Ei->X; Vi = Ei->V;    // IC -  20% accuracy 
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
         { 
-			Xi[k] = RA * Xs[k]; // Rn projection is distribution in ball
-            Vi[k] = VV * Vs[k]; // speeds distribution is cubic /rotated
+			Xi[k] = Mi * Xs[k]; // Rn projection is distribution in ball
+            Vi[k] = Mj * Vs[k]; // speeds distribution is cubic /rotated
         }   
         Et = Ex;  // test intersection, Ei != Ej
         while (Et != Es)             // Ex != Es
