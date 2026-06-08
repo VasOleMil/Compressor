@@ -181,16 +181,16 @@ RandomSphereBC(void)
         else if (j) // take square root
         {
             dt = (RV <= VV) ? -0.0:
-               (+sqrt(RV - VV) - b) / a; 
+               (sqrt(RV - VV) - b) / a; 
         }// Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
         //  reject point by sphere surface, repeat n steps
-        for(rv = 0.0, k = 0; k < rn; k++)
+        for (rv = 0.0, k = 0; k < rn; k++)
 	    {   //prepare for bounce, scalar product 
             rk = Xs[k]; 
 		    vk = Vs[k]; rv += rk * vk;
         }   RV = 2.0 * rv; rr = rv = vv = 0.0;
-        for(k = 0; k < rn; k++) 
+        for (k = 0; k < rn; k++) 
         {
             rk = Xs[k]; Vs[k] -= RV * rk; //bounce by sphere surface
             vk = Vs[k];  rr += rk*rk;
@@ -428,14 +428,14 @@ NormMomenta(void)
             Ex = Ev->Vc; Et = Ex; RV = 0.0; RR = 0.0;
             do  // get angular speed in plane (i, j)
             {
-                Ei = Et->v; Xi = Ei->X; Vi = Ei->V;
+                Ei = Et->v; xe = Ei->X; ve = Ei->V;
 
-                rr = Xi[i] - Xc[i]; // r(i) relative Xc
-                rv = Xi[j] - Xc[j]; // r(j) relative Xc
-                Mi = Ei->S->Mt;
+                rr = xe[i] - Xc[i]; // r(i) relative Xc
+                rv = xe[j] - Xc[j]; // r(j) relative Xc
+                Me = Ei->S->Mt;
 
-                RV += Mi * (rr * Vi[j] - rv * Vi[i]);
-                RR += Mi * (rr * rr + rv * rv); // Inetrtia
+                RV += me * (rr * ve[j] - rv * ve[i]);
+                RR += me * (rr * rr + rv * rv); // Inetrtia
 
             }   while ((Et = Et->n) != Ex); if (RR <= 0.0) continue;
 
@@ -443,13 +443,13 @@ NormMomenta(void)
 
             do  // suppress rotation, one pass
             {
-                Ei = Et->v; Xi = Ei->X; Vi = Ei->V;
+                Ei = Et->v; xe = Ei->X; ve = Ei->V;
 
-                rr = Xi[i] - Xc[i]; // r(i) relative Xc
-                rv = Xi[j] - Xc[j]; // r(j) relative Xc
+                rr = xe[i] - Xc[i]; // r(i) relative Xc
+                rv = xe[j] - Xc[j]; // r(j) relative Xc
 
-                Vi[i] += VV * rv; // compensate
-                Vi[j] -= VV * rr; // by subtraction
+                ve[i] += VV * rv; // compensate
+                ve[j] -= VV * rr; // by subtraction
 
             }   while ((Et = Et->n) != Ex);
         }   //  use accumulated angular speed as indicator 

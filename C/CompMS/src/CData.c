@@ -16,8 +16,8 @@ double  rd;     // 2.0 / RAND_MAX, for random double
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CDList* Dv;//Malloc list items container
 long	k ;//index, used in dimension 
-double *Xi,*Xj,*Vi,*Vj;
-double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
+double *Xi,*Xj,*xe,*Vi,*Vj,*ve;
+double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj, me;
 //--------------------------------------------------------------------
 CDItem *Dx;//list  service  register
 CDItem* Di;//list  service  register

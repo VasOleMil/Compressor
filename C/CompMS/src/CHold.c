@@ -187,7 +187,7 @@ TimeCalcES(void)
     // b or even rv for Ds, zero processing
     if  (  (c <= 0.0)     &&  (b <= 0.0)  ) 
     {                  dt = -0.0;         }
-    else if(a == 0.0)
+    else if(a == 0.0) // theoretical case
     {
         if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }

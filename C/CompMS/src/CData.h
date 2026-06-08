@@ -32,8 +32,8 @@ extern double   rd;// 2.0 / RAND_MAX, for random double
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 extern CDList  *Dv;//Data list items container 
 extern long		k ;//index, used in dimension 
-extern double  *Xi,*Xj,*Vi,*Vj; //global registers 
-extern double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj;
+extern double  *Xi,*Xj,*xe,*Vi,*Vj,*ve; //global registers 
+extern double	RA, RR, RV, VV, rr, rv, vv, rk, vk, Ri, Rj, Mi, Mj, me;
 //--------------------------------------------------------------------
 extern void*    Malloc(size_t LN,long CN,long UD);   // malloc wrapper
 //--------------------------------------------------------------------
