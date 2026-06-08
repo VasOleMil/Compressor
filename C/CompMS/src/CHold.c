@@ -143,9 +143,9 @@ TimeCalcBS(void)
     //Gr = N, scatter by element surface
     RR = Rb - Si->Rt;  RV = RR * (Si->Vc);
     RR *= RR; VV = (Si->Vs); // Vs = Vc*Vc
-
+    //wiki -> time prediction
     a = vv - VV; b = rv + RV; c = rr - RR; 
-    VV = a * c;  vv = b * b; // A  = VV/vv
+    VV = a * c;  RV = b * b; RR = VV / RV;
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
     {                  dt = -0.0;         }
@@ -154,14 +154,14 @@ TimeCalcBS(void)
         if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }
     }   
-    else if(fabs(VV/vv) < dA && (b > 0.0) ) 
-    {   // VV/vv = A; c < 0 after  first if
-        dt = -0.5 * c / b; // approximation
-    }   
-    else if(vv >= VV) // one root only
-    {   // wiki -> time prediction
-        dt = +(sqrt(vv - VV) - b) / a; 
-    } 
+    else if(fabs(RR) < dA  &&  (b != 0.0) )
+    {   // A = VV / RV, approximation
+        dt = (b > 0) ? -0.5 * c / b : 
+            b / a * (0.5 * RR - 2.0);
+        return; // done
+    }  
+	else if(RV >= VV) // one root tti
+    {   dt = (+sqrt(RV - VV) - b) / a;    } 
     else// inbound should be reachable  
     {                  dt  = -0.0;        }
 }// Ei sizing bound-element interaction, calculates tti
@@ -181,24 +181,26 @@ TimeCalcES(void)
 
     RR = Ri + Rj;  RR *= RR; VV = GG * RR;
     RV = Gc * GR * RR; RR *= GR * GR;
-
+    // wiki -> time prediction
     a = vv - VV; b = rv - RV; c = rr - RR;
-    VV = a * c;  vv = b * b; // A  = VV/vv
+    VV = a * c;  RV = b * b; RR = VV / RV;
     // b or even rv for Ds, zero processing
-    if  (  (c <= 0.0)    &&   (b <= 0.0)  ) 
+    if  (  (c <= 0.0)     &&  (b <= 0.0)  ) 
     {                  dt = -0.0;         }
     else if(a == 0.0)
     {
         if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }
     }
-    else if(fabs(VV/vv) < dA && (b < 0.0) ) 
-    {   // VV/vv = A; c > 0 after  first if
-        dt = -0.5 * c / b; // approximation
+    else if(fabs(RR) < dA &&  (b != 0.0)  ) 
+    {   // A = VV / RV, approximation
+        dt = (b < 0)? -0.5 * c / b :
+           b / a * (0.5 * RR - 2.0);
+        return; // done
     }   
-    else if(vv >= VV) // one root only
-    {   // wiki -> time prediction
-        dt = -(sqrt(vv - VV) + b) / a; 
+    else if(RV >= VV) // one root only
+    {   
+        dt = (-sqrt(RV - VV) - b) / a; 
     } 
 	else// main time span discriminant
     {                  dt  = -1.0;        }
