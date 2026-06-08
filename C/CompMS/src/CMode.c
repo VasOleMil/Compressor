@@ -7,12 +7,14 @@ CDList *Mv;//Modes resources container
 double *Xc;//Center of mass vector
 double *Pc;//Summary impulse
 //--------------------------------------------------------------------
-long    n, i, j, rn; double *Xs,*Vs, a, b, c, ra, dt;
+long    n, i, j, rn; double *Xs,*Vs, a, b, c, ra, rs, dt;
 //--------------------------------------------------------------------
 void
 ModeInit(void)
-{   //Set constants, Rn + 2 for random point generation
-	if (Mv != NULL) return; rn = Rn + 2; ra = 1.0 / sqrt((double)rn); 
+{  
+	if (Mv != NULL) return; 
+    //Set constants, Rn + 2 for random point generation
+    rn = Rn + 2; ra = 1.0 / sqrt((double)rn); rs = 1.0 / sqrt(2.0);
 
     Xs = (double*)Malloc(sizeof(double), rn, UT); //start transaction
     Vs = (double*)Malloc(sizeof(double), rn, UT);
@@ -123,60 +125,59 @@ SetRanges(void)
     dA = 2.0 * sqrt(2.0 * e); De = -(Rb * dA);
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
-// static void //alternative function, faster than rejection sampling
-// RandomSphere(void) // PDF tests in wiki and mathmatica file
-// {
-//     RR = 0.0; //rn = Rn + 2; rd = 2.0 / RAND_MAX; 
-//     // pick one index coordinate, will belong to cube face
-//     i = rand() % rn; // s = 1.0 / sqrt(2.0) for random rotation
-//     // generate others coordinates, uniformly distributed
-//     for (k = 0; k < rn; k++)
-//     {
-//         if (k != i) { rk = Xs[k] = rd * rand() - 1.0; }
-//         else        { rk = Xs[k] = (rand() % 2) ? 1.0 : -1.0; }
-//         RR += rk * rk; Vs[k] = rd * rand() - 1.0; 
-//     }   //Vs can be set outside of this function, if needed
-//     // project cube face point to, RA = Rb - Ri, sphere surface
-//     RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++) { Xs[k] *= RR; }
-//     // random rotations of coordinates, to smooth distribution
-//     for (k = 0; k < rn; k++)
-//     {
-//         i = rand() % rn; do  j = rand() % rn;  while (i == j);
-//         do  j = rand() % rn;  while (i == j);
-//
-//         Ri = Xs[i]; Rj = Xs[j];
-//         Xs[i] =  s * (Rj - Ri);
-//         Xs[j] =  s * (Rj + Ri); // s = 1.0 / sqrt(2.0), CData.h
-//     }   //Simple fast random point generation on rn-sphere of radius 1.0 
-// }//Generate random point on rn-sphere of radius 1.0
+ static void //Inflated Cube, faster than rejection sampling
+ RandomSphereIC(void) // PDF tests in wiki and mathmatica file
+ {                    // 20% accuracy, on uniformity
+     RR = 0.0; //rn = Rn + 2; rd = 2.0 / RAND_MAX; 
+     // pick one index coordinate, will belong to cube face
+	 i = rand() % rn; 
+     // generate others coordinates, uniformly distributed
+     for (k = 0; k < rn; k++)
+     {
+         if (k == i) { rk = Xs[k] = (rand() % 2) ? 1.0 : -1.0; }
+         else        { rk = Xs[k] = rd * rand() - 1.0; }
+         RR += rk * rk;     Vs[k] = rd * rand() - 1.0; 
+     }   //Vs can be set outside of this function, if needed
+     // project cube face point to, RA = Rb - Ri, sphere surface
+     RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++){ Xs[k] *= RR; }
+     // random rotations of coordinates, to smooth distribution
+     for (k = 0; k < rn; k++)
+     {
+         i = rand() % rn; do  j = rand() % rn;  while (i == j);
+
+         Ri = Xs[i]; Rj = Xs[j];
+         Xs[i] = rs * (Rj - Ri);
+         Xs[j] = rs * (Rj + Ri); // rs = 1.0 / sqrt(2.0)
+     }   //Simple fast random point generation on rn-sphere of radius 1.0 
+ }//Generate random point and speed on rn-sphere of radius 1.0
 //--------------------------------------------------------------------
-static void
-RandomSphere(void)
+static void // Bounce after Cube placing, slower than RandomSphereIC
+RandomSphereBC(void)
 {
     n = rn + rand() % rn; // rn = Rn + 2; ra = 1.0 / sqrt((double)rn);   
-    do  // speeds & coordinates within inscribed cube, uniformly 
-    {
+    do  //  non RTOS looping, tries counter rely on probability
+	{   //  coordinates & speeds, first within inscribed cube
         for (rr = rv = vv = 0.0, k = 0; k < rn; k++)
-        {   //rd = 2.0 / RAND_MAX; 
-            rk = Xs[k] = (rd * rand() - 1.0) * ra;
-            vk = Vs[k] = (rd * rand() - 1.0);
+        {   // rd = 2.0 / RAND_MAX; 
+            rk = Xs[k] = (rd * rand() - 1.0) * ra; // inscribed
+			vk = Vs[k] = (rd * rand() - 1.0);      // not scaled
             rr += rk*rk; // init scalar products 
             rv += rk*vk; vv += vk*vk;
-        }
-    }   while (vv <= 0.0);    
-    //bounce point by sphere surface, repeat n steps
+		}  
+    }   while (vv <= 0.0); // enable bouncing, |v| > 0.0  
+    // bounce point by sphere surface, repeat n steps
     for (i = 0; i < n; i++) // (a != 0.0)
     {   // get time dt to reach rn-sphere of radius 1.0  
         // centered in origin, no point radius Rc = Rt = 0.0
 		a = vv; b = rv; c = rr - 1.0; VV = a * c; vv = b * b;
         if  (  (c >= 0.0)   &&   (b >= 0.0)   )
         {             dt = -0.0;              }
-        else if((vv >= VV))//inbound should be reachable
-        {    dt = +(sqrt(vv - VV) - b) / a;   } // wiki 
+        else if((vv >= VV)) // inbound should be reachable
+        {    dt = (+sqrt(vv - VV) - b) / a;   } // wiki 
         else {        dt = -0.0;              } // warning
-        // Move to sphere surface
+        //  Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
-        //reject point by sphere surface, repeat n steps
+        //  reject point by sphere surface, repeat n steps
         for(rv = 0.0, k = 0; k < rn; k++)
 	    {   //prepare for bounce, scalar product 
             rk = Xs[k]; 
@@ -189,7 +190,7 @@ RandomSphere(void)
             rv += rk*vk; vv += vk*vk;     //refresh scalar products
         }
     }      
-}//Generate random point on rn-sphere of radius 1.0
+}//Generate random point, and direction on rn-sphere of radius 1.0
 //--------------------------------------------------------------------
 void
 EngPhases(void)
@@ -197,8 +198,8 @@ EngPhases(void)
     VV = sqrt(3.0 * kT * Bn / Me); Es = Ex = Ev->Vc; Sc = 0; 
     do
     {   //Generate random point Xs on (rn = Rn+2) sphere
-        RA = Rb - Ei->S->Rt; RandomSphere(); 	
-        Ei = Ex->v; Xi = Ei->X; Vi = Ei->V; 
+        RA = Rb - Ei->S->Rt; RandomSphereBC(); // use IC on small K,	
+        Ei = Ex->v; Xi = Ei->X; Vi = Ei->V;    // IC -  20% accuracy 
 		for (k = 0; k < Rn; k++)//Set random speeds, and positions
         { 
 			Xi[k] = RA * Xs[k]; // Rn projection is distribution in ball
