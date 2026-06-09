@@ -63,12 +63,11 @@ Vgamma(void)
     }
 }//Multiplier for Rn-sphere volume: Vb = Vg * Rb^Rn, Vg = Vgamma(Rn)
 //--------------------------------------------------------------------
-void
+void // Math -> Compressor/wiki#initial-placement-and-size
 SetPBound(void)
-{
-    //Weighted Average radius (RA) over all elements.
-    RA = 0.0; Bn = 0; Sx = Sv->Vc; St = Sx;
-    do
+{   
+    Rb = RA = 0.0; Bn = 0; Sx = Sv->Vc; St = Sx;
+    do  //Weighted Average radius (RA) over all elements.
     { 
         Si = St->v; Bn += n = Si->Bn; 
         RA += n * Si->Rt;
@@ -78,12 +77,14 @@ SetPBound(void)
     VV = vv = (double)Bn; RA /=vv; vv *= vv - 1.0; 
     vv = 2.0 / vv; rr = 0.5; // P(move) = rr = 0.5
     // Rb = r (1 + 2 (1 - P^(2/((Bn - 1) Bn)))^(-1/Rn))
-    rv = 1.0 - pow(rr, vv); // inner pow
-    if (rv <= 0.0) // if inner pow becomes too small or zero
-    {   // Rb = r (1 + 2 (2 Log[1/P] (Bn+1)/ (Bn^3))^(-(1/Rn)))
-        rv = 2.0 * log(1.0 / rr) * (VV + 1) / (VV * VV * VV);
-    }
-    VV = pow(rv, 1.0 / (double)Rn); // outer pow
+    rv = 1.0 - pow(rr, vv); // inner pow value rv and estimation RV
+	// stability test on approximation usage, for large Bn
+    // Rb = r (1 + 2 (2 Log[1/P] (Bn+1)/ (Bn^3))^(-(1/Rn)))
+    RR = 2.0 * log(1.0 / rr) / VV; RV = RR / (VV - 1.0); 
+	RR *= (VV + 1) / (VV * VV);   // upper bound and approximation
+    if ((RR <= rv) || (rv <= RV))  rv = RR; // ? approximate inner pow
+
+    VV = pow(rv, 1.0 / (double)Rn);  // outer pow   
     if (VV > 0.0) 
     {   Rb = RA * (1.0 + 2.0 / VV); }
     else //Fallback to a larger radius if calculation fails
