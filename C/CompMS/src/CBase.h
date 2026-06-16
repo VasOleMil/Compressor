@@ -24,10 +24,14 @@ extern double           Te;//Eventual time
 extern long             Sn;//Max simultanious seria
 extern long             Sc;//Number of simultanious events,   dT = 0.0
 extern long             Tn;//Max initial random placing seria
+extern long             An;//threeshold steps for filters, 400
 
 extern double           De;//range (-De;+De) treated as zero, dT = 0.0
 extern double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
 extern double           dA;//linear dt range dA = 2 * sqrt(2 * 10^-Fm)
+extern double           Ta;// mean free time
+extern double           Ls;// Ls += Ar * (Lc - Ls); mean squared path
+extern double           Ar;// Ar = 1.0 / 64.0; 64 steps for 15% accuracy
 extern long 		    Fm;// float mantisse  1.0 + 10^-Fm == 1.0
 extern long 		    Fe;// float exponent  0.0 + 10^-Fe == 0.0 
 extern long 		    Fr;// RAND_MAX bits 

@@ -143,9 +143,10 @@ TimeCalcBS(void)
     //Gr = N, scatter by element surface
     RR = Rb - Si->Rt;  RV = RR * (Si->Vc);
     RR *= RR; VV = (Si->Vs); // Vs = Vc*Vc
-    //wiki -> time prediction
+   
     a = vv - VV; b = rv + RV; c = rr - RR; 
-    VV = a * c;  RV = b * b; RR = VV / RV;
+    VV = a * c;  RV = b * b;//wiki -> time
+    RR = VV / RV; RV -= VV; //  prediction 
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
     {                  dt = -0.0;         }
@@ -156,14 +157,26 @@ TimeCalcBS(void)
     }   
     else if(fabs(RR) < dA  &&  (b != 0.0) )
     {   // A = VV / RV, approximation
-        dt = (b > 0) ? -0.5 * c / b : 
-            b / a * (0.5 * RR - 2.0);
-        return; // done
+        if (b > 0.0) dt = -0.5 * c / b;
+        else // correct mantisse
+        {
+            dt = b / a * (0.50 * RR - 2.0);
+            vv = a * dt + b;
+            VV = dt * (vv + b) + c;
+            dt -=vv*VV / (2.0*RV+1.5*a*VV);
+        }   return; //done      
     }  
-	else if(RV >= VV) // one root tti
-    {   dt = (+sqrt(RV - VV) - b) / a;    } 
+	else if(RV >= 0.0) // one root tti
+    {   
+        dt = (+sqrt(RV) - b) / a; 
+        vv = a * dt + b;
+        VV = dt * (vv + b) + c;
+        dt -= vv*VV / (2.0*RV  + 1.5*a*VV);
+    } 
     else// inbound should be reachable  
     {                  dt  = -0.0;        }
+
+
 }// Ei sizing bound-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
@@ -183,7 +196,8 @@ TimeCalcES(void)
     RV = Gc * GR * RR; RR *= GR * GR;
     // wiki -> time prediction
     a = vv - VV; b = rv - RV; c = rr - RR;
-    VV = a * c;  RV = b * b; RR = VV / RV;
+    VV = a * c;  RV = b * b;//wiki -> time
+    RR = VV / RV; RV -= VV; //  prediction 
     // b or even rv for Ds, zero processing
     if  (  (c <= 0.0)     &&  (b <= 0.0)  ) 
     {                  dt = -0.0;         }
@@ -194,14 +208,22 @@ TimeCalcES(void)
     }
     else if(fabs(RR) < dA &&  (b != 0.0)  ) 
     {   // A = VV / RV, approximation
-        dt = (b < 0)? -0.5 * c / b :
-           b / a * (0.5 * RR - 2.0);
-        return; // done
-    }   
-    else if(RV >= VV) // one root only
-    {   
-        dt = (-sqrt(RV - VV) - b) / a; 
+        if (b < 0.0) dt = -0.5 * c / b;
+        else // correct mantisse
+        {
+            dt = b / a * (0.50 * RR - 2.0);
+            vv = a * dt + b;
+            VV = dt * (vv + b) + c;
+            dt -=vv*VV / (2.0*RV+1.5*a*VV);
+        }   return; //done    
     } 
+    else if (RV >= 0.0) // one root tti
+    {
+        dt = (-sqrt(RV) - b) / a;
+        vv = a * dt + b;
+        VV = dt * (vv + b) + c;
+        dt -= vv*VV / (2.0*RV  + 1.5*a*VV);
+    }
 	else// main time span discriminant
     {                  dt  = -1.0;        }
 }// Ei Ej sizing element-element interaction, calculates tti

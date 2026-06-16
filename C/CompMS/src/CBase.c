@@ -14,10 +14,14 @@ double           Te;//Eventual time
 long             Sn;//Max simultanious seria
 long             Sc;//Number of simultanious events,   dT = 0.0
 long             Tn;//Max initial random placing seria
+long             An;//threeshold steps for filters, 400
 
 double           De;//range (-De;+De) treated as zero, dT = 0.0
 double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
 double           dA;//linear dt range dA = 2.0 * sqrt(2.0 * 10.0^-Fm)
+double           Ta;// mean free time
+double           Ls;// Ls += Ar * (Lc - Ls); mean squared path
+double           Ar;// Ar = 1.0 / 64.0; 64 steps for 15% accuracy
 long 		     Fm;// float mantisse  1.0 + 10^-Fm == 1.0
 long 		     Fe;// float exponent  0.0 + 10^-Fe == 0.0 
 long 		     Fr;// RAND_MAX bits 

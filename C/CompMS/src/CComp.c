@@ -1,4 +1,4 @@
-#include"CBase.h"
+﻿#include"CBase.h"
 #include"CSort.h"
 #include"CEmnt.h"
 #include"CHold.h"
@@ -15,7 +15,8 @@ CompInit(long Dn) //UT = 0 RTL default; UT = 1 after DataInit()
     if((Rn == Dn) && (UT == 1)) return;
     if((Rn != Dn) && (UT == 1)) DataFree(); 
 	// (Rn >= 2 ) is expected,  but rely on external validators
-    Rn = Dn; RN = sqrt((double)Rn); LN = Rn * sizeof(double); 
+	Rn = Dn; RN = sqrt((double)Rn); LN = Rn * sizeof(double); 
+    Ar = 1.0 / 64.0; An = 400;
 
     Vg = Vgamma(); DataInit();           // https://youtu.be/jaFnirguL54
 }//if space dimension is changed, resets all containers and data
@@ -76,7 +77,10 @@ CompLoad(double KT, double KS, double GC)
     Lv = Sv; ListSize(); Lv = Ev; ListSize(); DataSize();
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	// set counters. Stepping & Testing ready.
-	Sc = 0; Ce = 0; Cb = 0; Sn = Bn;
+    Sc = 0; Ce = 0; Cb = 0; Sn = Bn; 
+    Ls = Rb * Rb / pow(Bn, 2.0 / Rn);       //mean squared path
+    Ta =  sqrt(Ls /(2.0 * kT * Bn / Me));   // mean dree time
+    // use Ls threeshold Ts = 400, for safe use: Delta=(1−As​)^N;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------
 void

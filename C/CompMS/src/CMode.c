@@ -123,7 +123,7 @@ SetRanges(void)
 	//ranging not implemented, currently for reporting mainly
     e = 1.00 / pow(10.0, Fm); Ds = -(Rb * RN * e); 
     //linear dt range
-    dA = 2.0 * sqrt(2.0 * e); De = -(Rb * dA);
+    dA = 2.0 * sqrt(2.0 * e); De = Ds * 50.0;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
  static void //Inflated Cube, faster than rejection sampling
