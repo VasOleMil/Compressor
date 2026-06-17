@@ -146,7 +146,7 @@ TimeCalcBS(void)
    
     a = vv - VV; b = rv + RV; c = rr - RR; 
     VV = a * c;  RV = b * b;//wiki -> time
-    RR = VV / RV; RV -= VV; //  prediction 
+    RR = VV / RV; RV -= VV; //A=RR && D=RV 
     // b or even rv for Ds, zero processing
     if  (  (c >= 0.0)   &&   (b >= 0.0)   )
     {                  dt = -0.0;         }
@@ -156,9 +156,9 @@ TimeCalcBS(void)
         else         { dt = -0.5 * c / b; }
     }   
     else if(fabs(RR) < dA  &&  (b != 0.0) )
-    {   // A = VV / RV, approximation
+    {   //  A = RR, linear approximation
         if (b > 0.0) dt = -0.5 * c / b;
-        else // correct mantisse
+        else // use and correct mantisse
         {
             dt = b / a * (0.50 * RR - 2.0);
             vv = a * dt + b;
@@ -194,10 +194,10 @@ TimeCalcES(void)
 
     RR = Ri + Rj;  RR *= RR; VV = GG * RR;
     RV = Gc * GR * RR; RR *= GR * GR;
-    // wiki -> time prediction
+
     a = vv - VV; b = rv - RV; c = rr - RR;
     VV = a * c;  RV = b * b;//wiki -> time
-    RR = VV / RV; RV -= VV; //  prediction 
+    RR = VV / RV; RV -= VV; //A=RR && D=RV 
     // b or even rv for Ds, zero processing
     if  (  (c <= 0.0)     &&  (b <= 0.0)  ) 
     {                  dt = -0.0;         }
@@ -206,16 +206,16 @@ TimeCalcES(void)
         if (b == 0.0){ dt = -0.0;/*c = 0*/}
         else         { dt = -0.5 * c / b; }
     }
-    else if(fabs(RR) < dA &&  (b != 0.0)  ) 
-    {   // A = VV / RV, approximation
+    else if(fabs(RR) < dA &&  (b != 0.0)  )
+    {   //  A = RR, linear approximation
         if (b < 0.0) dt = -0.5 * c / b;
-        else // correct mantisse
+        else // use and correct mantisse
         {
             dt = b / a * (0.50 * RR - 2.0);
             vv = a * dt + b;
             VV = dt * (vv + b) + c;
             dt -=vv*VV / (2.0*RV+1.5*a*VV);
-        }   return; //done    
+        }   return; // done    
     } 
     else if (RV >= 0.0) // one root tti
     {

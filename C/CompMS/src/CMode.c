@@ -170,20 +170,31 @@ RandomSphereBC(void)
     for (i = 0; i < n; i++) // (a != 0.0)
     {   // get time dt to reach rn-sphere of radius 1.0  
         // centered in origin, no point radius Rc = Rt = 0.0
-		a = vv; b = rv; c = rr - 1.0;  j = 1;
-        VV = a * c; RV = b * b; RR = VV / RV;
+		a = vv;  b = rv; c = rr - 1.0;  j = 1;
+        VV = a * c;  RV = b * b;//wiki -> time
+        RR = VV / RV; RV -= VV; //A=RR && D=RV 
         if  ( (c >= 0.0)      && (b >= 0.0)   )
         {             dt = -0.0;              }
         else if(fabs(RR) < dA && (b != 0.0)   )
-        {   // A = VV / RV, approximation
-            dt = (b > 0) ? -0.5 * c / b:
-               b / a * (0.5 * RR - 2.0); j = 0;
-		}   // dA = 2.0 * sqrt(2.0 * 10^-Fm)
-        else if (j) // take square root
+        {   //  A = RR, linear approximation
+            if (b > 0.0) dt = -0.5 * c / b;
+            else// use and correct mantisse
+            {   
+                dt = b / a * (0.50 * RR - 2.0);
+                vv = a * dt + b;
+                VV = dt * (vv + b) + c;
+                dt-= vv*VV / (2.0*RV+1.5*a*VV);
+            }   j = 0;//   done 
+		}   //  dA = 2.0 * sqrt(2.0 * 10^(-Fm))
+        else if (j)  if (RV >= 0.0) // root tti
         {
-            dt = (RV <= VV) ? -0.0:
-               (sqrt(RV - VV) - b) / a; 
-        }// Move to sphere surface
+            dt = (sqrt(RV) - b) / a;
+            vv = a * dt + b;
+            VV = dt * (vv + b) + c;
+            dt-= vv * VV / (2.0*RV + 1.5*a*VV);
+        }
+        else{         dt = -0.0;             };
+        // Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
         //  reject point by sphere surface, repeat n steps
         for (rv = 0.0, k = 0; k < rn; k++)
