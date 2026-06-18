@@ -78,9 +78,9 @@ CompLoad(double KT, double KS, double GC)
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	// set counters. Stepping & Testing ready.
     Sc = 0; Ce = 0; Cb = 0; Sn = Bn; 
-    Ls = Rb * Rb / pow(Bn, 2.0 / Rn);       //mean squared path
-    Ta =  sqrt(Ls /(2.0 * kT * Bn / Me));   // mean dree time
-    // use Ls threeshold Ts = 400, for safe use: Delta=(1−As​)^N;
+    Ls = Rb * Rb / pow(Bn, 2.0 / Rn);       // mean squared path
+    Ta =  sqrt(Ls /(2.0 * kT * Bn / Me));   // mean free time
+    // use Ls threeshold An = 400, for safe: Delta=(1−Ar​)^An;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------
 void
@@ -108,12 +108,13 @@ CompStep()
     TimeValStp();  EmntColl(); //procced to new time step
 
     //mean free time and path tests. After interaction
+    if (Sc == 0) { Ta += Ar * (dT - Ta); }
 
     //Clear interacted elements tti in Tv
     TimeDelStp();//Tm in free container
 
     //Change tti in time container Tv, Tm values not touched
-    if (Sc == 0) TimeDecStp();
+    if (Sc == 0) { TimeDecStp(); }
 
     //Calculate ei, ej elements tti, Tm is overwritted and reused
     TimeCalcTT();//ei, ej, dT not actual, but safe to use

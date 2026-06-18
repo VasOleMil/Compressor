@@ -126,38 +126,38 @@ SetRanges(void)
     dA = 2.0 * sqrt(2.0 * e); De = Ds * 50.0;
 }//Zero drift range: (-De;+De) as dT = 0.0; (-Ds;+Ds) as rv - RV = 0.0
 //--------------------------------------------------------------------
- static void //Inflated Cube, faster than rejection sampling
- RandomSphereIC(void) // PDF tests in wiki and mathmatica file
- {                    // 20% accuracy, on uniformity
-     RR = 0.0; //rn = Rn + 2; rd = 2.0 / RAND_MAX; 
-     // pick one index coordinate, will belong to cube face
-	 i = rand() % rn; 
-     // generate others coordinates, uniformly distributed
-     for (k = 0; k < rn; k++)
-     {
-         if (k == i) { rk = Xs[k] = (rand() % 2) ? 1.0 : -1.0; }
-         else        { rk = Xs[k] = rd * rand() - 1.0; }
-         RR += rk * rk;     Vs[k] = rd * rand() - 1.0; 
-     }   //Vs can be set outside of this function, if needed
-     // project cube face point to, RA = Rb - Ri, sphere surface
-     RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++){ Xs[k] *= RR; }
-     // random rotations of coordinates, to smooth distribution
-     for (k = 0; k < rn; k++)
-     {
-         i = rand() % rn; do  j = rand() % rn;  while (i == j);
+static void //Inflated Cube, faster than rejection sampling
+RandomSphereIC(void) // PDF tests in wiki and mathmatica file
+{                    // 20% accuracy, on uniformity
+    RR = 0.0; //rn = Rn + 2; rd = 2.0 / RAND_MAX; 
+    // pick one index coordinate, will belong to cube face
+    i = rand() % rn; 
+    // generate others coordinates, uniformly distributed
+    for (k = 0; k < rn; k++)
+    {
+        if (k == i) { rk = Xs[k] = (rand() % 2) ? 1.0 : -1.0; }
+        else        { rk = Xs[k] = rd * rand() - 1.0; }
+        RR += rk * rk;     Vs[k] = rd * rand() - 1.0; 
+    }   //Vs can be set outside of this function, if needed
+    // project cube face point to, RA = Rb - Ri, sphere surface
+    RR = 1.0/sqrt(RR); for (k = 0; k < rn; k++){ Xs[k] *= RR; }
+    // random rotations of coordinates, to smooth distribution
+    for (k = 0; k < rn; k++)
+    {
+        i = rand() % rn; do  j = rand() % rn;  while (i == j);
 
-         Ri = Xs[i]; Rj = Xs[j];
-         Xs[i] = rs * (Rj - Ri);
-         Xs[j] = rs * (Rj + Ri); // rs = 1.0 / sqrt(2.0)
-     }   //Simple fast random point generation on rn-sphere of radius 1.0 
- }//Generate random point and speed on rn-sphere of radius 1.0
+        Ri = Xs[i]; Rj = Xs[j];
+        Xs[i] = rs * (Rj - Ri);
+        Xs[j] = rs * (Rj + Ri); // rs = 1.0 / sqrt(2.0)
+    }   //Simple fast random point generation on rn-sphere of radius 1.0 
+}//Generate random point and speed on rn-sphere of radius 1.0
 //--------------------------------------------------------------------
 static void // Bounce after Cube placing, slower than RandomSphereIC
 RandomSphereBC(void)
 {
     n = rn + rand() % rn; // rn = Rn + 2; ra = 1.0 / sqrt((double)rn);   
-    do  //  non RTOS looping, tries counter rely on probability
-	{   //  coordinates & speeds, first within inscribed cube
+    do  //  coordinates & speeds, first within inscribed cube
+	{   //  non RTOS looping, tries counter rely on probability
         for (rr = rv = vv = 0.0, k = 0; k < rn; k++)
         {   // rd = 2.0 / RAND_MAX; 
             rk = Xs[k] = (rd * rand() - 1.0) * ra; // inscribed
@@ -179,7 +179,7 @@ RandomSphereBC(void)
         {   //  A = RR, linear approximation
             if (b > 0.0) dt = -0.5 * c / b;
             else// use and correct mantisse
-            {   
+            {   // bound to bound time
                 dt = b / a * (0.50 * RR - 2.0);
                 vv = a * dt + b;
                 VV = dt * (vv + b) + c;
@@ -187,13 +187,12 @@ RandomSphereBC(void)
             }   j = 0;//   done 
 		}   //  dA = 2.0 * sqrt(2.0 * 10^(-Fm))
         else if (j)  if (RV >= 0.0) // root tti
-        {
+        {   // first and b ==0 cases
             dt = (sqrt(RV) - b) / a;
             vv = a * dt + b;
             VV = dt * (vv + b) + c;
             dt-= vv * VV / (2.0*RV + 1.5*a*VV);
-        }
-        else{         dt = -0.0;             };
+        }   else {    dt = -0.0;             };
         // Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
         //  reject point by sphere surface, repeat n steps
@@ -205,8 +204,8 @@ RandomSphereBC(void)
         for (k = 0; k < rn; k++) 
         {
             rk = Xs[k]; Vs[k] -= RV * rk; //bounce by sphere surface
-            vk = Vs[k];  rr += rk*rk;
-            rv += rk*vk; vv += vk*vk;     //refresh scalar products
+            vk = Vs[k];    rr += rk*rk;
+            rv+= rk*vk;    vv += vk*vk;   //refresh scalar products
         }
     }      
 }//Generate random point, and direction on rn-sphere of radius 1.0
@@ -488,6 +487,7 @@ GetVolume(void)
     TestEnergy(); TestGeometry();
 
     printf("\nQg = "); printf(fs, Qg);
+    printf("\nTa = "); printf(fs, Ta);
     printf("\nkT = "); printf(fs, (2.0 * Qe) / (Rn * Bn));
     printf("\nKT = "); printf(fs, kT);
     printf("\nGc = "); printf(fs, Gc);

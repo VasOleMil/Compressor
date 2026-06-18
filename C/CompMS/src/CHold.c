@@ -175,8 +175,6 @@ TimeCalcBS(void)
     } 
     else// inbound should be reachable  
     {                  dt  = -0.0;        }
-
-
 }// Ei sizing bound-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
