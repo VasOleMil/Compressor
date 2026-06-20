@@ -20,6 +20,7 @@ double           De;//range (-De;+De) treated as zero, dT = 0.0
 double           Ds;//range (-Ds;+Ds) treated as  rv - RV = 0.0
 double           dA;//linear dt range dA = 2.0 * sqrt(2.0 * 10.0^-Fm)
 double           Ta;// mean free time
+double           Va;// mean squared relative speed
 double           Ls;// Ls += Ar * (Lc - Ls); mean squared path
 double           Ar;// Ar = 1.0 / 64.0; 64 steps for 15% accuracy
 long 		     Fm;// float mantisse  1.0 + 10^-Fm == 1.0

@@ -270,12 +270,12 @@ TimeCalcEx(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void
 TimeCalcTT(void)
-{
-	Lv = Tv; // Lv in stepping also initilized in TimeDelStp 
-    
-    { Es = Ex = ei; TimeCalcEx(); }
-    if (ej != NULL)
-    { Es = Ex = ej; TimeCalcEx(); }
+{   
+    Lv = Tv; // Lv in stepping also initilized in TimeDelStp 
+                                  //  mean free time, for all events
+    { Es = Ex = ei; TimeCalcEx(); if (Sc == 0) Ta += Ar * (dT - Ta); }
+    if (ej != NULL)               //  mean square relative speed
+    { Es = Ex = ej; TimeCalcEx(); if (Sc == 0) Va += Ar * (a  - Va); }
 }//Calculate  ei,ej elements times to interaction - tti
 //--------------------------------------------------------------------
 //{};{Tv}; Lv, Ev, Ex, Et, Es, Ti, Ei, Ej, Ri, rr-rv, RR-RV, dt, a-c

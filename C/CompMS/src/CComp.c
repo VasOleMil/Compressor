@@ -78,50 +78,46 @@ CompLoad(double KT, double KS, double GC)
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	// set counters. Stepping & Testing ready.
     Sc = 0; Ce = 0; Cb = 0; Sn = Bn; 
-    Ls = Rb * Rb / pow(Bn, 2.0 / Rn);       // mean squared path
-    Ta =  sqrt(Ls /(2.0 * kT * Bn / Me));   // mean free time
+    Ls = Rb * Rb / pow(Bn, 2.0 / Rn);   // mean squared path
+    Va = Rn * kT * Bn / Me;             // mean squared speed
+    Ta =  sqrt(Ls / Va);                // mean free time
     // use Ls threeshold An = 400, for safe: Delta=(1−Ar​)^An;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------
 void
 CompStep()
-{
-    if (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
-
+{   // * mean free time and path tests. After initialisation
+    if  (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1 - 
     //Select minimal tti  from holder Tv
     TimeGetStp();// Tm, ei, ej, dT are set
-
-    //mean free time and path tests. Before interaction
-
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1 - 
+    // * mean free time and path tests. Before interaction  
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - = 2 = 
     //Change geometry and variables, if not simultanious 
-    if (dT > 0.0) //Time change: Te += dT in SortGrow
-    {
-        Sc = 0; EmntMove(); SortGrow();
-    } //globals refresh
-    else //impulse loop watchdog, stop on clustering
+    if  (dT > 0.0) // values set
+    {   // GR, GM, Te += dT in SortGrow
+        Sc = 0; EmntMove(); SortGrow(); 
+    }   // Ta, Va, Ls - set in section 3: TimeCalcTT
+    else// -> impulse loop watchdog, stop on clustering
     {
         Sc++; if (Sc >= Sn) return;
     }
-
     //Verify position, to prevent time summing errors
     //elements ei, ej interaction, initiate counters Cx, Ce, Cb
     TimeValStp();  EmntColl(); //procced to new time step
-
-    //mean free time and path tests. After interaction
-    if (Sc == 0) { Ta += Ar * (dT - Ta); }
-
-    //Clear interacted elements tti in Tv
-    TimeDelStp();//Tm in free container
-
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - = 2 = 
+    // * mean free time and path tests. After interaction  
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - < 3 > 
+    //Clear interacted elements tti in Tv, Tm in free container
     //Change tti in time container Tv, Tm values not touched
-    if (Sc == 0) { TimeDecStp(); }
+    TimeDelStp(); if (Sc == 0) TimeDecStp();   
+    //Calculate ei, ej elements tti, mean values Ta, Va, Ls
+    TimeCalcTT();//ei, ej, dT not actual, but safe to use, Tm reset
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - < 3 >
+    // * mean free time and path tests. Before interaction
 
-    //Calculate ei, ej elements tti, Tm is overwritted and reused
-    TimeCalcTT();//ei, ej, dT not actual, but safe to use
-
-    //mean free time and path tests. Before interaction
-
-}//main loop, is called until Sc >= Sn, or x or t span is covered
+}   //main loop, is called until Sc >= Sn, (or x or t span is covered)
 //--------------------------------------------------------------------
 // debug
 //--------------------------------------------------------------------
