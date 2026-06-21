@@ -32,15 +32,17 @@ CompTemp(double GC)
 {
 	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; // Reset time
     //prepare values and constants for given compression stepiing
-    Sx = St = Sv->Vc;
+    Sx = St = Sv->Vc; Ve = Me = 0.0; //->SetVolume()
     do  // set sized radii Rt as constant initial Rc
-    {   // renew dependent constants 
-        Si = St->v;Si->Rc = Si->Rt; Si->Mc = Si->Mt;
-		Si->Vc = VV = Si->Rt * Gc; Si->Vs = VV * VV;
-    }   while ((St = St->n) != Sx);
-    Lv = Tv; ListClrV();//clear time items, save items for reuse
-    TimeCalcST();//calculate all elements tti, Bn*(Bn-1)/2 complexity!
-	Lv = Tv; ListSize();//clear free items, release resources
+    {   // renew dependent constants: Vc, Vs; Ve, Me 
+        Si = St->v; n = Si->Bn; Mi = Si->Mc = Si->Mt; Me += Mi * n;
+        Ri = Si->Rc = Si->Rt; Si->Vc = vv = Ri * Gc; Si->Vs = vv * vv;        
+        for (vv = Vg * Ri, k = 1; k < Rn; k++) vv *= Ri; Ve += vv * n;
+
+    }   while ((St = St->n) != Sx); // initial kT saved
+    Lv = Tv; ListClrV(); // clear time items, save items for reuse
+    TimeCalcST(); // calculate elements tti, Bn * (Bn-1)/2 complexity!
+	Lv = Tv; ListSize(); // clear free items, release resources
     //Reset counters. Stepping ready
     Sc = 0; Ce = 0; Cb = 0;
 }//init tti for stepping, arguments: sizing speed 

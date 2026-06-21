@@ -194,6 +194,8 @@ TimeCalcES(void)
     RV = Gc * GR * RR; RR *= GR * GR;
 
     a = vv - VV; b = rv - RV; c = rr - RR;
+    if  (  (c >  0.0)     &&  (b >  0.0)  )
+    {  /*e-e speedup*/ dt = -1.0; return; }
     VV = a * c;  RV = b * b;//wiki -> time
     RR = VV / RV; RV -= VV; //A=RR && D=RV 
     // b or even rv for Ds, zero processing
