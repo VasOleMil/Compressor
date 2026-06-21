@@ -99,8 +99,10 @@ EmntMove(void)
 {
     Ex = Ev->Vc; Et = Ex; 
     
-    do
+    do  // Move except further validated
     {
+        if (Et == ei || Et == ej) continue;
+
         Ei = Et->v; Xi = Ei->X; Vi = Ei->V;
 
         for (k = 0; k < Rn; k++)

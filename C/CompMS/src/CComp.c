@@ -31,19 +31,19 @@ void
 CompTemp(double GC)
 {
 	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //Reset time
-
-    Sx = St = Sv->Vc; //set sized radii Rt as constant initial Rc
-    while ((St = St->n) != Sx)
-    {
+    //prepare values and constants for given compression stepiing
+    Sx = St = Sv->Vc;
+    do  // set sized radii Rt as constant initial Rc
+    {   // renew dependent constants 
         Si = St->v;Si->Rc = Si->Rt; Si->Mc = Si->Mt;
 		Si->Vc = VV = Si->Rt * Gc; Si->Vs = VV * VV;
-    }
+    }   while ((St = St->n) != Sx);
     Lv = Tv; ListClrV();//clear time items, save items for reuse
     TimeCalcST();//calculate all elements tti, Bn*(Bn-1)/2 complexity!
 	Lv = Tv; ListSize();//clear free items, release resources
     //Reset counters. Stepping ready
     Sc = 0; Ce = 0; Cb = 0;
-}//init tti for stepping, arguments: sizing speed, 
+}//init tti for stepping, arguments: sizing speed 
 //--------------------------------------------------------------------
 void
 CompLoad(double KT, double KS, double GC)
@@ -87,7 +87,7 @@ CompLoad(double KT, double KS, double GC)
 void
 CompStep()
 {   // * Tests place. After initialisation
-    if  (Tv->Vn == 0 || UT == 0) return; //safety, no events to process
+    if  (Tv->Vn == 0 || UT == 0) return;//safety, no events to process
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - 1 - 
     //Select minimal tti  from holder Tv
     TimeGetStp();// Tm, ei, ej, dT are set
