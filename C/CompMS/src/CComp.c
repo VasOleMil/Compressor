@@ -82,7 +82,7 @@ CompLoad(double KT, double KS, double GC)
     Sc = 0; Ce = 0; Cb = 0; Sn = Bn; 
     Ls = Rb * Rb / pow(Bn, 2.0 / Rn);   // mean squared path
     Va = Rn * kT * Bn / Me;             // mean squared speed
-    Ta =  sqrt(Ls / Va);                // mean free time
+    Ta = sqrt(Ls / Va);                 // mean free time
     // use Ls threeshold An = 400, for safe: Delta=(1−Ar​)^An;
 }//init tti for stepping: kT, volume density Ks, sizing speed Gc
 //--------------------------------------------------------------------
