@@ -1,3 +1,5 @@
+#include"CData.h"
+#include"CList.h"
 #include"CBase.h"
 #include"CSort.h"
 #include"CEmnt.h"
