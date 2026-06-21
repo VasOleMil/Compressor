@@ -110,7 +110,7 @@ EmntMove(void)
 		    Xi[k] += Vi[k] * dT;
 		}
 	}   while ((Et = Et->n) != Ex);  
-}//Moves all elements
+}//Moves elements
 //--------------------------------------------------------------------
 static void
 EmntCollBS(void)

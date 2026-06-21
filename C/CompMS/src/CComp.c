@@ -30,7 +30,7 @@ CompFree(void)
 void
 CompTemp(double GC)
 {
-	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; //Reset time
+	Te = 0.0; Gc = GC; GG = Gc * Gc; GR = GM = 1.0; // Reset time
     //prepare values and constants for given compression stepiing
     Sx = St = Sv->Vc;
     do  // set sized radii Rt as constant initial Rc
