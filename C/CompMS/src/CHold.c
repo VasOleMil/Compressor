@@ -148,33 +148,25 @@ TimeCalcBS(void)
     VV = a * c;  RV = b * b;//wiki -> time
     RR = VV / RV; RV -= VV; //A=RR && D=RV 
     // b or even rv for Ds, zero processing
-    if  (  (c >= 0.0)   &&   (b >= 0.0)   )
-    {                  dt = -0.0;         }
-	else if(a == 0.0) // theoretical case
+    if  (  (c >= 0.0)     && (b >= 0.0)   )
+    {                     dt = -0.0;      }
+	else if(a  == 0.0) // theoretical case
+    {       RV = -1.0;                    }
+    else if(RV >= 0.0) // one root tti
     {
-        if (b == 0.0){ dt = -0.0;/*c = 0*/}
-        else         { dt = -0.5 * c / b; }
-    }   
-    else if(fabs(RR) < dA  &&  (b != 0.0) )
-    {   //  A = RR, linear approximation
-        if (b > 0.0) dt = -0.5 * c / b;
-        else // use and correct mantisse
-        {
-            dt = b / a * (0.50 * RR - 2.0);
-            vv = a * dt + b;
-            VV = dt * (vv + b) + c;
-            dt -=vv*VV / (2.0*RV+1.5*a*VV);
-        }   return; //done      
-    }  
-	else if(RV >= 0.0) // one root tti
-    {   
-        dt = (+sqrt(RV) - b) / a; 
-        vv = a * dt + b;
-        VV = dt * (vv + b) + c;
-        dt -= vv*VV / (2.0*RV  + 1.5*a*VV);
-    } 
-    else// inbound should be reachable  
-    {                  dt  = -0.0;        }
+        if (fabs(RR) < dA && (b != 0.0)   )
+        {   // use linear approximation
+            dt = (b > 0.0) ? -0.5 * c / b:
+                b / a * (0.50 * RR - 2.0);
+        }   // do both mantissa restore 
+        else// full sqrt computation
+        {   dt = (+sqrt(RV) - b) / a;     }
+        //restore bits by Haley step 
+        vv = a * dt + b;  VV = dt*(vv+b)+c;
+        dt-= vv * VV / (2.0*RV + 1.5*a*VV);
+    }
+    else// inbound should be reachable
+    {                     dt = -0.0;      }
 }// Ei sizing bound-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
@@ -184,29 +176,24 @@ TimecalcES(void)
     RR = VV / RV; RV -= VV; //A=RR && D=RV 
     // b or even rv for Ds, zero processing
     if (   (c <= 0.0)     && (b <= 0.0)   )
-    {                       dt = -0.0;    }
-    else if (a == 0.0) // theoretical case
-    {
-        if (b == 0.0){ dt = -0.0;/*c = 0*/ }
-        else {         dt = -0.5 * c / b; }
-    }
+    {                     dt = -0.0;      }
+    else if(a  == 0.0) // theoretical case
+    {       RV = -1.0;                    }
     else if(RV >= 0.0) // one root tti
     {
         if (fabs(RR) < dA && (b != 0.0)   )
         {   // use linear approximation
-        if (b < 0.0) { dt = -0.5 * c / b; }
-        else {              dt = -1.0;    }
-        }
-        else // full sqrt computation
-        {
-            dt = (-sqrt(RV) - b) / a;
-            vv = a * dt + b;
-            VV = dt * (vv + b) + c;
-            dt-= vv*VV / (2.0*RV+1.5*a*VV);
-        }
+            dt = (b < 0.0)?-0.5 * c / b:
+                  b/a * (0.50*RR - 2.0);
+        }   // do both mantissa restore 
+        else// full sqrt computation
+        {   dt = (-sqrt(RV) - b) / a;     }
+        //restore bits by Haley step 
+        vv = a * dt + b;  VV = dt*(vv+b)+c;
+        dt-= vv * VV / (2.0*RV + 1.5*a*VV);
     }
     else// main time span discriminant
-    {                       dt = -1.0;    }
+    {                     dt = -1.0;      }
 }// Ei Ej sizing element-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
@@ -227,9 +214,9 @@ TimeCalcES(void)
 
     a = vv - VV; b = rv - RV; c = rr - RR;
     if  (  (c >  0.0)     &&  (b >  0.0)  )
-    {  /*e-e speedup*/ dt = -1.0;         }
+    {  /*e-e speedup*/    dt = -1.0;      }
     else
-    { /*full  solver*/ TimecalcES();      }
+    { /*full  solver*/    TimecalcES();   }
 }// Ei Ej sizing element-element interaction, calculates tti
 //--------------------------------------------------------------------
 static void
