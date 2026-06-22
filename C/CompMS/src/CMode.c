@@ -169,30 +169,30 @@ RandomSphereBC(void)
 		}  
     }   while (vv <= 0.0); // enable bouncing, |v| > 0.0  
     // bounce point by sphere surface, repeat n steps
-    for (i = 0; i < n; i++) // (a != 0.0)
-    {   // get time dt to reach rn-sphere of radius 1.0  
+    for (i = 0; i < n; i++) // ( a->vv != 0.0 )
+    {   // Get time dt to reach rn-sphere of radius 1.0  
         // centered in origin, no point radius
-		a  = vv; b = rv; c = rr - 1.0;//Rc = 0  
-        VV = a * c;  RV = b * b;//wiki -> time
-        RR = VV / RV; RV -= VV; //A=RR && D=RV 
+		a  = vv; b = rv; c = rr - 1.0;// Rc = 0  
+        VV = a * c; RV = b * b; // wiki -> time
+        RR = VV / RV; RV -= VV; // A=RR && D=RV 
         if  ( (c >= 0.0)    &&    (b >= 0.0)  )
         {                   dt = -0.0;        }
         else if (RV >= 0.0) // one root tti
-        {
+        {   //  dA = 2 * sqrt( 2 * 10^(-Fm))
             if  (fabs(RR) < dA && (b != 0.0)  )
             {   // use linear approximation
                 dt = (b > 0.0) ? -0.5 * c / b:
                     b / a * (0.50 * RR - 2.0);
-            }   // do both mantissa restore 
-            else// full sqrt computation
+            }   // first part assumed accurate 
+            else// Full sqrt computation
             {   dt = (+sqrt(RV) - b) / a;     }
-            // restore bits by Haley step 
+            // restore bits by Haley cubic step 
             vv = a * dt + b;  VV = dt*(vv+b)+c;
             dt-= vv * VV / (2.0*RV + 1.5*a*VV);
         }   else {          dt = -0.0;       };
         // Move to sphere surface
         for (k = 0; k < rn; k++) Xs[k] += Vs[k] * dt;
-        //  reject point by sphere surface, repeat n steps
+        //  reject point by surface, repeat n steps
         for (rv = 0.0, k = 0; k < rn; k++)
 	    {   //prepare for bounce, scalar product 
             rk = Xs[k]; 
@@ -361,8 +361,8 @@ NormMassCenter(void)
             if (RR >= 0.0) // positive time selection
             { RR *= RR; VV = (RR > VV) ? VV : RR; }   
             else //get minimal displacement, dr^2 ? Xc^2
-            {    /*  out of bound, error  */      }
-        }//else  ->  out of bound, error                  
+            {       VV = 0.0;  /* bound, stop */  }
+        }   else {  VV = 0.0;  /* bound, stop */  }
     }   while ((Et = Et->n) != Ex); // Et == Ex on leave 
 
     VV = sqrt(VV / vv); //shift with scaled displacement
