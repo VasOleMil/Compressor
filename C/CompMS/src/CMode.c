@@ -278,12 +278,12 @@ TestEnergy(void)
         }
         Qe += vv * Ei->S->Mt;
 
-    }   while ((Et = Et->n) != Ex); Qe /= 2.0;   
-}// Get system energy Qe = Bn * Rn * kT / 2.0
+    }   while ((Et = Et->n) != Ex); Qe /= Bn * Rn;
+}// Get system energy Qe = kT current
 //--------------------------------------------------------------------
 void
 NormEnergy(void)
-{   //TestEnergy, copied, with late Qe assign
+{   //TestEnergy, embedded copy
     Ex = Ev->Vc; Et = Ex; Qe = 0.0; 
     do  // Et == Ex, on leave
     {
@@ -294,9 +294,9 @@ NormEnergy(void)
         }
         Qe += vv * Ei->S->Mt; 
 
-    }   while ((Et = Et->n) != Ex); // devision by 2.0, later
-    //Scale to given kT, simplified since not divided
-    vv = (Qe > 0.0) ? sqrt(Bn * Rn * kT / Qe) : 1.0; Qe /= 2.0;
+    }   while ((Et = Et->n) != Ex);  Qe /= Bn * Rn;
+    //Scale to given kT, previous value saved in Qe
+    vv = (Qe > 0.0) ? sqrt(kT / Qe) : 1.0;
     do  // NormMassCenter() -> NormImpulse() -> NormMomenta()
     {   // should be called before this function
         Ei = Et->v; Vi = Ei->V;
@@ -485,7 +485,7 @@ GetVolume(void)
 
     printf("\nQg = "); printf(fs, Qg);
     printf("\nTa = "); printf(fs, Ta);
-    printf("\nkT = "); printf(fs, (2.0 * Qe) / (Rn * Bn));
+    printf("\nkT = "); printf(fs, Qe);
     printf("\nKT = "); printf(fs, kT);
     printf("\nGc = "); printf(fs, Gc);
     printf("\nDe = "); printf(fs, De);

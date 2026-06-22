@@ -41,7 +41,7 @@ extern long             Cx;// Interactions type
 extern long             Ce;// Number of e-e interactions 
 extern long             Cb;// Number of b-e interactions
 
-extern double           Qe;//system energy, Bn * Rn * kT / 2 
+extern double           Qe;//system energy, current kT
 extern double           Qg;//geomenty deviation, mean squared
 //--------------------------------------------------------------------
 extern double           RN;// sqrt(Rn)
